@@ -1,0 +1,36 @@
+{
+  "name": "leaner",
+  "version": "0.0.1",
+  "description": "Leaner.js",
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": "./dist/core.js",
+    "./web": "./dist/web.js",
+    "./dist/*": "./dist/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "rollup -c"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mimecorg/leaner.git"
+  },
+  "keywords": [
+    "leaner",
+    "javascript",
+    "framework"
+  ],
+  "author": "Michał Męciński",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mimecorg/leaner/issues"
+  },
+  "homepage": "https://github.com/mimecorg/leaner",
+  "devDependencies": {
+    "rollup": "^4.17.2"
+  }
+}
