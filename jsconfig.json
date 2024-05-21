@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "leaner": [ "./src/core" ],
+      "leaner/*": [ "./src/core/*" ],
+      "leaner/web": [ "./src/web" ],
+      "leaner/web/*": [ "./src/web/*" ],
+    }
+  },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}

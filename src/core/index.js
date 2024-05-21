@@ -1,23 +1,8 @@
 import { createRootComputedProxy } from './computed.js';
 import { addDeps, react, track, updateDeps, withDeps } from './deps.js';
-import { Mutator, applyMutator } from './mutable.js';
+import { Mutator, applyMutator, mutate } from './mutate.js';
+import { schedule } from './schedule.js';
 import { createRootStateRecord, stateGetterApply } from './state.js';
-
-let scheduled = null;
-
-export function schedule( callback ) {
-  if ( scheduled == null ) {
-    scheduled = new Set();
-    Promise.resolve().then( () => {
-      const watches = scheduled.values();
-      scheduled = null;
-      for ( const watch of watches )
-        watch();
-    } );
-  }
-
-  scheduled.add( callback );
-}
 
 export function useState( initial ) {
   let current = initial;
@@ -155,12 +140,4 @@ export function useConstant( value ) {
   }
 }
 
-export function mutate( callback ) {
-  return new Mutator( callback );
-}
-
-export function current( value ) {
-  if ( typeof value == 'function' )
-    return value();
-  return value;
-}
+export { mutate, schedule };

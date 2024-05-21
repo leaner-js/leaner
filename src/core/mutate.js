@@ -7,6 +7,10 @@ export class Mutator {
   }
 }
 
+export function mutate( callback ) {
+  return new Mutator( callback );
+}
+
 export function applyMutator( record, value, callback ) {
   mutableValues = new WeakMap();
   mutableValues.set( value, record );
