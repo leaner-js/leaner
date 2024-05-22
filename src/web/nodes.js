@@ -32,7 +32,7 @@ export function insertBefore( node, parent, before ) {
         parent.insertBefore( item, before );
     }
   } else if ( node instanceof DynamicNode ) {
-    insertBefore( node.content, before )
+    insertBefore( node.content, parent, before )
   } else {
     parent.insertBefore( node, before );
   }
