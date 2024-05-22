@@ -1,5 +1,5 @@
 import { isPlainObjectOrArray } from '../shared/utils.js';
-import { createChildStateRecord } from './state.js';
+import { createChildStateRecord, unwrapProperties } from './state.js';
 
 export class Mutator {
   constructor( callback ) {
@@ -75,6 +75,8 @@ function stateMutatorSet( target, prop, value ) {
     const valueTarget = stateMutatorTargets.get( value );
     if ( valueTarget != null )
       value = valueTarget;
+    else
+      unwrapProperties( value, stateMutatorTargets, new WeakSet() );
   }
 
   if ( target[ prop ] === value )

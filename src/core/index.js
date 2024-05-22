@@ -1,8 +1,9 @@
+import { isPlainObjectOrArray } from '../shared/utils.js';
 import { createRootComputedProxy } from './computed.js';
 import { addDeps, react, track, updateDeps, withDeps } from './deps.js';
 import { Mutator, applyMutator, mutate } from './mutate.js';
 import { schedule } from './schedule.js';
-import { createRootStateRecord, stateGetterApply } from './state.js';
+import { createRootStateRecord, stateGetterApply, unwrapValue } from './state.js';
 
 export function useState( initial ) {
   let current = initial;
@@ -25,7 +26,11 @@ export function useState( initial ) {
     } else {
       if ( typeof value == 'function' ) {
         const readOnlyValue = stateGetterApply( getter );
+
         value = value( readOnlyValue );
+
+        if ( isPlainObjectOrArray( value ) )
+          value = unwrapValue( value );
       }
 
       if ( current !== value ) {

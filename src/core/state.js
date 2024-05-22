@@ -115,7 +115,7 @@ const stateReaderHandler = {
 
 const stateReaderRecords = new WeakMap();
 
-const stateReaderProxies = new WeakSet();
+const stateReaderProxies = new WeakMap();
 
 function stateReaderGet( target, prop ) {
   const record = stateReaderRecords.get( target );
@@ -151,13 +151,36 @@ function createReaderRecord( record, value ) {
   };
 
   stateReaderRecords.set( value, record.reader );
-  stateReaderProxies.add( record.reader.proxy );
+  stateReaderProxies.set( record.reader.proxy, value );
 
   return record.reader;
 }
 
 export function isStateReader( value ) {
-  if ( stateReaderProxies.has( value ) )
-    return true;
-  return false;
+  return stateReaderProxies.has( value );
+}
+
+export function unwrapValue( value ) {
+  const valueTarget = stateReaderProxies.get( value );
+  if ( valueTarget != null )
+    return valueTarget;
+
+  unwrapProperties( value, stateReaderProxies, new WeakSet() );
+
+  return value;
+}
+
+export function unwrapProperties( value, map, visited ) {
+  visited.add( value );
+
+  for ( const key in value ) {
+    const prop = value[ key ];
+    if ( isPlainObjectOrArray( prop ) && !visited.has( prop ) ) {
+      const valueTarget = map.get( prop );
+      if ( valueTarget != null )
+        value[ key ] = valueTarget;
+      else
+        unwrapProperties( prop, map, visited );
+    }
+  }
 }
