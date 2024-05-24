@@ -1,3 +1,5 @@
+import { scheduleWatcher } from "./schedule";
+
 let deps = null;
 
 export function track( record ) {
@@ -6,9 +8,16 @@ export function track( record ) {
 }
 
 export function react( record ) {
-  if ( record.watches != null ) {
-    for ( const watch of record.watches.values() )
-      watch();
+  if ( record.watchers != null ) {
+    for ( const watcher of record.watchers.values() ) {
+      const callback = watcher.callback;
+      if ( callback != null ) {
+        if ( watcher.async )
+          scheduleWatcher( watcher );
+        else
+          callback();
+      }
+    }
   }
 }
 
@@ -32,19 +41,65 @@ export function addDeps( newDeps ) {
   }
 }
 
-export function updateDeps( newDeps, deps, callback ) {
-  for ( const dep of newDeps ) {
-    if ( dep.watches == null )
-      dep.watches = new Set();
-    dep.watches.add( callback );
-    if ( deps != null )
-      deps.delete( dep );
+let current = null;
+
+export function withScope( scope, callback ) {
+  const old = current;
+  current = scope;
+
+  try {
+    return callback();
+  } finally {
+    current = old;
   }
+}
+
+export function createWatcher( deps, callback, async ) {
+  const watcher = {
+    deps,
+    callback,
+    async,
+  };
+
+  if ( current != null )
+    current.push( watcher );
 
   if ( deps != null ) {
-    for ( const dep of deps )
-      dep.watches.delete( callback );
+    for ( const dep of deps ) {
+      if ( dep.watchers == null )
+        dep.watchers = new Set();
+      dep.watchers.add( watcher );
+    }
   }
 
-  return newDeps;
+  return watcher;
+}
+
+export function updateWatcher( watcher, deps ) {
+  for ( const dep of deps ) {
+    if ( dep.watchers == null )
+      dep.watchers = new Set();
+    dep.watchers.add( watcher );
+    if ( watcher.deps != null )
+      watcher.deps.delete( dep );
+  }
+
+  if ( watcher.deps != null ) {
+    for ( const dep of watcher.deps )
+      dep.watchers.delete( watcher );
+  }
+
+  watcher.deps = deps;
+}
+
+export function destroyScope( scope ) {
+  for ( const watcher of scope ) {
+    watcher.callback = null;
+
+    if ( watcher.deps != null ) {
+      for ( const dep of watcher.deps )
+        dep.watchers.delete( watcher );
+      watcher.deps = null;
+    }
+  }
 }

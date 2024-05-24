@@ -1,8 +1,8 @@
 import { isPlainObjectOrArray } from '../shared/utils.js';
 import { createRootComputedProxy } from './computed.js';
-import { addDeps, react, track, updateDeps, withDeps } from './deps.js';
+import { addDeps, createWatcher, destroyScope, react, track, updateWatcher, withDeps, withScope } from './deps.js';
 import { Mutator, applyMutator, mutate } from './mutate.js';
-import { schedule } from './schedule.js';
+import { schedule, scheduleWatcher } from './schedule.js';
 import { createRootStateRecord, stateGetterApply, unwrapValue } from './state.js';
 
 export function useState( initial ) {
@@ -42,26 +42,28 @@ export function useState( initial ) {
 }
 
 export function useWatchEffect( callback ) {
-  let deps = null;
+  const watcher = createWatcher( null, update, false );
 
   update();
 
   function update() {
-    const [ _, newDeps ] = withDeps( callback );
+    const [ _, deps ] = withDeps( callback );
 
-    deps = updateDeps( newDeps, deps, update );
+    updateWatcher( watcher, deps );
   }
 }
 
 export function useWatch( getter, callback ) {
   let [ value, deps ] = withDeps( getter );
 
-  updateDeps( deps, null, update );
+  const watcher = createWatcher( deps, update, false );
+
+  deps = null;
 
   function update() {
     const [ newValue, newDeps ] = withDeps( getter );
 
-    deps = updateDeps( newDeps, deps, update );
+    updateWatcher( watcher, newDeps );
 
     if ( newValue !== value ) {
       callback( newValue, value );
@@ -71,38 +73,40 @@ export function useWatch( getter, callback ) {
 }
 
 export function useEffect( callback ) {
-  let deps = null;
+  const watcher = createWatcher( null, update, true );
 
-  schedule( update );
+  scheduleWatcher( watcher );
 
   function update() {
-    const [ _, newDeps ] = withDeps( callback );
+    const [ _, deps ] = withDeps( callback );
 
-    deps = updateDeps( newDeps, deps, () => schedule( update ) );
+    updateWatcher( watcher, deps );
   }
 }
 
 export function useReactive( callback ) {
-  let deps = null;
+  const watcher = createWatcher( null, update, true );
 
   update();
 
   function update() {
-    const [ _, newDeps ] = withDeps( callback );
+    const [ _, deps ] = withDeps( callback );
 
-    deps = updateDeps( newDeps, deps, () => schedule( update ) );
+    updateWatcher( watcher, deps );
   }
 }
 
 export function useReactiveWatch( getter, callback ) {
-  let value = null, deps = null;
+  let value = null;
+
+  const watcher = createWatcher( null, update, true );
 
   update( true );
 
   function update( force ) {
-    const [ newValue, newDeps ] = withDeps( getter );
+    const [ newValue, deps ] = withDeps( getter );
 
-    deps = updateDeps( newDeps, deps, () => schedule( update ) );
+    updateWatcher( watcher, deps );
 
     if ( force || newValue !== value ) {
       callback( newValue, value );
@@ -112,21 +116,26 @@ export function useReactiveWatch( getter, callback ) {
 }
 
 export function useComputed( callback ) {
-  let deps = null, value = null, valid = false;
+  let value = null, valid = false;
+
+  const watcher = createWatcher( null, invalidate, false );
 
   return createRootComputedProxy( execute );
 
   function execute() {
-    if ( !valid ) {
-      const [ newValue, newDeps ] = withDeps( callback );
+    if ( watcher.callback == null )
+      throw new Error( 'A destroyed computed value cannot be used' );
 
-      deps = updateDeps( newDeps, deps, invalidate );
+    if ( !valid ) {
+      const [ newValue, deps ] = withDeps( callback );
+
+      updateWatcher( watcher, deps );
 
       value = newValue;
       valid = true;
     }
 
-    addDeps( deps );
+    addDeps( watcher.deps );
 
     return value;
   }
@@ -145,4 +154,4 @@ export function useConstant( value ) {
   }
 }
 
-export { mutate, schedule };
+export { destroyScope, mutate, schedule, withScope };

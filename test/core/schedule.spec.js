@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { schedule } from 'leaner';
+import { destroyScope, schedule, withScope } from 'leaner';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'schedule', () => {
@@ -13,17 +13,6 @@ describe( 'schedule', () => {
     await Promise.resolve();
 
     expect( callback ).toHaveBeenCalled();
-  } );
-
-  test( 'called only once', async () => {
-    const callback = vi.fn();
-
-    schedule( callback );
-    schedule( callback );
-
-    await Promise.resolve();
-
-    expect( callback ).toHaveBeenCalledOnce();
   } );
 
   test( 'scheduled from callback', async () => {
@@ -54,5 +43,21 @@ describe( 'schedule', () => {
     runSchedule();
 
     expect( callback ).toHaveBeenCalled();
+  } );
+
+  test( 'not called when scope destroyed', async () => {
+    const callback = vi.fn();
+
+    const scope = [];
+
+    withScope( scope, () => {
+      schedule( callback );
+    } );
+
+    destroyScope( scope );
+
+    await Promise.resolve();
+
+    expect( callback ).not.toHaveBeenCalled();
   } );
 } );

@@ -1,3 +1,4 @@
+import { destroyScope, withScope } from 'leaner';
 import { isPlainObject } from '../shared/utils.js';
 
 let current = null;
@@ -20,6 +21,7 @@ export function createContext( parent ) {
   return {
     parent,
     children: null,
+    scope: [],
     mount: null,
     destroy: null,
   };
@@ -41,7 +43,7 @@ export function withContext( context, callback ) {
   const last = current;
   current = context;
   try {
-    return callback();
+    return withScope( current.scope, callback );
   } finally {
     current = last;
   }
@@ -50,7 +52,7 @@ export function withContext( context, callback ) {
 export function withChildContext( callback ) {
   current = createChildContext();
   try {
-    return callback();
+    return withScope( current.scope, callback );
   } finally {
     current = current.parent;
   }
@@ -88,12 +90,19 @@ export function destroyContext( context ) {
   if ( context.destroy != null ) {
     for ( const callback of context.destroy )
       callback();
+    context.destroy = null;
+  }
+
+  context.mounted = null;
+
+  if ( context.scope.length > 0 ) {
+    destroyScope( context.scope );
+    context.scope = [];
   }
 
   if ( context.children != null ) {
     for ( const child of context.children )
       destroyContext( child );
-
     context.children = null;
   }
 }

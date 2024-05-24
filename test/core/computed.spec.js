@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { mutate, useComputed, useConstant, useState } from 'leaner';
+import { destroyScope, mutate, useComputed, useConstant, useState, withScope } from 'leaner';
 
 describe( 'useComputed()', () => {
   test( 'simple value', () => {
@@ -44,11 +44,7 @@ describe( 'useComputed()', () => {
   test( 'calculated on demand', () => {
     const [ getValue, ] = useState( 4 );
 
-    function calculate() {
-      return getValue() + 3;
-    }
-
-    const callback = vi.fn().mockImplementation( calculate );
+    const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
     const computed = useComputed( callback );
 
@@ -62,11 +58,7 @@ describe( 'useComputed()', () => {
   test( 'calculated only once', () => {
     const [ getValue, ] = useState( 4 );
 
-    function calculate() {
-      return getValue() + 3;
-    }
-
-    const callback = vi.fn().mockImplementation( calculate );
+    const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
     const computed = useComputed( callback );
 
@@ -82,11 +74,7 @@ describe( 'useComputed()', () => {
   test( 'recalculated on demand', () => {
     const [ getValue, setValue ] = useState( 4 );
 
-    function calculate() {
-      return getValue() + 3;
-    }
-
-    const callback = vi.fn().mockImplementation( calculate );
+    const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
     const computed = useComputed( callback );
 
@@ -127,6 +115,26 @@ describe( 'useComputed()', () => {
     setValue( mutate( state => state[ 0 ].count = 10 ) );
 
     expect( name() ).toBe( 'apples' );
+  } );
+
+  test( 'throws error when scope destroyed', () => {
+    const [ getValue, ] = useState( 4 );
+
+    const callback = vi.fn().mockImplementation( () => getValue() + 3 );
+
+    const scope = [];
+
+    const computed = withScope( scope, () => {
+      return useComputed( callback );
+    } );
+
+    computed();
+
+    expect( callback ).toHaveBeenCalledOnce();
+
+    destroyScope( scope );
+
+    expect( computed ).toThrowError( 'destroyed' );
   } );
 } );
 

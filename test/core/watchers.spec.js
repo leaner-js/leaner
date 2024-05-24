@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { mutate, useEffect, useReactive, useReactiveWatch, useState, useWatch, useWatchEffect } from 'leaner';
+import { destroyScope, mutate, useEffect, useReactive, useReactiveWatch, useState, useWatch, useWatchEffect, withScope } from 'leaner';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'useWatchEffect()', () => {
@@ -49,6 +49,26 @@ describe( 'useWatchEffect()', () => {
     callback.mockClear();
 
     setValue( mutate( state => state.name = 'oranges' ) );
+
+    expect( callback ).not.toHaveBeenCalled();
+  } );
+
+  test( 'not called when scope destroyed', () => {
+    const [ getValue, setValue ] = useState( 'apples' );
+
+    const callback = vi.fn().mockImplementation( getValue );
+
+    const scope = [];
+
+    withScope( scope, () => {
+      useWatchEffect( callback );
+    } );
+
+    callback.mockClear();
+
+    destroyScope( scope );
+
+    setValue( 'oranges' );
 
     expect( callback ).not.toHaveBeenCalled();
   } );
@@ -186,6 +206,30 @@ describe( 'useReactive()', () => {
     runSchedule();
 
     expect( callback ).toHaveBeenCalledOnce();
+  } );
+
+  test( 'not called when scope destroyed', () => {
+    const [ getValue, setValue ] = useState( 'apples' );
+
+    const callback = vi.fn().mockImplementation( getValue );
+
+    const scope = [];
+
+    withScope( scope, () => {
+      useReactive( callback );
+    } );
+
+    callback.mockClear();
+
+    setValue( 'oranges' );
+
+    expect( callback ).not.toHaveBeenCalled();
+
+    destroyScope( scope );
+
+    runSchedule();
+
+    expect( callback ).not.toHaveBeenCalledOnce();
   } );
 } );
 

@@ -48,7 +48,7 @@ function createRecord( prop, getter ) {
     proxy: new Proxy( getter, stateGetterHandler ),
     children: null,
     reader: null,
-    watches: null,
+    watchers: null,
   };
 }
 
