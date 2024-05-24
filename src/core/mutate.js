@@ -1,5 +1,5 @@
 import { isPlainObjectOrArray } from '../shared/utils.js';
-import { createChildStateRecord, unwrapProperties } from './state.js';
+import { getStateReader, unwrapProperties } from './state.js';
 
 export class Mutator {
   constructor( callback ) {
@@ -11,10 +11,7 @@ export function mutate( callback ) {
   return new Mutator( callback );
 }
 
-export function applyMutator( record, value, callback ) {
-  mutableValues = new WeakMap();
-  mutableValues.set( value, record );
-
+export function applyMutator( value, callback ) {
   const proxy = new Proxy( value, stateMutatorHandler );
 
   stateMutatorTargets = new WeakMap();
@@ -24,10 +21,8 @@ export function applyMutator( record, value, callback ) {
 
   try {
     callback( proxy );
-
     return mutated;
   } finally {
-    mutableValues = null;
     stateMutatorTargets = null;
     mutated = null;
   }
@@ -39,7 +34,6 @@ const stateMutatorHandler = {
   deleteProperty: stateMutatorDelete,
 };
 
-let mutableValues = null;
 let stateMutatorTargets = null;
 
 let mutated = null;
@@ -48,14 +42,8 @@ function stateMutatorGet( target, prop ) {
   const value = target[ prop ];
 
   if ( isPlainObjectOrArray( value ) ) {
-    const record = mutableValues.get( target );
-
-    const childRecord = createChildStateRecord( record.target, prop );
-    mutableValues.set( value, childRecord );
-
     const proxy = new Proxy( value, stateMutatorHandler );
     stateMutatorTargets.set( proxy, value );
-
     return proxy;
   }
 
@@ -63,12 +51,15 @@ function stateMutatorGet( target, prop ) {
 }
 
 function stateMutatorSet( target, prop, value ) {
-  const record = mutableValues.get( target );
+  const reader = getStateReader( target );
 
-  if ( Array.isArray( target ) && isIntegerKey( prop ) && Number( prop ) >= target.length ) {
-    // the length of the array is changed implicitly when a new element is added
-    const lengthRecord = createChildStateRecord( record.target, 'length' );
-    mutated.add( lengthRecord );
+  if ( reader != null && reader.props != null ) {
+    if ( Array.isArray( target ) && isIntegerKey( prop ) && Number( prop ) >= target.length ) {
+      // the length of the array is changed implicitly when a new element is added
+      const record = reader.props.length;
+      if ( record != null )
+        mutated.add( record );
+    }
   }
 
   if ( isPlainObjectOrArray( value ) ) {
@@ -84,8 +75,11 @@ function stateMutatorSet( target, prop, value ) {
 
   target[ prop ] = value;
 
-  const childRecord = createChildStateRecord( record.target, prop );
-  mutated.add( childRecord );
+  if ( reader != null && reader.props != null ) {
+    const record = reader.props[ prop ];
+    if ( record != null )
+      mutated.add( record );
+  }
 
   return true;
 }
@@ -96,10 +90,13 @@ function stateMutatorDelete( target, prop ) {
 
   delete target[ prop ];
 
-  const record = mutableValues.get( target );
+  const reader = getStateReader( target );
 
-  const childRecord = createChildStateRecord( record.target, prop );
-  mutated.add( childRecord );
+  if ( reader != null && reader.props != null ) {
+    const record = reader.props[ prop ];
+    if ( record != null )
+      mutated.add( record );
+  }
 
   return true;
 }

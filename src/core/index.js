@@ -3,14 +3,16 @@ import { createRootComputedProxy } from './computed.js';
 import { addDeps, createWatcher, destroyScope, react, track, updateWatcher, withDeps, withScope } from './deps.js';
 import { Mutator, applyMutator, mutate } from './mutate.js';
 import { schedule, scheduleWatcher } from './schedule.js';
-import { createRootStateRecord, stateGetterApply, unwrapValue } from './state.js';
+import { createRecord, createRootStateGetterProxy, stateGetterApply, unwrapStateReaderProxy } from './state.js';
 
 export function useState( initial ) {
   let current = initial;
 
-  const record = createRootStateRecord( getter );
+  const record = createRecord();
 
-  return [ record.proxy, setter ];
+  const proxy = createRootStateGetterProxy( getter );
+
+  return [ proxy, setter ];
 
   function getter() {
     track( record );
@@ -19,7 +21,10 @@ export function useState( initial ) {
 
   function setter( value ) {
     if ( value instanceof Mutator ) {
-      const mutated = applyMutator( record, current, value.callback );
+      if ( !isPlainObjectOrArray( current ) )
+        throw new TypeError( 'Only plain objects and arrays can be mutated' );
+
+      const mutated = applyMutator( current, value.callback );
 
       for ( const record of mutated )
         react( record );
@@ -30,7 +35,7 @@ export function useState( initial ) {
         value = value( readOnlyValue );
 
         if ( isPlainObjectOrArray( value ) )
-          value = unwrapValue( value );
+          value = unwrapStateReaderProxy( value );
       }
 
       if ( current !== value ) {

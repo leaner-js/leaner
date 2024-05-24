@@ -12,95 +12,76 @@ const stateGetterHandler = {
   },
 };
 
-const stateGetterRecords = new WeakMap();
+const stateGetterCache = new WeakMap();
 
 function stateGetterGet( target, prop ) {
   if ( prop === 'get' ) {
     return arg => {
       if ( typeof arg == 'function' )
-        return createDynamicStateRecord( target, arg ).proxy;
+        return createDynamicStateGetterProxy( target, arg );
       else
-        return createChildStateRecord( target, arg ).proxy;
+        return createChildStateGetterProxy( target, arg );
     };
   }
 
   if ( prop === Symbol.toPrimitive )
     throw new Error( 'Using a state getter as a primitive value is not allowed' );
 
-  return createChildStateRecord( target, prop ).proxy;
+  return createChildStateGetterProxy( target, prop );
+}
+
+export function createRootStateGetterProxy( getter ) {
+  return new Proxy( getter, stateGetterHandler );
+}
+
+function createChildStateGetterProxy( target, prop ) {
+  let cache = stateGetterCache.get( target );
+
+  if ( cache == null ) {
+    cache = Object.create( null );
+    stateGetterCache.set( target, cache );
+  }
+
+  let proxy = cache[ prop ];
+
+  if ( proxy == null ) {
+    proxy = new Proxy( getter, stateGetterHandler );
+    cache[ prop ] = proxy;
+  }
+
+  return proxy;
+
+  function getter() {
+    const value = target();
+
+    if ( isPlainObjectOrArray( value ) )
+      trackProperty( value, prop );
+
+    return value[ prop ];
+  }
+}
+
+function createDynamicStateGetterProxy( target, arg ) {
+  return new Proxy( getter, stateGetterHandler );
+
+  function getter() {
+    const value = target();
+    const prop = arg();
+
+    if ( isPlainObjectOrArray( value ) )
+      trackProperty( value, prop );
+
+    return value[ prop ];
+  }
 }
 
 export function stateGetterApply( target ) {
   const value = target();
 
-  if ( isPlainObjectOrArray( value ) ) {
-    const record = stateGetterRecords.get( target );
-    return createReaderRecord( record, value ).proxy;
-  }
+  if ( isPlainObjectOrArray( value ) )
+    return createStateReader( value ).proxy;
 
   return value;
-}
-
-function createRecord( prop, getter ) {
-  return {
-    prop,
-    target: getter,
-    proxy: new Proxy( getter, stateGetterHandler ),
-    children: null,
-    reader: null,
-    watchers: null,
-  };
-}
-
-export function createRootStateRecord( getter ) {
-  const record = createRecord( '(root)', getter );
-
-  stateGetterRecords.set( getter, record );
-
-  return record;
-}
-
-export function createChildStateRecord( target, prop ) {
-  const record = stateGetterRecords.get( target );
-
-  if ( record.children != null && record.children[ prop ] != null )
-    return record.children[ prop ];
-
-  if ( record.children == null )
-    record.children = Object.create( null );
-
-  const childRecord = createRecord( prop, getter );
-
-  function getter() {
-    const value = target();
-    track( childRecord );
-    return value[ prop ];
-  };
-
-  stateGetterRecords.set( getter, childRecord );
-
-  record.children[ prop ] = childRecord;
-
-  return childRecord;
-}
-
-function createDynamicStateRecord( target, arg ) {
-  const dynamicRecord = {
-    prop: '(dynamic)',
-    target: getter,
-    proxy: new Proxy( getter, stateGetterHandler ),
-  };
-
-  function getter() {
-    const value = target();
-    const index = arg();
-    track( createChildStateRecord( target, index ) );
-    return value[ index ];
-  }
-
-  stateGetterRecords.set( getter, dynamicRecord );
-
-  return dynamicRecord;
 }
 
 const stateReaderHandler = {
@@ -113,59 +94,71 @@ const stateReaderHandler = {
   },
 };
 
-const stateReaderRecords = new WeakMap();
-
-const stateReaderProxies = new WeakMap();
+const stateReaders = new WeakMap();
+const stateReaderTargets = new WeakMap();
 
 function stateReaderGet( target, prop ) {
-  const record = stateReaderRecords.get( target );
-
-  const childRecord = createChildStateRecord( record.target, prop );
-
-  track( childRecord );
+  trackProperty( target, prop );
 
   const value = target[ prop ];
 
   if ( isPlainObjectOrArray( value ) )
-    return createReaderRecord( childRecord, value ).proxy;
+    return createStateReader( value ).proxy;
 
   return value;
 }
 
-function createReaderRecord( record, value ) {
-  if ( record.reader != null && record.reader.value === value )
-    return record.reader;
+function trackProperty( target, prop ) {
+  const reader = createStateReader( target );
 
-  // reuse an existing record; this happens e.g. if an array was rearranged using splice/unshift
-  const existingRecord = stateReaderRecords.get( value );
-  if ( existingRecord != null ) {
-    record.reader = existingRecord;
-    existingRecord.target = record.target;
-    return existingRecord;
+  if ( reader.props == null )
+    reader.props = Object.create( null );
+
+  let record = reader.props[ prop ];
+
+  if ( record == null ) {
+    record = createRecord();
+    reader.props[ prop ] = record;
   }
 
-  record.reader = {
-    value,
-    target: record.target,
-    proxy: new Proxy( value, stateReaderHandler ),
+  track( record );
+}
+
+function createStateReader( value ) {
+  let reader = stateReaders.get( value );
+
+  if ( reader == null ) {
+    reader = {
+      proxy: new Proxy( value, stateReaderHandler ),
+      props: null,
+    };
+    stateReaders.set( value, reader );
+    stateReaderTargets.set( reader.proxy, value );
+  }
+
+  return reader;
+}
+
+export function createRecord() {
+  return {
+    watchers: null,
   };
-
-  stateReaderRecords.set( value, record.reader );
-  stateReaderProxies.set( record.reader.proxy, value );
-
-  return record.reader;
 }
 
-export function isStateReader( value ) {
-  return stateReaderProxies.has( value );
+export function getStateReader( value ) {
+  return stateReaders.get( value );
 }
 
-export function unwrapValue( value ) {
-  const valueTarget = stateReaderProxies.get( value );
+export function isStateReaderProxy( value ) {
+  return stateReaderTargets.has( value );
+}
+
+export function unwrapStateReaderProxy( value ) {
+  const valueTarget = stateReaderTargets.get( value );
   if ( valueTarget != null )
     return valueTarget;
 
-  unwrapProperties( value, stateReaderProxies, new WeakSet() );
+  unwrapProperties( value, stateReaderTargets, new WeakSet() );
 
   return value;
 }

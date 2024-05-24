@@ -1,5 +1,5 @@
 import { isPlainObjectOrArray } from '../shared/utils.js';
-import { isStateReader } from './state.js';
+import { isStateReaderProxy } from './state.js';
 
 const computedGetterHandler = {
   get: computedGetterGet,
@@ -51,7 +51,7 @@ function createDynamicComputedProxy( target, arg ) {
 function computedGetterApply( target ) {
   const value = target();
 
-  if ( isPlainObjectOrArray( value ) && !isStateReader( value ) )
+  if ( isPlainObjectOrArray( value ) && !isStateReaderProxy( value ) )
     return new Proxy( value, computedReaderHandler );
 
   return value;
@@ -70,7 +70,7 @@ const computedReaderHandler = {
 function computedReaderGet( target, prop ) {
   const value = target[ prop ];
 
-  if ( isPlainObjectOrArray( value ) && !isStateReader( value ) )
+  if ( isPlainObjectOrArray( value ) && !isStateReaderProxy( value ) )
     return new Proxy( value, computedReaderHandler );
 
   return value;
