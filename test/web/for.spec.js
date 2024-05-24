@@ -174,6 +174,26 @@ describe( 'for directive', () => {
     expect( document.body.innerHTML ).toBe( '<div>oranges</div>' );
   } );
 
+  test( 'remove and update object', () => {
+    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 } ] );
+
+    function template() {
+      return [ 'for', items, item => [ 'div', item.name ] ];
+    }
+
+    mount( template, document.body );
+
+    setItems( mutate ( items => items.splice( 0, 1 ) ) );
+
+    runSchedule();
+
+    setItems( mutate ( items => items[ 1 ].name = 'cherries' ) );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<div>oranges</div><div>cherries</div>' );
+  } );
+
   test( 'create component', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 } ] );
 
