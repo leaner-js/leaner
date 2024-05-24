@@ -1,4 +1,4 @@
-import { useConstant, useReactiveWatch } from 'leaner';
+import { destroyScope, useConstant, useReactiveWatch, withScope } from 'leaner';
 import { isPlainObjectOrArray } from '../shared/utils.js';
 import { createChildContext, createContext, destroyContext, mountContext, withContext } from './components.js';
 import { make } from './make.js';
@@ -7,6 +7,8 @@ import { DynamicNode, ensureNotEmpty, replaceNode } from './nodes.js';
 export function createForDirective( template ) {
   if ( template.length != 3 || typeof template[ 1 ] != 'function' || typeof template[ 2 ] != 'function' )
     throw new TypeError( 'Invalid for template' );
+
+  const itemsGetter = template[ 1 ];
 
   let length = 0;
   let items = null;
@@ -17,25 +19,16 @@ export function createForDirective( template ) {
 
   const context = createChildContext();
 
-  useReactiveWatch( watchLength, updateLength );
+  withScope( context.scope, () => {
+    // initially only watch the length of the items array
+    useReactiveWatch( itemsGetter.length, updateLength );
+  } );
 
   return result;
 
-  function watchLength() {
-    if ( !watchingContent )
-      return template[ 1 ].length();
-  }
-
   function updateLength( newLength ) {
-    if ( !watchingContent ) {
-      update( template[ 1 ]() );
-      length = newLength;
-    }
-  }
-
-  function watchContent() {
-    // clone the array to watch all elements
-    return [ ...template[ 1 ]() ];
+    update( itemsGetter() );
+    length = newLength;
   }
 
   function updateContent( newItems ) {
@@ -91,7 +84,7 @@ export function createForDirective( template ) {
           newItemContexts = [];
         newItemContexts.push( itemContext );
 
-        const item = isMatchedByValue ? useConstant( value ) : template[ 1 ][ index ];
+        const item = isMatchedByValue ? useConstant( value ) : itemsGetter[ index ];
 
         const itemTemplate = template[ 2 ]( item, index );
 
@@ -127,7 +120,12 @@ export function createForDirective( template ) {
       context.children = null;
 
     if ( containsMatchedByValue && !watchingContent ) {
-      useReactiveWatch( watchContent, updateContent );
+      destroyScope( context.scope );
+      context.scope = [];
+      withScope( context.scope, () => {
+        // clone the array to watch all elements
+        useReactiveWatch( () => [ ...itemsGetter() ], updateContent );
+      } );
       watchingContent = true;
     }
   }
