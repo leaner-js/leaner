@@ -1,40 +1,14 @@
 {
-  "name": "leaner",
-  "version": "0.0.1",
-  "description": "Leaner.js",
+  "name": "leaner-monorepo",
+  "private": true,
+  "description": "Leaner.js repository",
   "type": "module",
-  "files": [
-    "dist"
+  "workspaces": [
+    "packages/leaner",
+    "examples/todomvc"
   ],
-  "exports": {
-    ".": "./dist/core.js",
-    "./web": "./dist/web.js",
-    "./dist/*": "./dist/*",
-    "./package.json": "./package.json"
-  },
   "scripts": {
-    "build": "rollup -c",
-    "test": "vitest run",
-    "test:watch": "vitest watch"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/mimecorg/leaner.git"
-  },
-  "keywords": [
-    "leaner",
-    "javascript",
-    "framework"
-  ],
-  "author": "Michał Męciński",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/mimecorg/leaner/issues"
-  },
-  "homepage": "https://github.com/mimecorg/leaner",
-  "devDependencies": {
-    "jsdom": "^24.0.0",
-    "rollup": "^4.17.2",
-    "vitest": "^1.6.0"
+    "build": "npm run -w packages/leaner -w examples/todomvc build",
+    "test": "npm run -w packages/leaner test"
   }
 }
