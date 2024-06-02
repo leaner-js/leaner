@@ -47,31 +47,20 @@ export function insertBefore( node, parent, before ) {
 
 export function removeNode( node ) {
   if ( Array.isArray( node ) ) {
-    let parent = null, before = null;
     for ( const item of node ) {
       if ( item instanceof DynamicNode ) {
+        removeNode( item.content );
         item.parentNode = null;
-        [ parent, before ] = removeNode( item.content );
       } else {
-        parent = item.parentNode;
-        before = item.nextSibling;
-        parent.removeChild( item );
+        item.parentNode.removeChild( item );
       }
     }
-    return [ parent, before ];
-  }
-
-  if ( node instanceof DynamicNode ) {
+  } else if ( node instanceof DynamicNode ) {
+    removeNode( node.content );
     node.parentNode = null;
-    return removeNode( node.content );
+  } else {
+    node.parentNode.removeChild( node );
   }
-
-  const parent = node.parentNode;
-  const before = node.nextSibling;
-
-  parent.removeChild( node );
-
-  return [ parent, before ];
 }
 
 export function replaceNode( newNode, node ) {
@@ -148,12 +137,15 @@ export function replaceNode( newNode, node ) {
       }
 
       // remove node
-      [ parent, before ] = removeNode( node[ start ] );
+      removeNode( node[ start ] );
       start++;
+      before = null;
     }
   } else {
-    const [ parent, before ] = removeNode( node );
-
+    const after = findLastChild( node );
+    const before = after.nextSibling;
+    const parent = after.parentNode;
+    removeNode( node );
     insertBefore( newNode, parent, before );
   }
 }
