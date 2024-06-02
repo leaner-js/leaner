@@ -47,6 +47,13 @@ export function createForDirective( template ) {
 
     let containsMatchedByValue = false;
 
+    let oldIndexMap = null;
+    if ( watchingContent && items.length != 0 && newItems.length != 0 ) {
+      oldIndexMap = new Map();
+      for ( let i = 0; i < items.length; i++ )
+        oldIndexMap.set( items[ i ], i );
+    }
+
     for ( let index = 0; index < newItems.length; index++ ) {
       const value = newItems[ index ];
 
@@ -55,20 +62,20 @@ export function createForDirective( template ) {
       if ( isMatchedByValue )
         containsMatchedByValue = true;
 
-      let oldIndex = -1;
+      let oldIndex = null;
 
       // reuse existing items - objects and arrays are matched by value, other items by index
       if ( result.content != null ) {
         if ( isMatchedByValue ) {
-          if ( items != null )
-            oldIndex = items.indexOf( value );
+          if ( oldIndexMap != null )
+            oldIndex = oldIndexMap.get( value );
         } else if ( index < length ) {
           if ( items == null || !isPlainObjectOrArray( items[ index ] ) )
             oldIndex = index;
         }
       }
 
-      if ( oldIndex >= 0 ) {
+      if ( oldIndex != null ) {
         nodes.push( result.content[ oldIndex ] );
 
         const itemContext = context.children[ oldIndex ];
