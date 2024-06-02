@@ -5,10 +5,11 @@
   "type": "module",
   "workspaces": [
     "packages/leaner",
+    "examples/benchmark",
     "examples/todomvc"
   ],
   "scripts": {
-    "build": "npm run -w packages/leaner -w examples/todomvc build",
+    "build": "npm run -w packages/leaner -w examples/benchmark -w examples/todomvc build",
     "test": "npm run -w packages/leaner test"
   }
 }

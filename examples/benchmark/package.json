@@ -1,0 +1,22 @@
+{
+  "name": "js-framework-benchmark-leaner",
+  "private": true,
+  "description": "Leaner.js benchmark for js-framework-benchmark",
+  "js-framework-benchmark": {
+    "frameworkVersionFromPackage": "leaner",
+    "frameworkHomeURL": "https://github.com/mimecorg/leaner",
+    "customURL": "/dist"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "build-prod": "vite build"
+  },
+  "dependencies": {
+    "leaner": "^0.0.1"
+  },
+  "devDependencies": {
+    "vite": "^5.2.11"
+  }
+}
