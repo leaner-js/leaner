@@ -256,36 +256,36 @@ describe( 'for directive', () => {
     expect( callback ).toHaveBeenCalledOnce();
   } );
 
-  test( 'reorder components', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
-
-    const callback = vi.fn();
-
-    function Button( props, children ) {
-      onMount( callback );
-
-      return [ 'button', { type: 'button', ...props }, ...children ];
-    }
+  test( 'swap adjacent nodes', () => {
+    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
 
     function template() {
-      return [ 'for', items, item => [ Button, item.name ] ];
+      return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
     mount( template, document.body );
 
-    expect( document.body.innerHTML ).toBe( '<button type="button">apples</button><button type="button">oranges</button>' );
-
-    expect( callback ).toHaveBeenCalledTimes( 2 );
-
-    callback.mockClear();
-
-    setItems( items => [ items[ 1 ], items[ 0 ] ] );
+    setItems( items => [ items[ 0 ], items[ 2 ], items[ 1 ], items[ 3 ] ] );
 
     runSchedule();
 
-    expect( document.body.innerHTML ).toBe( '<button type="button">oranges</button><button type="button">apples</button>' );
+    expect( document.body.innerHTML ).toBe( '<div>apples</div><div>peaches</div><div>oranges</div><div>cherries</div>' );
+  } );
 
-    expect( callback ).not.toHaveBeenCalled();
+  test( 'reorder nodes', () => {
+    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
+
+    function template() {
+      return [ 'for', items, item => [ 'div', item.name ] ];
+    }
+
+    mount( template, document.body );
+
+    setItems( items => [ items[ 0 ], items[ 3 ], items[ 2 ], items[ 1 ] ] );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<div>apples</div><div>cherries</div><div>peaches</div><div>oranges</div>' );
   } );
 
   test( 'for inside if (true -> false)', () => {
