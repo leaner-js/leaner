@@ -23,11 +23,14 @@ export function setClasses( element, classes ) {
 function setClassesObject( element, classes ) {
   for ( const [ key, value ] of Object.entries( classes ) ) {
     if ( typeof value == 'function' ) {
-      useReactiveWatch( value, value => {
-        if ( value )
-          element.classList.add( key );
-        else
-          element.classList.remove( key );
+      useReactiveWatch( value, ( newValue, value ) => {
+        if ( newValue ) {
+          if ( !value )
+            element.classList.add( key );
+        } else {
+          if ( value )
+            element.classList.remove( key );
+        }
       } );
     } else if ( value ) {
       element.classList.add( key );
@@ -39,12 +42,15 @@ function setClassesArray( element, classes ) {
   for ( const item of classes ) {
     if ( typeof item == 'function' ) {
       useReactiveWatch( item, ( newValue, value ) => {
-        if ( value == null || value === '' )
-          element.classList.add( newValue );
-        else if ( newValue == null || newValue === '' )
-          element.classList.remove( value );
-        else
-          element.classList.replace( value, newValue );
+        if ( newValue ) {
+          if ( value )
+            element.classList.replace( value, newValue );
+          else
+            element.classList.add( newValue );
+        } else {
+          if ( value )
+            element.classList.remove( value );
+        }
       } );
     } else if ( isPlainObject( item ) ) {
       setClassesObject( element, item );
