@@ -235,13 +235,14 @@ describe( 'useReactive()', () => {
 
 describe( 'useReactiveWatch()', () => {
   test( 'callback called immediately', () => {
-    const getter = vi.fn();
+    const getter = vi.fn().mockReturnValue( 'apples' );
     const callback = vi.fn();
 
     useReactiveWatch( getter, callback );
 
     expect( getter ).toHaveBeenCalledOnce();
     expect( callback ).toHaveBeenCalledOnce();
+    expect( callback ).toHaveBeenCalledWith( 'apples', undefined );
   } );
 
   test( 'called asynchronously after change', () => {

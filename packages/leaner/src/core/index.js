@@ -102,7 +102,7 @@ export function useReactive( callback ) {
 }
 
 export function useReactiveWatch( getter, callback ) {
-  let value = null;
+  let value;
 
   const watcher = createWatcher( null, update, true );
 
@@ -121,7 +121,7 @@ export function useReactiveWatch( getter, callback ) {
 }
 
 export function useComputed( callback ) {
-  let value = null, valid = false;
+  let value, valid = false;
 
   const watcher = createWatcher( null, invalidate, false );
 
@@ -146,7 +146,7 @@ export function useComputed( callback ) {
   }
 
   function invalidate() {
-    value = null;
+    value = undefined;
     valid = false;
   }
 }
