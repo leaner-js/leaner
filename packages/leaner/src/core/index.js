@@ -3,12 +3,12 @@ import { createRootComputedProxy } from './computed.js';
 import { addDeps, createWatcher, destroyScope, react, track, updateWatcher, withDeps, withScope } from './deps.js';
 import { Mutator, applyMutator, mutate } from './mutate.js';
 import { schedule, scheduleWatcher } from './schedule.js';
-import { createRecord, createRootStateGetterProxy, stateGetterApply, unwrapStateReaderProxy } from './state.js';
+import { createRootStateGetterProxy, stateGetterApply, unwrapStateReaderProxy } from './state.js';
 
 export function useState( initial ) {
   let current = initial;
 
-  const record = createRecord();
+  const record = new Set();
 
   const proxy = createRootStateGetterProxy( getter );
 

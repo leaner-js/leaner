@@ -117,7 +117,7 @@ function trackProperty( target, prop ) {
   let record = reader.props[ prop ];
 
   if ( record == null ) {
-    record = createRecord();
+    record = new Set();
     reader.props[ prop ] = record;
   }
 
@@ -137,12 +137,6 @@ function createStateReader( value ) {
   }
 
   return reader;
-}
-
-export function createRecord() {
-  return {
-    watchers: null,
-  };
 }
 
 export function getStateReader( value ) {

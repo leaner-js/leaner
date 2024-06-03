@@ -8,15 +8,13 @@ export function track( record ) {
 }
 
 export function react( record ) {
-  if ( record.watchers != null ) {
-    for ( const watcher of record.watchers.values() ) {
-      const callback = watcher.callback;
-      if ( callback != null ) {
-        if ( watcher.async )
-          scheduleWatcher( watcher );
-        else
-          callback();
-      }
+  for ( const watcher of record.values() ) {
+    const callback = watcher.callback;
+    if ( callback != null ) {
+      if ( watcher.async )
+        scheduleWatcher( watcher );
+      else
+        callback();
     }
   }
 }
@@ -66,9 +64,7 @@ export function createWatcher( deps, callback, async ) {
 
   if ( deps != null ) {
     for ( const dep of deps ) {
-      if ( dep.watchers == null )
-        dep.watchers = new Set();
-      dep.watchers.add( watcher );
+      dep.add( watcher );
     }
   }
 
@@ -77,16 +73,14 @@ export function createWatcher( deps, callback, async ) {
 
 export function updateWatcher( watcher, deps ) {
   for ( const dep of deps ) {
-    if ( dep.watchers == null )
-      dep.watchers = new Set();
-    dep.watchers.add( watcher );
+    dep.add( watcher );
     if ( watcher.deps != null )
       watcher.deps.delete( dep );
   }
 
   if ( watcher.deps != null ) {
     for ( const dep of watcher.deps )
-      dep.watchers.delete( watcher );
+      dep.delete( watcher );
   }
 
   watcher.deps = deps;
@@ -98,7 +92,7 @@ export function destroyScope( scope ) {
 
     if ( watcher.deps != null ) {
       for ( const dep of watcher.deps )
-        dep.watchers.delete( watcher );
+        dep.delete( watcher );
       watcher.deps = null;
     }
   }
