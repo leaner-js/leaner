@@ -31,17 +31,6 @@ function Button( props, children ) {
   ];
 }
 
-function Row( { item, selected, select, remove } ) {
-  return [ 'tr', { class: { danger: () => selected() == item().id } },
-    [ 'td', { class: 'col-md-1' }, item.id ],
-    [ 'td', { class: 'col-md-4' }, [ 'a', { onclick: () => select( item().id ) }, item.label ] ],
-    [ 'td', { class: 'col-md-1' }, [ 'a', { onclick: () => remove( item().id ) },
-      [ 'span', { class: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' } ],
-    ] ],
-    [ 'td', { class: 'col-md-6' } ],
-  ];
-}
-
 export function App() {
   const [ data, setData ] = useState( [] );
   const [ selected, setSelected ] = useState( 0 );
@@ -109,7 +98,17 @@ export function App() {
     ],
     [ 'table', { class: 'table table-hover table-striped test-data' },
       [ 'tbody',
-        [ 'for', data, item => [ Row, { item, selected, select, remove } ] ],
+        [ 'for', data, item => {
+          const id = item.id();
+          return [ 'tr', { class: { danger: () => selected() == id } },
+            [ 'td', { class: 'col-md-1' }, id ],
+            [ 'td', { class: 'col-md-4' }, [ 'a', { onclick: () => select( id ) }, item.label ] ],
+            [ 'td', { class: 'col-md-1' }, [ 'a', { onclick: () => remove( id ) },
+              [ 'span', { class: 'glyphicon glyphicon-remove', 'aria-hidden': 'true' } ],
+            ] ],
+            [ 'td', { class: 'col-md-6' } ],
+          ];
+        } ],
       ],
     ],
     [ 'span', { class: 'preloadicon glyphicon glyphicon-remove', 'aria-hidden': 'true' } ],
