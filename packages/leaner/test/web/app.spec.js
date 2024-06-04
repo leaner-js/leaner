@@ -1,31 +1,31 @@
 import { describe, expect, test, vi } from 'vitest';
 import { useState } from 'leaner';
-import { mount, onDestroy, onMount } from 'leaner/web';
+import { createApp, inject, onDestroy, onMount, provide } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
-describe( 'mount()', () => {
-  test( 'simple template', () => {
-    function template() {
+describe( 'createApp()', ()=> {
+  test( 'simple App', () => {
+    function App() {
       return [ 'p', 'Hello, ', [ 'strong', 'world!' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>Hello, <strong>world!</strong></p>' );
   } );
 
-  test( 'dynamic template', () => {
+  test( 'dynamic App', () => {
     const [ id, setId ] = useState( 'test' );
     const [ counter, setCounter ] = useState( 4 );
 
-    function template() {
+    function App() {
       return [[
         [ 'label', { for: id }, 'Test ', counter ],
         [ 'input', { type: 'text', id, value: counter } ]
       ]];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<label for="test">Test 4</label><input type="text" id="test">' );
 
@@ -43,11 +43,12 @@ describe( 'mount()', () => {
   } );
 
   test( 'app.destroy()', () => {
-    function template() {
+    function App() {
       return [ 'p', 'hello' ];
     }
 
-    const app = mount( template, document.body );
+    const app = createApp( App );
+    app.mount( document.body );
 
     expect( app.destroy ).toBeTypeOf( 'function' );
 
@@ -59,13 +60,13 @@ describe( 'mount()', () => {
   test( 'onMount()', () => {
     const callback = vi.fn();
 
-    function template() {
+    function App() {
       onMount( callback );
 
       return [ 'p', 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( callback ).toHaveBeenCalledOnce();
   } );
@@ -73,18 +74,70 @@ describe( 'mount()', () => {
   test( 'onDestroy()', () => {
     const callback = vi.fn();
 
-    function template() {
+    function App() {
       onDestroy( callback );
 
       return [ 'p', 'hello' ];
     }
 
-    const app = mount( template, document.body );
+    const app = createApp( App );
+    app.mount( document.body );
 
     expect( callback ).not.toHaveBeenCalled();
 
     app.destroy();
 
     expect( callback ).toHaveBeenCalledOnce();
+  } );
+
+  test( 'app.provide()', () => {
+    function Child( props ) {
+      const text = inject( 'text' );
+
+      return [ 'div', props, text ];
+    }
+
+    function App() {
+      return [ Child, { id: 'test' } ];
+    }
+
+    const app = createApp( App );
+
+    app.provide( 'text', 'hello' );
+
+    app.mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<div id="test">hello</div>' );
+  } );
+
+  test( 'app.use()', () => {
+    const callback = vi.fn();
+
+    function plugin() {
+      onMount( callback );
+      provide( 'text', 'hello' );
+    }
+
+    function Child( props ) {
+      const text = inject( 'text' );
+
+      return [ 'div', props, text ];
+    }
+
+    function App() {
+      return [ Child, { id: 'test' } ];
+    }
+
+    const app = createApp( App );
+
+    app.use( plugin );
+
+    expect( callback ).not.toHaveBeenCalled();
+
+    app.mount( document.body );
+
+    expect( callback ).toHaveBeenCalledOnce();
+
+    expect( document.body.innerHTML ).toBe( '<div id="test">hello</div>' );
   } );
 } );

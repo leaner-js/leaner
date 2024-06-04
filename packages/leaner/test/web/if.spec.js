@@ -1,17 +1,17 @@
 import { describe, expect, test, vi } from 'vitest';
 import { useState } from 'leaner';
-import { mount, onDestroy, onMount } from 'leaner/web';
+import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'if', () => {
   test( 'simple true -> false', () => {
     const [ condition, setCondition ] = useState( true );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'p', 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -25,11 +25,11 @@ describe( 'if', () => {
   test( 'simple false -> true', () => {
     const [ condition, setCondition ] = useState( false );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'p', 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<!---->' );
 
@@ -43,11 +43,11 @@ describe( 'if', () => {
   test( 'if/else', () => {
     const [ condition, setCondition ] = useState( true );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -61,11 +61,11 @@ describe( 'if', () => {
   test( 'fragment', () => {
     const [ condition, setCondition ] = useState( true );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [[ [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ]] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p><button type="button">test</button>' );
 
@@ -79,14 +79,14 @@ describe( 'if', () => {
   test( 'multiple conditions', () => {
     const [ value, setValue ] = useState( 1 );
 
-    function template() {
+    function App() {
       return [ 'if',
         () => value() == 1, [ 'p', 'test' ],
         () => value() == 2, [ 'button', { type: 'button' }, 'test' ]
       ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -107,7 +107,7 @@ describe( 'if', () => {
     const [ condition, setCondition ] = useState( true );
     const [ value, setValue ] = useState( 1 );
 
-    function template() {
+    function App() {
       return [ 'if', condition,
         [ 'if',
           () => value() == 1, [ 'p', 'test' ],
@@ -116,7 +116,7 @@ describe( 'if', () => {
       ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -150,11 +150,11 @@ describe( 'if', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ Button, 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<!---->' );
 
@@ -180,11 +180,11 @@ describe( 'if', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ Button, 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<button type="button">test</button>' );
 

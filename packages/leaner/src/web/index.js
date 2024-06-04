@@ -1,24 +1,33 @@
-import { createContext, destroyContext, mountContext, onDestroy, onMount, withContext } from './components.js';
+import { createContext, destroyContext, inject, mountContext, onDestroy, onMount, provide, withContext } from './components.js';
 import { make } from './make.js';
 import { appendNode, removeNode } from './nodes.js';
 
-export function mount( component, target ) {
+export function createApp( component ) {
   const context = createContext( null );
 
-  const root = withContext( context, () => make( component( {}, [] ) ) );
-
-  appendNode( root, target );
-
-  mountContext( context );
+  let root;
 
   return {
-    destroy,
-  };
+    mount( target ) {
+      root = withContext( context, () => make( component( {}, [] ) ) );
+      appendNode( root, target );
+      mountContext( context );
+    },
 
-  function destroy() {
-    destroyContext( context );
-    removeNode( root );
-  }
+    destroy() {
+      destroyContext( context );
+      removeNode( root );
+      root = null;
+    },
+
+    provide( key, value ) {
+      withContext( context, () => provide( key, value ) );
+    },
+
+    use( callback ) {
+      withContext( context, callback );
+    },
+  };
 }
 
-export { onDestroy, onMount };
+export { inject, onDestroy, onMount, provide };

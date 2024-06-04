@@ -1,5 +1,5 @@
-import { mount } from 'leaner/web';
+import { createApp } from 'leaner/web';
 
 import { App } from './App.js';
 
-mount( App, document.querySelector( '#app' ) );
+createApp( App ).mount( document.querySelector( '#app' ) );

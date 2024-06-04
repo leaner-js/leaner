@@ -1,6 +1,6 @@
 import { describe, expect, test, vi } from 'vitest';
 import { useReactive, useState } from 'leaner';
-import { mount, onDestroy, onMount } from 'leaner/web';
+import { createApp, inject, onDestroy, onMount, provide } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'components', () => {
@@ -9,11 +9,11 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     } );
 
-    function template() {
+    function App() {
       return [ Button, { id: 'test' }, 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( Button ).toHaveBeenCalledOnce();
 
@@ -28,11 +28,11 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     } );
 
-    function template() {
+    function App() {
       return [ Button, { id }, text ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( Button ).toHaveBeenCalledOnce();
 
@@ -55,14 +55,14 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     } );
 
-    function template() {
+    function App() {
       return [[
         [ Button, { id: 'first' }, 'hello' ],
         [ Button, { id: 'second' }, 'world' ],
       ]];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( Button ).toHaveBeenCalledTimes( 2 );
 
@@ -78,11 +78,11 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ Button, { id: 'test' }, 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( callback ).toHaveBeenCalledOnce();
   } );
@@ -96,11 +96,12 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ Button, { id: 'test' }, 'hello' ];
     }
 
-    const app = mount( template, document.body );
+    const app = createApp( App );
+    app.mount( document.body );
 
     expect( callback ).not.toHaveBeenCalled();
 
@@ -120,11 +121,12 @@ describe( 'components', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ Button, { id: 'test' }, 'hello' ];
     }
 
-    const app = mount( template, document.body );
+    const app = createApp( App );
+    app.mount( document.body );
 
     expect( callback ).toHaveBeenCalledOnce();
 
@@ -137,5 +139,23 @@ describe( 'components', () => {
     runSchedule();
 
     expect( callback ).not.toHaveBeenCalled();
+  } );
+
+  test( 'provide/inject', () => {
+    function Child( props ) {
+      const text = inject( 'text' );
+
+      return [ 'div', props, text ];
+    }
+
+    function App() {
+      provide( 'text', 'hello' );
+
+      return [ Child, { id: 'test' } ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<div id="test">hello</div>' );
   } );
 } );

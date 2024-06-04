@@ -24,6 +24,7 @@ export function createContext( parent ) {
     scope: [],
     mount: null,
     destroy: null,
+    services: null,
   };
 }
 
@@ -104,5 +105,22 @@ export function destroyContext( context ) {
     for ( const child of context.children )
       destroyContext( child );
     context.children = null;
+  }
+}
+
+export function provide( key, value ) {
+  if ( current == null )
+    throw new Error( 'provide() cannot be called outside of a component' );
+
+  if ( current.services == null )
+    current.services = new Map();
+
+  current.services.set( key, value );
+}
+
+export function inject( key ) {
+  for ( let context = current; context != null; context = context.parent ) {
+    if ( context.services != null && context.services.has( key ) )
+      return context.services.get( key );
   }
 }

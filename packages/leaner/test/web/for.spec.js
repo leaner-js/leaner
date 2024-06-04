@@ -1,17 +1,17 @@
 import { describe, expect, test, vi } from 'vitest';
 import { mutate, useState } from 'leaner';
-import { mount, onDestroy, onMount } from 'leaner/web';
+import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'for directive', () => {
   test( 'simple values', () => {
     const [ items, ] = useState( [ 'one', 'two', 'three' ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<div>one</div><div>two</div><div>three</div>' );
   } );
@@ -19,11 +19,11 @@ describe( 'for directive', () => {
   test( 'push value', () => {
     const [ items, setItems ] = useState( [ 'one', 'two' ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate( items => items.push( 'three' ) ) );
 
@@ -35,11 +35,11 @@ describe( 'for directive', () => {
   test( 'pop value', () => {
     const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate( items => items.pop() ) );
 
@@ -51,11 +51,11 @@ describe( 'for directive', () => {
   test( 'replace value', () => {
     const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate( items => items[ 1 ] = 'test' ) );
 
@@ -67,11 +67,11 @@ describe( 'for directive', () => {
   test( 'empty array', () => {
     const [ items, setItems ] = useState( [] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<!---->' );
 
@@ -85,11 +85,11 @@ describe( 'for directive', () => {
   test( 'objects', () => {
     const [ items, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<div>apples</div><div>oranges</div>' );
   } );
@@ -97,11 +97,11 @@ describe( 'for directive', () => {
   test( 'push object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items.push( { name: 'oranges', count: 7 } ) ) );
 
@@ -113,11 +113,11 @@ describe( 'for directive', () => {
   test( 'pop object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items.pop() ) );
 
@@ -129,11 +129,11 @@ describe( 'for directive', () => {
   test( 'replace object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items[ 1 ] = { name: 'peaches', count: 10 } ) );
 
@@ -145,11 +145,11 @@ describe( 'for directive', () => {
   test( 'insert object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items.splice( 1, 0, { name: 'peaches', count: 10 } ) ) );
 
@@ -161,11 +161,11 @@ describe( 'for directive', () => {
   test( 'remove object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items.splice( 0, 1 ) ) );
 
@@ -177,11 +177,11 @@ describe( 'for directive', () => {
   test( 'remove and update object', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( mutate ( items => items.splice( 0, 1 ) ) );
 
@@ -205,11 +205,11 @@ describe( 'for directive', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ Button, item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<button type="button">apples</button>' );
 
@@ -237,11 +237,11 @@ describe( 'for directive', () => {
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ Button, item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<button type="button">apples</button><button type="button">oranges</button>' );
 
@@ -259,11 +259,11 @@ describe( 'for directive', () => {
   test( 'swap adjacent nodes', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( items => [ items[ 0 ], items[ 2 ], items[ 1 ], items[ 3 ] ] );
 
@@ -275,11 +275,11 @@ describe( 'for directive', () => {
   test( 'reorder nodes', () => {
     const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
 
-    function template() {
+    function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     setItems( items => [ items[ 0 ], items[ 3 ], items[ 2 ], items[ 1 ] ] );
 
@@ -292,11 +292,11 @@ describe( 'for directive', () => {
     const [ condition, setCondition ] = useState( true );
     const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'for', items, item => [ 'div', item ] ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<div>one</div><div>two</div><div>three</div>' );
 
@@ -312,11 +312,11 @@ describe( 'for directive', () => {
     const [ condition, setCondition ] = useState( false );
     const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'for', items, item => [ 'div', item ] ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<!---->' );
 

@@ -1,17 +1,17 @@
 import { describe, expect, test, vi } from 'vitest';
 import { useState } from 'leaner';
-import { mount, onDestroy, onMount } from 'leaner/web';
+import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'dynamic directive', () => {
   test( 'HTML elements', () => {
     const [ tag, setTag ] = useState( 'p' );
 
-    function template() {
+    function App() {
       return [ 'dynamic', tag, 'test' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -33,11 +33,11 @@ describe( 'dynamic directive', () => {
       return [ 'strong', props, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'dynamic', component, { id: 'test' }, 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<button type="button" id="test">hello</button>' );
 
@@ -64,11 +64,11 @@ describe( 'dynamic directive', () => {
       return [ 'strong', props, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'dynamic', component, { id: 'test' }, 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( callback ).not.toHaveBeenCalled();
 
@@ -95,11 +95,11 @@ describe( 'dynamic directive', () => {
       return [ 'strong', props, ...children ];
     }
 
-    function template() {
+    function App() {
       return [ 'dynamic', component, { id: 'test' }, 'hello' ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( callback ).not.toHaveBeenCalled();
 
@@ -115,11 +115,11 @@ describe( 'dynamic directive', () => {
     const [ condition, setCondition ] = useState( true );
     const [ tag, setTag ] = useState( 'p' );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'dynamic', tag, 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<p>test</p>' );
 
@@ -135,11 +135,11 @@ describe( 'dynamic directive', () => {
     const [ condition, setCondition ] = useState( false );
     const [ tag, setTag ] = useState( 'p' );
 
-    function template() {
+    function App() {
       return [ 'if', condition, [ 'dynamic', tag, 'test' ] ];
     }
 
-    mount( template, document.body );
+    createApp( App ).mount( document.body );
 
     expect( document.body.innerHTML ).toBe( '<!---->' );
 
