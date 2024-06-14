@@ -8,11 +8,19 @@ import { createIfDirective } from './if.js';
 import { DynamicNode, appendNode } from './nodes.js';
 import { setStyles } from './styles.js';
 
-const directives = {
+const Directives = {
   if: createIfDirective,
   for: createForDirective,
   dynamic: createDynamicDirective,
 };
+
+const Properties = new Set( [ 'value', 'checked', 'textContent', 'innerHTML' ] );
+
+const BooleanAttributes = new Set( [
+  'allowfullscreen', 'async', 'autofocus', 'autoplay', 'checked', 'controls', 'default', 'defer', 'disabled', 'formnovalidate', 'hidden',
+  'inert', 'ismap', 'itemscope', 'loop', 'multiple', 'muted', 'nomodule', 'novalidate', 'open', 'playsinline', 'readonly',
+  'required', 'reversed', 'seamless', 'scoped', 'selected',
+] );
 
 export function make( template ) {
   if ( template == null )
@@ -32,8 +40,8 @@ export function make( template ) {
     if ( typeof template[ 0 ] == 'string' ) {
       const tag = template[ 0 ];
 
-      if ( directives.hasOwnProperty( tag ) )
-        return directives[ tag ]( template );
+      if ( Directives.hasOwnProperty( tag ) )
+        return Directives[ tag ]( template );
 
       const element = document.createElement( tag );
 
@@ -85,15 +93,31 @@ function setElementProperties( element, properties ) {
 }
 
 function setElementProperty( element, key, value ) {
-  if ( key in element ) {
-    if ( typeof value == 'function' && !key.startsWith( 'on' ) )
+  if ( key.startsWith( 'on' ) ) {
+    element.addEventListener( key.substring( 2 ), value );
+  } else if ( Properties.has( key ) ) {
+    if ( typeof value == 'function' )
       useReactiveWatch( value, value => element[ key ] = value );
     else
       element[ key ] = value;
   } else {
     if ( typeof value == 'function' )
-      useReactiveWatch( value, value => element.setAttribute( key, value ) );
+      useReactiveWatch( value, value => setElementAttribute( element, key, value ) );
     else
-      element.setAttribute( key, value );
+      setElementAttribute( element, key, value );
+  }
+}
+
+function setElementAttribute( element, name, value ) {
+  if ( BooleanAttributes.has( name ) ) {
+    if ( value || value === '' )
+      element.setAttribute( name, '' );
+    else
+      element.removeAttribute( name );
+  } else {
+    if ( value != null )
+      element.setAttribute( name, value );
+    else
+      element.removeAttribute( name );
   }
 }
