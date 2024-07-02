@@ -6,10 +6,11 @@
   "workspaces": [
     "packages/leaner",
     "examples/benchmark",
-    "examples/todomvc"
+    "examples/todomvc",
+    "website"
   ],
   "scripts": {
-    "build": "npm run -w packages/leaner -w examples/benchmark -w examples/todomvc build",
+    "build": "npm run -w packages/leaner -w examples/benchmark -w examples/todomvc -w website build",
     "test": "npm run -w packages/leaner test"
   }
 }

@@ -1,0 +1,23 @@
+{
+  "name": "leaner-website",
+  "private": true,
+  "description": "The leanerjs.org website",
+  "type": "module",
+  "scripts": {
+    "build": "node build/build.js",
+    "dev": "node build/build.js --watch"
+  },
+  "dependencies": {
+    "bc-css-framework": "^1.0.4"
+  },
+  "devDependencies": {
+    "entities": "^5.0.0",
+    "glob": "^10.4.2",
+    "js-yaml": "^4.1.0",
+    "markdown-it": "^14.1.0",
+    "markdown-it-container": "^4.0.0",
+    "markdown-it-front-matter": "^0.2.4",
+    "sass": "^1.77.6",
+    "vite": "^5.2.11"
+  }
+}

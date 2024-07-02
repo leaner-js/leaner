@@ -1,0 +1,27 @@
+@import "bc-css-framework/src/framework";
+
+.container {
+  @include container( lg, xl, $padding: $sp-4 );
+}
+
+.content {
+  @include prose;
+
+  a {
+    @include styled-links;
+  }
+}
+
+.warning {
+  padding: $sp-4;
+  background: color( yellow, 200 );
+  border-left: 2px solid color( yellow, 500 );
+
+  > *:first-child {
+    margin-top: 0;
+  }
+
+  > *:last-child {
+    margin-bottom: 0;
+  }
+}
