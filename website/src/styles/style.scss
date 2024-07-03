@@ -1,21 +1,471 @@
+$font-family: "Noto Sans", ui-sans-serif, system-ui, -apple-system, sans-serif;
+
+$font-family-monospace: "Noto Sans Mono", ui-monospace, monospace;
+
+$font-size-base: 16px;
+
 @import "bc-css-framework/src/framework";
 
-.container {
+@import "fonts";
+@import "icons";
+
+$link-color: color( blue, 700 );
+
+$header-height: sp( 16 );
+$footer-height: sp( 24 );
+
+$sidebar-width: sp( 54 );
+
+html {
+  scroll-padding-top: calc( $header-height + $sp-4 );
+}
+
+.container, .with-sidebar .main-container {
   @include container( lg, xl, $padding: $sp-4 );
+}
+
+.no-sidebar .main-container {
+  @include container( lg, lg, $padding: $sp-4 );
+}
+
+header {
+  position: sticky;
+  top: 0;
+  background: $background-color;
+  border-bottom: 1px solid color( gray, 300 );
+  z-index: 1;
+
+  @include media-breakpoint-max( md ) {
+    position: static;
+  }
+
+  > .container, ul, h1 > a {
+    display: flex;
+    align-items: center;
+  }
+
+  > .container {
+    height: $header-height;
+
+    > a.visually-hidden-focusable {
+      position: absolute;
+      padding: $sp-1 $sp-2;
+      background: $background-color;
+    }
+  }
+
+  h1 {
+    margin-right: auto;
+    @include text-size( xl );
+    font-weight: 500;
+
+    img {
+      height: $sp-8;
+      margin-right: $sp-2;
+    }
+  }
+
+  nav {
+    margin-right: $sp-6;
+
+    @include media-breakpoint-max( md ) {
+      display: none;
+    }
+
+    li + li {
+      margin-left: $sp-2;
+    }
+
+    a {
+      padding: $sp-2;
+
+      &:hover, &:active {
+        color: $link-color-active;
+        text-decoration: underline;
+        text-underline-offset: 0.2rem;
+      }
+    }
+  }
+}
+
+.icons {
+  a, button {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: $sp-2;
+    color: color( gray, 700 );
+    border: 1px solid color( gray, 300 );
+    border-radius: $sp-2;
+    @include has-tooltip;
+
+    > i {
+      width: $sp-5;
+      height: $sp-5;
+    }
+
+    &:hover, &:active {
+      color: $link-color-active;
+      border-color: $link-color-active;
+    }
+
+    > span {
+      @include tooltip;
+      top: sp( 11 );
+      right: -$sp-3;
+      padding: $sp-1 $sp-2;
+      background: $background-color;
+      color: $text-color;
+      border: 1px solid color( gray, 300 );
+      border-radius: $sp-2;
+      white-space: nowrap;
+      @include text-size( sm );
+      @include box-shadow( md );
+    }
+  }
+
+  > li + li {
+    margin-left: $sp-2;
+  }
+}
+
+.navbar {
+  position: sticky;
+  display: none;
+  top: 0;
+  padding: $sp-2 $sp-4;
+  background: $background-color;
+  border-bottom: 1px solid color( gray, 300 );
+  z-index: 1;
+
+  @include media-breakpoint-max( md ) {
+    display: flex;
+    align-items: center;
+  }
+
+  ul {
+    display: flex;
+    margin-left: auto;
+
+    > li + li {
+      margin-left: $sp-4;
+    }
+
+    a {
+      &:hover, &:active {
+        text-decoration: underline;
+        text-underline-offset: 0.2rem;
+      }
+    }
+  }
+
+  > button {
+    display: flex;
+    align-items: center;
+
+    .no-sidebar & {
+      display: none;
+    }
+
+    > .i {
+      margin-right: $sp-2;
+    }
+  }
+
+  a, button {
+    &:hover, &:active {
+      color: $link-color-active;
+    }
+  }
+}
+
+.main-container {
+  display: flex;
+  min-height: calc( 100vh - $header-height - $footer-height - 2px );
+}
+
+.sidebar {
+  position: sticky;
+  top: calc( $header-height + 1px );
+  flex: $sidebar-width 0 0;
+  max-height: calc( 100vh - $header-height - 1px );
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  @include media-breakpoint-max( md ) {
+    position: fixed;
+    display: none;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    max-height: none;
+    background: #00000088;
+    z-index: 9;
+    opacity: 0;
+    transition: opacity 200ms ease-in-out;
+
+    .sidebar-open & {
+      display: block;
+    }
+
+    .sidebar-fade & {
+      opacity: 1;
+    }
+  }
+
+  nav {
+    padding: $sp-8 $sp-8 $sp-8 $sp-1;
+
+    @include media-breakpoint-max( md ) {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: $sidebar-width;
+      max-height: none;
+      padding: $sp-2 $sp-4 $sp-4;
+      background: $background-color;
+      overflow-y: auto;
+      z-index: 10;
+      transform: translate( -$sidebar-width, 0 );
+      transition: transform 200ms ease-in-out;
+
+      .sidebar-fade & {
+        transform: none;
+      }
+    }
+
+    > button {
+      display: none;
+      align-items: center;
+      margin-bottom: $sp-4;
+
+      @include media-breakpoint-max( md ) {
+        display: flex;
+      }
+
+      &:hover, &:active {
+        color: $link-color-active;
+      }
+
+      > .i {
+        margin-right: $sp-2;
+      }
+    }
+
+    > h2 {
+      padding: $sp-1 0;
+      @include text-size( lg );
+      font-weight: 500;
+    }
+
+    > ul > li > ul {
+      padding-left: $sp-5;
+      border-left: 1px solid color( gray, 300 );
+      @include text-size( sm );
+    }
+  }
+
+  a {
+    display: block;
+    padding: $sp-1 0;
+
+    &:hover, &:active {
+      color: $link-color-active;
+      text-decoration: underline;
+      text-underline-offset: 0.2rem;
+    }
+  }
+
+  .is-active > a {
+    color: $link-color-active;
+  }
+}
+
+.sidebar-open {
+  overflow: hidden;
+}
+
+main {
+  padding: $sp-8 0 $sp-16 0;
+  overflow-x: auto;
+
+  .with-sidebar & {
+    padding-left: $sp-8;
+    padding-right: calc( $sidebar-width + $sp-8 );
+
+    @include media-breakpoint-max( xl ) {
+      padding-right: 0;
+    }
+
+    @include media-breakpoint-max( md ) {
+      padding-left: 0;
+    }
+  }
+}
+
+.hero {
+  position: relative;
+  margin: $sp-16 0 sp( 24 );
+
+  img {
+    position: absolute;
+    right: 0;
+    width: sp( 64 );
+  }
+
+  h2 {
+    margin-bottom: $sp-4;
+    @include text-size( 4xl );
+    font-weight: bold;
+  }
+
+  p {
+    width: 50%;
+  }
+
+  h2 + p {
+    margin-bottom: $sp-4;
+    @include text-size( 3xl );
+    font-weight: bold;
+  }
+
+  p + p {
+    margin-bottom: $sp-6;
+    @include text-size( xl );
+  }
+
+  @include media-breakpoint-max( lg ) {
+    margin: $sp-8 0 $sp-16;
+
+    img {
+      width: sp( 48 );
+    }
+
+    p {
+      width: 70%;
+    }
+
+    h2 {
+      @include text-size( 3xl );
+    }
+
+    h2 + p {
+      @include text-size( 2xl );
+    }
+
+    p + p {
+      @include text-size( lg );
+    }
+  }
+
+  @include media-breakpoint-max( md ) {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: $sp-4 0 $sp-12;
+
+    img {
+      position: static;
+      width: sp( 24 );
+      margin: 0 0 $sp-4;
+    }
+
+    p {
+      text-align: center;
+      width: 80%;
+    }
+
+    h2 + p {
+      @include text-size( xl );
+    }
+
+    p + p {
+      @include text-size( base );
+    }
+  }
+
+  ul {
+    display: flex;
+
+    a {
+      display: flex;
+      align-items: center;
+      padding: $sp-3 $sp-4;
+      border-radius: $sp-6;
+      background: color( gray, 200 );
+
+      > .i {
+        margin-left: $sp-2;
+      }
+
+      &:hover, &:active {
+        background: color( gray, 300 );
+      }
+    }
+
+    > li:first-child a {
+      background: $link-color;
+      color: $white;
+
+      &:hover, &:active {
+        background: $link-color-active;
+      }
+    }
+
+    > li + li {
+      margin-left: $sp-4;
+    }
+  }
 }
 
 .content {
   @include prose;
 
   a {
-    @include styled-links;
+    color: $link-color;
+    text-decoration: underline;
+    text-underline-offset: 0.2rem;
+    font-weight: 500;
+
+    &:hover, &:active {
+      color: $link-color-active;
+    }
+  }
+
+  pre {
+    overflow-x: auto;
+    max-width: 100%;
+    padding: $sp-3 $sp-4;
+    background: color( gray, 100 );
+    border-radius: $sp-2;
+    @include text-size( sm );
+  }
+
+  @include media-breakpoint-max( md ) {
+    h2 {
+      @include text-size( 3xl );
+    }
+
+    h3 {
+      @include text-size( 2xl );
+    }
+
+    h4 {
+      @include text-size( xl );
+    }
   }
 }
 
 .warning {
-  padding: $sp-4;
-  background: color( yellow, 200 );
-  border-left: 2px solid color( yellow, 500 );
+  padding: $sp-4 $sp-5;
+  background: color( yellow, 100 );
+  border-radius: $sp-2;
+
+  &__title {
+    font-weight: bold;
+  }
 
   > *:first-child {
     margin-top: 0;
@@ -24,4 +474,34 @@
   > *:last-child {
     margin-bottom: 0;
   }
+}
+
+footer {
+  border-top: 1px solid color( gray, 300 );
+
+  > .container {
+    height: $footer-height;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: color( gray, 600 );
+    @include text-size( sm );
+  }
+}
+
+:focus {
+  outline: none;
+}
+
+.focus-visible :focus {
+  @include show-focus-ring;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.visually-hidden-focusable {
+  @include visually-hidden-focusable;
 }

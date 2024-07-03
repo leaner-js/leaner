@@ -1,3 +1,7 @@
+---
+sidebar: guide
+---
+
 # Quick Start
 
 ## Using Leaner from CDN

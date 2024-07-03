@@ -1,3 +1,7 @@
+---
+sidebar: guide
+---
+
 # Templates
 
 ## Basic Syntax

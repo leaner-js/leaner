@@ -1,3 +1,7 @@
+---
+sidebar: guide
+---
+
 # Classes and Styles
 
 ## Classes

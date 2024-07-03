@@ -4,10 +4,11 @@ import { join } from 'path/posix';
 import { fileURLToPath } from 'url';
 
 import { glob } from 'glob';
+import Handlebars from 'handlebars';
 import { build } from 'vite';
 
 import { generateFile } from './utils/generate.js';
-import { createServer } from './utils/server.js';
+import { createDevServer } from './utils/server.js';
 
 import config from '../config.js';
 
@@ -42,7 +43,9 @@ if ( watchMode ) {
 
 async function generateAllFiles( server ) {
   try {
-    template = await readFile( resolve( rootDir, 'dist/index.html' ), 'utf-8' );
+    const content = await readFile( resolve( rootDir, 'dist/index.html' ), 'utf-8' );
+
+    template = Handlebars.compile( content );
 
     const files = await glob( '**/*.md', { cwd: resolve( rootDir, 'docs' ), posix: true } );
 
@@ -63,9 +66,9 @@ async function runInWatchMode() {
 
   const port = config.port || 3000;
 
-  const server = await createServer( distDir, port );
+  const server = await createDevServer( distDir, port );
 
-  console.log( `Listening on http://localhost:${port}/\n` );
+  console.log( `Listening on ${server.baseUrl}\n` );
   console.log( 'Press q to exit\n' );
 
   const bundle = await build( {

@@ -2,18 +2,72 @@
 <html>
 <head>
   <meta charset="utf-8">
-  $META$
+  <title>{{ title }}</title>
+  {{{meta}}}
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="/favicon.ico" rel="shortcut icon" sizes="any">
   <link href="/logo.svg" rel="icon" type="image/svg+xml">
   <link href="./src/styles/style.scss" rel="stylesheet">
+  <link href="./src/fonts/noto-sans-400.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  <link href="./src/fonts/noto-sans-500.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  {{#if hero}}
+  <link href="./src/fonts/noto-sans-700.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
+  {{/if}}
+  <link href="./src/fonts/noto-sans-mono.woff2" rel="preload" as="font" type="font/woff2" crossorigin>
   <script src="./src/index.js" type="module"></script>
 </head>
-<body>
-<div class="container">
-  <div class="content">
-    $CONTENT$
+<body class="{{#if sidebar}}with-sidebar{{else}}no-sidebar{{/if}}">
+
+<header>
+  <div class="container">
+    <a href="#main-content" class="visually-hidden-focusable">Go to content</a>
+    <h1><a href="/"><img src="/logo.svg" alt="">Leaner.js</a></h1>
+    <nav>
+      {{{nav}}}
+    </nav>
+    <ul class="icons">
+      <li><a href="https://github.com/mimecorg/leaner" target="_blank" rel="noopener noreferrer"><i class="i i-github"></i><span>GitHub</span></a></li>
+      <li><button type="button"><i class="i i-moon"></i><span>Dark mode</span></button></li>
+      <li><button type="button"><i class="i i-text-height"></i><span>Change text height</span></button></li>
+    </ul>
   </div>
+</header>
+
+<nav class="navbar">
+  <button type="button" id="show-menu"><i class="i i-bars"></i>Show menu</button>
+  {{{nav}}}
+</nav>
+
+<div class="main-container">
+  {{#with sidebar}}
+  <div class="sidebar">
+    <nav>
+      <button type="button" id="hide-menu"><i class="i i-xmark"></i>Hide menu</button>
+      <h2>{{text}}</h2>
+      {{{items}}}
+    </nav>
+  </div>
+  {{/with}}
+  <main id="main-content">
+    {{#with hero}}
+      <div class="hero">
+        {{{.}}}
+      </div>
+    {{/with}}
+    <div class="content">
+      {{{content}}}
+    </div>
+  </main>
 </div>
+
+{{#unless sidebar}}
+<footer>
+  <div class="container">
+    <p>Leaner.js is open-source software released under the MIT License.</p>
+    <p>&copy; 2024 Michał Męciński</p>
+  </div>
+</footer>
+{{/unless}}
+
 </body>
 </html>

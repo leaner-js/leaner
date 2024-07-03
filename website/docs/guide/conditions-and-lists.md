@@ -1,3 +1,7 @@
+---
+sidebar: guide
+---
+
 # Condition and Lists
 
 In Leaner, templates are static, which means that once HTML elements are created, they can no longer be modified. In order to dynamically change the HTML elements, for example conditionally create or destroy elements, you can use the built-in directives.

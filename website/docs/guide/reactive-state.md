@@ -1,3 +1,7 @@
+---
+sidebar: guide
+---
+
 # Reactive State
 
 ## Plain Values

@@ -11,12 +11,11 @@
     "bc-css-framework": "^1.0.4"
   },
   "devDependencies": {
-    "entities": "^5.0.0",
     "glob": "^10.4.2",
+    "handlebars": "^4.7.8",
     "js-yaml": "^4.1.0",
     "markdown-it": "^14.1.0",
-    "markdown-it-container": "^4.0.0",
-    "markdown-it-front-matter": "^0.2.4",
+    "mrmime": "^2.0.0",
     "sass": "^1.77.6",
     "vite": "^5.2.11"
   }

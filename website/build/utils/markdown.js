@@ -3,23 +3,12 @@ import { join } from 'path/posix';
 
 import yaml from 'js-yaml';
 import markdownit from 'markdown-it';
-import container from 'markdown-it-container';
-import frontmatter from 'markdown-it-front-matter';
+
+import container from './markdown-container.js';
+
+const md = createMarkdown();
 
 let currentEnv = null;
-
-const md = markdownit();
-
-md.use( frontmatter, fm => {
-  currentEnv.frontmatter = yaml.load( fm );
-} );
-
-md.use( container, 'warning' );
-
-md.renderer.rules.link_open = handleLink;
-
-md.renderer.rules.heading_open = handleHeading;
-md.renderer.rules.heading_close = handleHeading;
 
 export function renderMarkdown( source, env ) {
   currentEnv = env;
@@ -29,7 +18,42 @@ export function renderMarkdown( source, env ) {
   return md.render( source, env );
 }
 
-function handleLink( tokens, idx, options, env, self ) {
+export function escapeHtml( text ) {
+  return md.utils.escapeHtml( text );
+}
+
+function createMarkdown() {
+  const md = markdownit();
+
+  md.use( container, 'frontmatter', {
+    marker: '-',
+    validate() {
+      return true;
+    },
+    callback( content ) {
+      currentEnv.frontmatter = yaml.load( content );
+    },
+  } );
+
+  md.use( container, 'hero', {
+    callback( content ) {
+      currentEnv.hero = content;
+    },
+  } );
+
+  md.use( container, 'warning', {
+    render: renderWarning,
+  } );
+
+  md.renderer.rules.link_open = renderLink;
+
+  md.renderer.rules.heading_open = renderHeading;
+  md.renderer.rules.heading_close = renderHeading;
+
+  return md;
+}
+
+function renderLink( tokens, idx, options, env, self ) {
   const href = tokens[ idx ].attrGet( 'href' );
   if ( href.startsWith( './' ) || href.startsWith( '../' ) ) {
     const parts = href.split( '#' );
@@ -47,7 +71,7 @@ function handleLink( tokens, idx, options, env, self ) {
   return self.renderToken( tokens, idx, options );
 }
 
-function handleHeading( tokens, idx, options, env, self ) {
+function renderHeading( tokens, idx, options, env, self ) {
   const level = Number( tokens[ idx ].tag.substring( 1 ) );
   tokens[ idx ].tag = `h${ level + 1 }`;
   if ( tokens[ idx ].type == 'heading_open' ) {
@@ -58,10 +82,19 @@ function handleHeading( tokens, idx, options, env, self ) {
       const id = slugify( text );
       tokens[ idx ].attrSet( 'id', id );
       if ( level == 2 )
-        env.toc.push( { id, text } );
+        env.toc.push( { text, link: `#${id}` } );
     }
   }
   return self.renderToken( tokens, idx, options );
+}
+
+function renderWarning( tokens, idx ) {
+  if ( tokens[ idx ].nesting == 1 ) {
+    const match = tokens[ idx ].info.trim().match( /^warning\s+(.*)$/ );
+    return '<div class="warning"><p class="warning__title">' + md.utils.escapeHtml( match && match[ 1 ] || 'Warning' ) + '</p>\n';
+  } else {
+    return '</div>\n';
+  }
 }
 
 function getRawText( tokens ) {

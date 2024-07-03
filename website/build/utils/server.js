@@ -1,33 +1,20 @@
 import { readFile } from 'fs/promises';
-import http from 'http';
-import { resolve } from 'path';
-import { parse } from 'path/posix';
-import url from 'url';
+import { createServer } from 'http';
+import { extname, resolve } from 'path';
 
-const MimeTypes = {
-  '.css': 'text/css',
-  '.ico': 'image/x-icon',
-  '.jpeg': 'image/jpeg',
-  '.jpg': 'image/jpeg',
-  '.js': 'text/javascript',
-  '.html': 'text/html',
-  '.png': 'image/png',
-  '.svg': 'image/svg+xml',
-  '.ttf': 'font/ttf',
-  '.webp': 'image/webp',
-  '.woff': 'font/woff',
-  '.woff2': 'font/woff2',
-};
+import { lookup } from 'mrmime';
 
-export async function createServer( rootDir, port ) {
+export async function createDevServer( rootDir, port ) {
   const connections = new Set();
   const clients = new Set();
 
   let closing = false;
 
+  const baseUrl = `http://localhost:${port}/`;
+
   const clientScript = await readFile( new URL( 'client.js', import.meta.url ) );
 
-  const server = http.createServer( handleRequest );
+  const server = createServer( handleRequest );
 
   server.on( 'connection', conn => {
     connections.add( conn );
@@ -36,32 +23,32 @@ export async function createServer( rootDir, port ) {
 
   async function handleRequest( req, res ) {
     try {
-      const parsedUrl = url.parse( req.url );
+      const url = new URL( req.url, baseUrl );
 
-      if ( parsedUrl.pathname == '/__sync__' )
+      if ( url.pathname == '/__sync__' )
         return handleSync( req, res );
 
-      if ( parsedUrl.pathname == '/__sync__/client.js' ) {
-        res.setHeader( 'Content-Type', MimeTypes[ '.js' ] );
+      if ( url.pathname == '/__sync__/client.js' ) {
+        res.setHeader( 'Content-Type', 'text/javascript' );
         res.end( clientScript );
         return;
       }
 
-      let pathname = `.${ parsedUrl.pathname }`;
+      let pathname = `.${ url.pathname }`;
 
       if ( pathname.endsWith( '/' ) )
         pathname += 'index.html';
 
       const fullPath = resolve( rootDir, pathname );
-      const ext = parse( pathname ).ext;
+      const ext = extname( pathname );
 
-      let content = await readFile( fullPath, 'utf-8' );
+      let content = await readFile( fullPath );
 
-      res.setHeader( 'Content-Type', MimeTypes[ ext ] || 'application/octet-stream' );
+      res.setHeader( 'Content-Type', lookup( ext ) || 'application/octet-stream' );
 
       if ( ext == '.html' ) {
         res.setHeader( 'Cache-Control', 'no-store' );
-        content = content.replace( '</body>', '<script src="/__sync__/client.js" type="module"></script>\n</body>' );
+        content = Buffer.from( content.toString( 'utf-8' ).replace( '</body>', '<script src="/__sync__/client.js" type="module"></script>\n</body>' ), 'utf-8' );
       }
 
       res.end( content );
@@ -97,6 +84,10 @@ export async function createServer( rootDir, port ) {
   }
 
   const result = {
+    get baseUrl() {
+      return baseUrl;
+    },
+
     reload() {
       for ( const client of clients )
         client.write( 'event: reload\ndata: {}\n\n' );

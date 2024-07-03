@@ -1,8 +1,19 @@
 ---
 title: Leaner.js - Thin reactive wrapper for DOM
 meta:
-  description: Create modern client-side JavaScript applications without compilers or build tools
+  description: Create modern client-side JavaScript applications without compilers or build tools.
 ---
+
+::: hero
+<img src="/logo.svg" alt="">
+<h2>Leaner.js</h2>
+<p>Thin, reactive wrapper for DOM</p>
+<p>Create modern client-side JavaScript applications without compilers or build tools.</p>
+<ul>
+  <li><a href="/guide/quick-start.html">Get Started<i class="i i-arrow-right"></i></a></li>
+  <li><a href="/reference/">API Reference</a></li>
+</ul>
+:::
 
 ## Templates
 
