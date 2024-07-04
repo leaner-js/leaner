@@ -4,6 +4,12 @@ $font-family-monospace: "Noto Sans Mono", ui-monospace, monospace;
 
 $font-size-base: 16px;
 
+$breakpoints: (
+  md: 768px,
+  lg: 960px,
+  xl: 1280px,
+);
+
 @import "bc-css-framework/src/framework";
 
 @import "fonts";
@@ -20,12 +26,16 @@ html {
   scroll-padding-top: calc( $header-height + $sp-4 );
 }
 
-.container, .with-sidebar .main-container {
+.container {
   @include container( lg, xl, $padding: $sp-4 );
 }
 
+.with-sidebar .main-container {
+  @include container( md, xl, $padding: $sp-4 );
+}
+
 .no-sidebar .main-container {
-  @include container( lg, lg, $padding: $sp-4 );
+  @include container( md, lg, $padding: $sp-4 );
 }
 
 header {
@@ -35,7 +45,7 @@ header {
   border-bottom: 1px solid color( gray, 300 );
   z-index: 1;
 
-  @include media-breakpoint-max( md ) {
+  @include media-breakpoint-max( lg ) {
     position: static;
   }
 
@@ -68,7 +78,7 @@ header {
   nav {
     margin-right: $sp-6;
 
-    @include media-breakpoint-max( md ) {
+    @include media-breakpoint-max( lg ) {
       display: none;
     }
 
@@ -138,7 +148,7 @@ header {
   border-bottom: 1px solid color( gray, 300 );
   z-index: 1;
 
-  @include media-breakpoint-max( md ) {
+  @include media-breakpoint-max( lg ) {
     display: flex;
     align-items: center;
   }
@@ -192,7 +202,7 @@ header {
   overflow-x: hidden;
   overflow-y: auto;
 
-  @include media-breakpoint-max( md ) {
+  @include media-breakpoint-max( lg ) {
     position: fixed;
     display: none;
     top: 0;
@@ -217,7 +227,7 @@ header {
   nav {
     padding: $sp-8 $sp-8 $sp-8 $sp-1;
 
-    @include media-breakpoint-max( md ) {
+    @include media-breakpoint-max( lg ) {
       position: fixed;
       top: 0;
       bottom: 0;
@@ -241,7 +251,7 @@ header {
       align-items: center;
       margin-bottom: $sp-4;
 
-      @include media-breakpoint-max( md ) {
+      @include media-breakpoint-max( lg ) {
         display: flex;
       }
 
@@ -303,7 +313,7 @@ main {
       padding-right: 0;
     }
 
-    @include media-breakpoint-max( md ) {
+    @include media-breakpoint-max( lg ) {
       padding-left: 0;
     }
   }
