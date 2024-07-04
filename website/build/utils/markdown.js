@@ -86,19 +86,29 @@ function renderLink( tokens, idx, options, env, self ) {
 }
 
 function renderHeading( tokens, idx, options, env, self ) {
+  const open = tokens[ idx ].type == 'heading_open';
+
   const level = Number( tokens[ idx ].tag.substring( 1 ) );
   tokens[ idx ].tag = `h${ level + 1 }`;
-  if ( tokens[ idx ].type == 'heading_open' ) {
-    const text = getRawText( tokens[ idx + 1 ].children );
+
+  const text = getRawText( tokens[ idx + ( open ? 1 : -1 ) ].children );
+  const id = slugify( text );
+
+  if ( open ) {
     if ( level == 1 ) {
       env.title = text;
     } else {
-      const id = slugify( text );
       tokens[ idx ].attrSet( 'id', id );
       if ( level == 2 )
         env.toc.push( { text, link: `#${id}` } );
     }
+  } else {
+    if ( level > 1 ) {
+      const anchor = ` <a href="#${ id }" class="anchor" aria-label="Permalink to ${ escapeHtml( text ) }"><i class="i i-link"></i></a>`;
+      return anchor + self.renderToken( tokens, idx, options );
+    }
   }
+
   return self.renderToken( tokens, idx, options );
 }
 

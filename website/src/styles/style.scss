@@ -260,10 +260,14 @@ header {
       font-weight: 500;
     }
 
-    > ul > li > ul {
-      padding-left: $sp-5;
-      border-left: 1px solid color( gray, 300 );
+    > ul > li > ul > li {
+      padding-left: $sp-4;
+      border-left: 2px solid color( gray, 300 );
       @include text-size( sm );
+
+      &.is-active {
+        border-color: $link-color;
+      }
     }
   }
 
@@ -432,6 +436,22 @@ main {
     &:hover, &:active {
       color: $link-color-active;
     }
+  }
+
+  .anchor {
+    text-decoration: none;
+    opacity: 0;
+    transition: opacity 100ms ease-in-out;
+
+    > .i {
+      position: relative;
+      top: $sp-1;
+    }
+
+  }
+
+  :hover .anchor, .anchor:focus {
+    opacity: 1;
   }
 
   pre {

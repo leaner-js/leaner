@@ -3,8 +3,10 @@ import { handleFocusVisible, trapFocus, untrapFocus } from './utils/focus';
 window.addEventListener( 'DOMContentLoaded', () => {
   handleFocusVisible();
 
-  if ( document.body.classList.contains( 'with-sidebar' ) )
+  if ( document.body.classList.contains( 'with-sidebar' ) ) {
     handleSidebar();
+    handleToc();
+  }
 } );
 
 function handleSidebar() {
@@ -39,5 +41,43 @@ function handleSidebar() {
   function closeSidebar() {
     document.body.classList.remove( 'sidebar-fade' );
     untrapFocus( sidebar );
+  }
+}
+
+function handleToc() {
+  const links = document.querySelectorAll( '.sidebar .is-active li' );
+
+  if ( links.length == 0 )
+    return;
+
+  const headings = document.querySelectorAll( '.content h3' );
+
+  let last = null;
+
+  highlight();
+
+  window.addEventListener( 'scroll', highlight );
+
+  function highlight() {
+    const padding = 1.5 * parseFloat( getComputedStyle( document.documentElement ).scrollPaddingTop );
+
+    const top = window.scrollY;
+
+    let active = null;
+
+    for ( let i = headings.length - 1; i >= 0; i-- ) {
+      if ( top >= ( headings[ i ].offsetTop - padding ) || top >= document.body.clientHeight - window.innerHeight ) {
+        active = links[ i ];
+        break;
+      }
+    }
+
+    if ( active != last ) {
+      if ( last != null )
+        last.classList.remove( 'is-active' );
+      if ( active != null )
+        active.classList.add( 'is-active' );
+      last = active;
+    }
   }
 }
