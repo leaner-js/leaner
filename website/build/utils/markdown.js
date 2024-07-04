@@ -1,14 +1,17 @@
 import { extname } from 'path';
 import { join } from 'path/posix';
 
+import Shiki from '@shikijs/markdown-it'
 import yaml from 'js-yaml';
 import markdownit from 'markdown-it';
 
 import container from './markdown-container.js';
 
-const md = createMarkdown();
+const md = await createMarkdown();
 
 let currentEnv = null;
+
+const AlertRegExp = /^(info|tip|warning|danger)(\s+.*)?$/;
 
 export function renderMarkdown( source, env ) {
   currentEnv = env;
@@ -22,7 +25,7 @@ export function escapeHtml( text ) {
   return md.utils.escapeHtml( text );
 }
 
-function createMarkdown() {
+async function createMarkdown() {
   const md = markdownit();
 
   md.use( container, 'frontmatter', {
@@ -41,9 +44,20 @@ function createMarkdown() {
     },
   } );
 
-  md.use( container, 'warning', {
-    render: renderWarning,
+  md.use( container, 'alert', {
+    validate( params ) {
+      return params.trim().match( AlertRegExp );
+    },
+    render: renderAlert,
   } );
+
+  md.use( await Shiki( {
+    themes: {
+      light: 'light-plus',
+      dark: 'dark-plus',
+    },
+    defaultColor: false,
+  } ) );
 
   md.renderer.rules.link_open = renderLink;
 
@@ -88,10 +102,10 @@ function renderHeading( tokens, idx, options, env, self ) {
   return self.renderToken( tokens, idx, options );
 }
 
-function renderWarning( tokens, idx ) {
+function renderAlert( tokens, idx ) {
   if ( tokens[ idx ].nesting == 1 ) {
-    const match = tokens[ idx ].info.trim().match( /^warning\s+(.*)$/ );
-    return '<div class="warning"><p class="warning__title">' + md.utils.escapeHtml( match && match[ 1 ] || 'Warning' ) + '</p>\n';
+    const match = tokens[ idx ].info.trim().match( AlertRegExp );
+    return `<div class="alert is-${ match[ 1 ] }"><p class="alert__title">${ md.utils.escapeHtml( match[ 2 ] || match[ 1 ].toUpperCase() ) }</p>\n`;
   } else {
     return '</div>\n';
   }

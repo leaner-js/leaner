@@ -27,7 +27,7 @@ export default function containerPlugin( md, name, options ) {
   function container( state, startLine, endLine, silent ) {
     let pos;
     let autoClosed = false;
-    let start = state.bMarks [startLine ] + state.tShift[ startLine ];
+    let start = state.bMarks[ startLine ] + state.tShift[ startLine ];
     let max = state.eMarks[ startLine ];
 
     if ( markerChar !== state.src.charCodeAt( start ) )
@@ -39,7 +39,7 @@ export default function containerPlugin( md, name, options ) {
     }
 
     const markerCount = Math.floor( ( pos - start ) / markerLen );
-    if (markerCount < minMarkers)
+    if ( markerCount < minMarkers )
       return false;
     pos -= ( pos - start ) % markerLen;
 
@@ -97,7 +97,7 @@ export default function containerPlugin( md, name, options ) {
     state.lineMax = nextLine;
 
     if ( callback ) {
-      const token = state.push( 'container_' + name, null, 0 );
+      const token = state.push( `container_${ name }`, null, 0 );
       token.hidden = true;
       token.markup = markup;
       token.block = true;
@@ -106,7 +106,7 @@ export default function containerPlugin( md, name, options ) {
 
       callback( token.meta );
     } else {
-      const token_o  = state.push( 'container_' + name + '_open', 'div', 1 );
+      const token_o  = state.push( `container_${ name }_open`, 'div', 1 );
       token_o.markup = markup;
       token_o.block  = true;
       token_o.info   = params;
@@ -114,7 +114,7 @@ export default function containerPlugin( md, name, options ) {
 
       state.md.block.tokenize( state, startLine + 1, nextLine );
 
-      const token_c  = state.push( 'container_' + name + '_close', 'div', -1 );
+      const token_c  = state.push( `container_${ name }_close`, 'div', -1 );
       token_c.markup = state.src.slice( start, pos );
       token_c.block  = true;
     }
@@ -126,12 +126,12 @@ export default function containerPlugin( md, name, options ) {
     return true;
   }
 
-  md.block.ruler.before( 'fence', 'container_' + name, container, {
+  md.block.ruler.before( 'fence', `container_${ name }`, container, {
     alt: [ 'paragraph', 'reference', 'blockquote', 'list' ],
   } );
 
   if ( !callback ) {
-    md.renderer.rules[ 'container_' + name + '_open' ] = render;
-    md.renderer.rules[ 'container_' + name + '_close' ] = render;
+    md.renderer.rules[ `container_${ name }_open` ] = render;
+    md.renderer.rules[ `container_${ name }_close` ] = render;
   }
 };

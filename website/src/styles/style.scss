@@ -441,6 +441,10 @@ main {
     background: color( gray, 100 );
     border-radius: $sp-2;
     @include text-size( sm );
+
+    .focus-visible &:focus {
+      @include focus-ring-inset;
+    }
   }
 
   @include media-breakpoint-max( md ) {
@@ -458,10 +462,20 @@ main {
   }
 }
 
-.warning {
+.alert {
   padding: $sp-4 $sp-5;
-  background: color( yellow, 100 );
+  background: color( gray, 200 );
   border-radius: $sp-2;
+
+  &.is-tip {
+    background: color( blue, 100 );
+  }
+  &.is-warning {
+    background: color( yellow, 100 );
+  }
+  &.is-danger {
+    background: color( red, 100 );
+  }
 
   &__title {
     font-weight: bold;
@@ -474,6 +488,10 @@ main {
   > *:last-child {
     margin-bottom: 0;
   }
+}
+
+.shiki span {
+  color: var( --shiki-light );
 }
 
 footer {
