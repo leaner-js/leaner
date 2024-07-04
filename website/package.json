@@ -8,6 +8,7 @@
     "dev": "node build/build.js --watch"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.5.2",
     "bc-css-framework": "^1.0.4"
   },
   "devDependencies": {
