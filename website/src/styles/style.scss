@@ -5,6 +5,7 @@ $font-family-monospace: "Noto Sans Mono", ui-monospace, monospace;
 $font-size-base: 16px;
 
 $breakpoints: (
+  sm: 640px,
   md: 768px,
   lg: 960px,
   xl: 1280px,
@@ -302,6 +303,7 @@ header {
 }
 
 main {
+  width: 100%;
   padding: $sp-8 0 $sp-16 0;
   overflow-x: auto;
 
@@ -522,6 +524,62 @@ main {
 
 .shiki span {
   color: var( --shiki-light );
+}
+
+.pager {
+  display: flex;
+  margin-top: $sp-16;
+
+  @include media-breakpoint-max( sm ) {
+    flex-direction: column;
+    margin-top: $sp-8;
+  }
+
+  > a {
+    display: flex;
+    flex-direction: column;
+    width: calc( 50% - $sp-2 );
+    padding: $sp-2 $sp-4;
+    color: $link-color;
+    border: 1px solid color( gray, 300 );
+    border-radius: $sp-2;
+    @include has-tooltip;
+
+    @include media-breakpoint-max( sm ) {
+      width: 100%;
+    }
+
+    &:hover, &:active {
+      color: $link-color-active;
+      border-color: $link-color-active;
+    }
+
+    > span:first-child {
+      color: color( gray, 600 );
+      @include text-size( sm );
+    }
+  }
+
+  .is-next {
+    align-items: flex-end;
+  }
+
+  > a + a {
+    margin-left: $sp-4;
+
+    @include media-breakpoint-max( sm ) {
+      margin-left: 0;
+      margin-top: $sp-4;
+    }
+  }
+
+  .is-next:first-child {
+    margin-left: auto;
+
+    @include media-breakpoint-max( sm ) {
+      margin-left: 0;
+    }
+  }
 }
 
 footer {

@@ -57,6 +57,16 @@
     <div class="content">
       {{{content}}}
     </div>
+    {{#with pager}}
+    <nav class="pager">
+      {{#with prev}}
+      <a href="{{link}}" class="is-prev"><span>Previous page</span> <span>{{text}}</span></a>
+      {{/with}}
+      {{#with next}}
+      <a href="{{link}}" class="is-next"><span>Next page</span> <span>{{text}}</span></a>
+      {{/with}}
+    </nav>
+    {{/with}}
   </main>
 </div>
 

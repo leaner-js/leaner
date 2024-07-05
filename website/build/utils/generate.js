@@ -17,9 +17,7 @@ export async function generateFile( file, rootDir, template, config ) {
 
   const sidebar = renderSidebar( file, env, config );
 
-  const hero = env.hero;
-
-  const result = template( { title, meta, nav, sidebar, hero, content } );
+  const result = template( { title, meta, nav, sidebar, hero: env.hero, pager: sidebar?.pager, content } );
 
   const fileName = join( 'dist', file.replace( /.md$/, '.html' ) );
   const filePath = resolve( rootDir, fileName );
@@ -48,8 +46,10 @@ function renderSidebar( file, env, config ) {
   const sidebar = config.sidebar[ env.frontmatter.sidebar ];
 
   let items = '<ul>';
+  let pager = null;
 
-  for ( const item of sidebar.items ) {
+  for ( let i = 0; i < sidebar.items.length; i++ ) {
+    const item = sidebar.items[ i ];
     const link = item.link + ( item.link.endsWith( '/' ) ? 'index.html' : '' );
     const current = '/' + file.replace( /.md$/, '.html' );
 
@@ -58,6 +58,8 @@ function renderSidebar( file, env, config ) {
       if ( env.toc.length > 0 )
         items += `<ul>${ env.toc.map( renderItem ).join( '' ) }</ul>`
       items += '</li>';
+      if ( i > 0 || i < sidebar.items.length - 1 )
+        pager = { prev: sidebar.items[ i - 1 ], next: sidebar.items[ i + 1 ] };
     } else {
       items += renderItem( item );
     }
@@ -65,7 +67,7 @@ function renderSidebar( file, env, config ) {
 
   items += '</ul>';
 
-  return { ...sidebar, items };
+  return { ...sidebar, items, pager };
 }
 
 function renderItem( item ) {
