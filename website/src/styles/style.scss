@@ -11,12 +11,21 @@ $breakpoints: (
   xl: 1280px,
 );
 
+$font-sizes: (
+  lg: 1.25,
+);
+
+$text-color: var( --text-color );
+$background-color: var( --background-color );
+$text-color-muted: var( --text-color-muted );
+$link-color: var( --link-color );
+$link-color-active: var( --link-color-active );
+$border-color: var( --border-color );
+
 @import "bc-css-framework/src/framework";
 
 @import "fonts";
 @import "icons";
-
-$link-color: color( blue, 700 );
 
 $header-height: sp( 16 );
 $footer-height: sp( 24 );
@@ -25,6 +34,28 @@ $sidebar-width: sp( 54 );
 
 html {
   scroll-padding-top: calc( $header-height + $sp-4 );
+
+  --text-color: #{ color( gray, 800 ) };
+  --background-color: #{ $white };
+  --text-color-muted: #{ color( gray, 600 ) };
+  --link-color: #{ color( blue, 700 ) };
+  --link-color-active: #{ color( blue, 900 ) };
+  --border-color: #{ color( gray, 300 ) };
+}
+
+.dark {
+  --text-color: #{ color( gray, 300 ) };
+  --background-color: #{ color( gray, 900 ) };
+  --text-color-muted: #{ color( gray, 400 ) };
+  --link-color: #{ color( blue, 300 ) };
+  --link-color-active: #{ color( blue, 400 ) };
+  --border-color: #{ color( gray, 700 ) };
+}
+
+@each $name, $multiplier in $font-sizes {
+  .font-size-#{ $name } {
+    font-size: relative-font-size( $multiplier * $font-size-base );
+  }
 }
 
 .container {
@@ -39,11 +70,27 @@ html {
   @include container( md, lg, $padding: $sp-4 );
 }
 
+:focus {
+  outline: none;
+}
+
+.focus-visible :focus {
+  @include show-focus-ring;
+}
+
+.visually-hidden {
+  @include visually-hidden;
+}
+
+.visually-hidden-focusable {
+  @include visually-hidden-focusable;
+}
+
 header {
   position: sticky;
   top: 0;
   background: $background-color;
-  border-bottom: 1px solid color( gray, 300 );
+  border-bottom: 1px solid $border-color;
   z-index: 1;
 
   @include media-breakpoint-max( lg ) {
@@ -105,8 +152,8 @@ header {
     display: flex;
     align-items: center;
     padding: $sp-2;
-    color: color( gray, 700 );
-    border: 1px solid color( gray, 300 );
+    color: $text-color-muted;
+    border: 1px solid $border-color;
     border-radius: $sp-2;
     @include has-tooltip;
 
@@ -127,7 +174,7 @@ header {
       padding: $sp-1 $sp-2;
       background: $background-color;
       color: $text-color;
-      border: 1px solid color( gray, 300 );
+      border: 1px solid $border-color;
       border-radius: $sp-2;
       white-space: nowrap;
       @include text-size( sm );
@@ -138,6 +185,19 @@ header {
   > li + li {
     margin-left: $sp-2;
   }
+
+  .i-sun {
+    display: none;
+  }
+
+  .dark & {
+    .i-moon {
+      display: none;
+    }
+    .i-sun {
+      display: block;
+    }
+  }
 }
 
 .navbar {
@@ -146,7 +206,7 @@ header {
   top: 0;
   padding: $sp-2 $sp-4;
   background: $background-color;
-  border-bottom: 1px solid color( gray, 300 );
+  border-bottom: 1px solid $border-color;
   z-index: 1;
 
   @include media-breakpoint-max( lg ) {
@@ -273,7 +333,7 @@ header {
 
     > ul > li > ul > li {
       padding-left: $sp-4;
-      border-left: 2px solid color( gray, 300 );
+      border-left: 2px solid $border-color;
       @include text-size( sm );
 
       &.is-active {
@@ -419,6 +479,15 @@ main {
       &:hover, &:active {
         background: color( gray, 300 );
       }
+
+      .dark & {
+        color: $white;
+        background: color( gray, 700 );
+
+        &:hover, &:active {
+          background: color( gray, 800 );
+        }
+      }
     }
 
     > li:first-child a {
@@ -427,6 +496,14 @@ main {
 
       &:hover, &:active {
         background: $link-color-active;
+      }
+
+      .dark & {
+        background: color( blue, 800 );
+
+        &:hover, &:active {
+          background: color( blue, 900 );
+        }
       }
     }
 
@@ -474,6 +551,10 @@ main {
     border-radius: $sp-2;
     @include text-size( sm );
 
+    .dark & {
+      background: $black;
+    }
+
     .focus-visible &:focus {
       @include focus-ring-inset;
     }
@@ -509,6 +590,20 @@ main {
     background: color( red, 100 );
   }
 
+  .dark & {
+    background: color( gray, 800 );
+
+    &.is-tip {
+      background: color( blue, 900 );
+    }
+    &.is-warning {
+      background: color( yellow, 900 );
+    }
+    &.is-danger {
+      background: color( red, 900 );
+    }
+  }
+
   &__title {
     font-weight: bold;
   }
@@ -524,6 +619,10 @@ main {
 
 .shiki span {
   color: var( --shiki-light );
+
+  .dark & {
+    color: var( --shiki-dark );
+  }
 }
 
 .pager {
@@ -541,7 +640,7 @@ main {
     width: calc( 50% - $sp-2 );
     padding: $sp-2 $sp-4;
     color: $link-color;
-    border: 1px solid color( gray, 300 );
+    border: 1px solid $border-color;
     border-radius: $sp-2;
     @include has-tooltip;
 
@@ -555,7 +654,7 @@ main {
     }
 
     > span:first-child {
-      color: color( gray, 600 );
+      color: $text-color-muted;
       @include text-size( sm );
     }
   }
@@ -583,7 +682,7 @@ main {
 }
 
 footer {
-  border-top: 1px solid color( gray, 300 );
+  border-top: 1px solid $border-color;
 
   > .container {
     height: $footer-height;
@@ -591,23 +690,7 @@ footer {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    color: color( gray, 600 );
+    color: $text-color-muted;
     @include text-size( sm );
   }
-}
-
-:focus {
-  outline: none;
-}
-
-.focus-visible :focus {
-  @include show-focus-ring;
-}
-
-.visually-hidden {
-  @include visually-hidden;
-}
-
-.visually-hidden-focusable {
-  @include visually-hidden-focusable;
 }

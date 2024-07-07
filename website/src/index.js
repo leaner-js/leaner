@@ -2,12 +2,40 @@ import { handleFocusVisible, trapFocus, untrapFocus } from './utils/focus';
 
 window.addEventListener( 'DOMContentLoaded', () => {
   handleFocusVisible();
+  handleOptions();
 
   if ( document.body.classList.contains( 'with-sidebar' ) ) {
     handleSidebar();
     handleToc();
   }
 } );
+
+function handleOptions() {
+  const toggleTheme = document.getElementById( 'toggle-theme' );
+  if ( toggleTheme != null ) {
+    const tooltip = toggleTheme.querySelector( 'span' );
+
+    if ( document.documentElement.classList.contains( 'dark' ) )
+      tooltip.textContent = 'Light mode';
+
+    toggleTheme.addEventListener( 'click', () => {
+      const theme = document.documentElement.classList.toggle( 'dark' ) ? 'dark' : 'light';
+      if ( theme == 'dark' )
+        tooltip.textContent = 'Light mode';
+      else
+        tooltip.textContent = 'Dark mode';
+      localStorage.setItem( 'theme', theme );
+    } );
+  }
+
+  const toggleSize = document.getElementById( 'toggle-size' );
+  if ( toggleSize != null ) {
+    toggleSize.addEventListener( 'click', () => {
+      const size = document.documentElement.classList.toggle( 'font-size-lg' ) ? 'lg' : 'normal';
+      localStorage.setItem( 'font-size', size );
+    } );
+  }
+}
 
 function handleSidebar() {
   const sidebar = document.querySelector( '.sidebar' );

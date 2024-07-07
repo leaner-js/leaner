@@ -9,6 +9,7 @@ import { build } from 'vite';
 
 import { generateFile } from './utils/generate.js';
 import { createDevServer } from './utils/server.js';
+import { inlineScript } from './utils/vite-inline-script.js';
 
 import config from '../config.js';
 
@@ -34,10 +35,12 @@ let template = null;
 let pending = Promise.resolve();
 let queued = new Set();
 
+const plugins = [ inlineScript() ];
+
 if ( watchMode ) {
   await runInWatchMode();
 } else {
-  await build();
+  await build( { plugins } );
   await generateAllFiles();
 }
 
@@ -73,6 +76,7 @@ async function runInWatchMode() {
 
   const bundle = await build( {
     build: { watch: true },
+    plugins,
   } );
 
   bundle.on( 'event', event => {
