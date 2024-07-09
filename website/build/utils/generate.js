@@ -4,7 +4,7 @@ import { join } from 'path/posix';
 
 import { escapeHtml, renderMarkdown } from './markdown.js';
 
-export async function generateFile( file, rootDir, template, config ) {
+export async function generateFile( file, rootDir, template, config, files ) {
   const source = await readFile( resolve( rootDir, 'docs', file ), 'utf-8' );
 
   const env = { base: dirname( file ) };
@@ -25,6 +25,8 @@ export async function generateFile( file, rootDir, template, config ) {
   await mkdir( dirname( filePath ), { recursive: true } );
 
   await writeFile( filePath, result, 'utf-8' );
+
+  handleDeadLinks( env.links, files, file );
 }
 
 function renderMeta( env ) {
@@ -72,4 +74,14 @@ function renderSidebar( file, env, config ) {
 
 function renderItem( item ) {
   return `<li><a href="${ escapeHtml( item.link ) }">${ escapeHtml( item.text ) }</a></li>`;
+}
+
+function handleDeadLinks( links, files, file ) {
+  for ( let url of links ) {
+    url = url.replace( /^\//, '' ).replace( /\.html$/, '' );
+    if ( url.endsWith( '/' ) )
+      url += 'index';
+    if ( !files.includes( url + '.md' ) )
+      console.warn( `Warning: found dead link /${ url }.html in file ${ file }` );
+  }
 }

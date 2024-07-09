@@ -18,6 +18,7 @@ export function renderMarkdown( source, env ) {
   env.title = '';
   env.toc = [];
   env.frontmatter = {};
+  env.links = [];
   return md.render( source, env );
 }
 
@@ -71,13 +72,17 @@ function renderLink( tokens, idx, options, env, self ) {
   const href = tokens[ idx ].attrGet( 'href' );
   if ( href.startsWith( './' ) || href.startsWith( '../' ) ) {
     const parts = href.split( '#' );
-    const extension = extname( parts[ 0 ] );
-    if ( extension == '' )
-      parts[ 0 ] += '.html';
-    else if ( extension == '.md' )
-      parts[ 0 ] = parts[ 0 ].replace( /.md$/, '.html' );
+    if ( !parts[ 0 ].endsWith( '/' ) ) {
+      const extension = extname( parts[ 0 ] );
+      if ( extension == '' )
+        parts[ 0 ] += '.html';
+      else if ( extension == '.md' )
+        parts[ 0 ] = parts[ 0 ].replace( /.md$/, '.html' );
+    }
     parts[ 0 ] = '/' + join( env.base, parts[ 0 ] );
     tokens[ idx ].attrSet( 'href', parts.join( '#' ) );
+    if ( env.links != null )
+      env.links.push( parts[ 0 ] );
   } else {
     tokens[ idx ].attrSet( 'target', '_blank' );
     tokens[ idx ].attrSet( 'rel', 'noopener noreferrer' );

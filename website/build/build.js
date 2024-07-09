@@ -31,6 +31,7 @@ for ( let i = 2; i < process.argv.length; i++ ) {
 }
 
 let template = null;
+let files = null;
 
 let pending = Promise.resolve();
 let queued = new Set();
@@ -50,10 +51,10 @@ async function generateAllFiles( server ) {
 
     template = Handlebars.compile( content );
 
-    const files = await glob( '**/*.md', { cwd: resolve( rootDir, 'docs' ), posix: true } );
+    files = await glob( '**/*.md', { cwd: resolve( rootDir, 'docs' ), posix: true } );
 
     for ( const file of files )
-      await generateFile( file, rootDir, template, config );
+      await generateFile( file, rootDir, template, config, files );
 
     if ( server != null )
       server.reload();
@@ -123,10 +124,10 @@ async function handleFileChange( file, server ) {
     if ( stats.isFile() ) {
       const inputFile = file.replaceAll( '\\', '/' );
       const outputFile = inputFile.replace( /.md$/, '.html' );
-      await generateFile( inputFile, rootDir, template, config );
+      console.log( join( 'dist', outputFile ) );
+      await generateFile( inputFile, rootDir, template, config, files );
       queued.delete( file );
       server.reload( outputFile );
-      console.log( join( 'dist', outputFile ) );
     }
   } catch ( err ) {
     if ( err.code != 'ENOENT' )
