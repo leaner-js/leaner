@@ -42,7 +42,17 @@ export async function createDevServer( rootDir, port ) {
       const fullPath = resolve( rootDir, pathname );
       const ext = extname( pathname );
 
-      let content = await readFile( fullPath );
+      let content;
+      try {
+        content = await readFile( fullPath );
+      } catch ( err ) {
+        if ( err.code == 'ENOENT' ) {
+          content = await readFile( resolve( rootDir, '404.html' ) );
+          res.statusCode = 404;
+        } else {
+          throw err;
+        }
+      }
 
       res.setHeader( 'Content-Type', lookup( ext ) || 'application/octet-stream' );
 

@@ -7,7 +7,7 @@ import { glob } from 'glob';
 import Handlebars from 'handlebars';
 import { build } from 'vite';
 
-import { generateFile } from './utils/generate.js';
+import { generate404, generateFile } from './utils/generate.js';
 import { createDevServer } from './utils/server.js';
 import { inlineScript } from './utils/vite-inline-script.js';
 
@@ -55,6 +55,8 @@ async function generateAllFiles( server ) {
 
     for ( const file of files )
       await generateFile( file, rootDir, template, config, files );
+
+    await generate404( '404.md', rootDir, template, config );
 
     if ( server != null )
       server.reload();

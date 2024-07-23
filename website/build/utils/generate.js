@@ -19,14 +19,31 @@ export async function generateFile( file, rootDir, template, config, files ) {
 
   const result = template( { title, meta, nav, sidebar, hero: env.hero, pager: sidebar?.pager, content } );
 
+  await writeResult( file, rootDir, result );
+
+  handleDeadLinks( env.links, files, file );
+}
+
+export async function generate404( file, rootDir, template, config ) {
+  const content = '<h2>Page not found</h2>'
+    + '<p>We are sorry, there is no content at this location. Return to the <a href="/">home page</a>.</p>';
+
+  const title = `Page not found - ${ config.title }`;
+
+  const nav = `<ul>${ config.nav.map( renderItem ).join( '' ) }</ul>`;
+
+  const result = template( { title, nav, content } );
+
+  await writeResult( file, rootDir, result );
+}
+
+async function writeResult( file, rootDir, result ) {
   const fileName = join( 'dist', file.replace( /.md$/, '.html' ) );
   const filePath = resolve( rootDir, fileName );
 
   await mkdir( dirname( filePath ), { recursive: true } );
 
   await writeFile( filePath, result, 'utf-8' );
-
-  handleDeadLinks( env.links, files, file );
 }
 
 function renderMeta( env ) {
