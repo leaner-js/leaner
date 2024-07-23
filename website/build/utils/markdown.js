@@ -65,6 +65,9 @@ async function createMarkdown() {
   md.renderer.rules.heading_open = renderHeading;
   md.renderer.rules.heading_close = renderHeading;
 
+  md.renderer.rules.table_open = renderTable;
+  md.renderer.rules.table_close = renderTable;
+
   return md;
 }
 
@@ -126,6 +129,14 @@ function renderAlert( tokens, idx ) {
   }
 }
 
+function renderTable( tokens, idx, options, env, self ) {
+  const tag = self.renderToken( tokens, idx, options );
+  if ( tokens[ idx ].nesting == 1 )
+    return `<div class="table-wrapper">${ tag }`;
+  else
+    return `${ tag }</div>`;
+}
+
 function getRawText( tokens ) {
   let text = '';
 
@@ -146,5 +157,5 @@ function getRawText( tokens ) {
 }
 
 function slugify( text ) {
-  return encodeURIComponent( text.trim().toLowerCase().replace( /\s+/g, '-' ) );
+  return encodeURIComponent( text.trim().toLowerCase().replace( /[\s.]+/g, '-' ).replace( /[^a-z0-9-]/g, '' ) );
 }

@@ -560,6 +560,21 @@ main {
     }
   }
 
+  .table-wrapper {
+    margin: $sp-6 0;
+    overflow-x: auto;
+  }
+
+  table {
+    min-width: 100%;
+
+    td, th {
+      border: 1px solid $border-color;
+      padding: $sp-1 $sp-2;
+      vertical-align: top;
+    }
+  }
+
   @include media-breakpoint-max( md ) {
     h2 {
       @include text-size( 3xl );
