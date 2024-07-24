@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { mutate, useState } from 'leaner';
+import { mutate, state } from 'leaner';
 
 describe( 'mutate()', () => {
   test( 'set object property', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     setValue( mutate( value => {
       value.count = value.count + 3;
@@ -15,7 +15,7 @@ describe( 'mutate()', () => {
   } );
 
   test( 'set array item', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 } ] );
 
     setValue( mutate( value => {
       value[ 0 ] = { name: 'oranges', count: 7 };
@@ -27,7 +27,7 @@ describe( 'mutate()', () => {
   } );
 
   test( 'array.push()', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 } ] );
 
     const initialValue = getValue()[ 0 ];
 
@@ -43,7 +43,7 @@ describe( 'mutate()', () => {
   } );
 
   test( 'array.unshift()', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 } ] );
 
     const initialValue = getValue()[ 0 ];
 
@@ -59,7 +59,7 @@ describe( 'mutate()', () => {
   } );
 
   test( 'array.splice()', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     const initialValue = getValue()[ 1 ];
 
@@ -74,7 +74,7 @@ describe( 'mutate()', () => {
   } );
 
   test( 'array.filter() with property', () => {
-    const [ getValue, setValue ] = useState( { fruits: [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] } );
+    const [ getValue, setValue ] = state( { fruits: [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] } );
 
     const initialValue = getValue().fruits[ 1 ];
 

@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'dynamic directive', () => {
   test( 'HTML elements', () => {
-    const [ tag, setTag ] = useState( 'p' );
+    const [ tag, setTag ] = state( 'p' );
 
     function App() {
       return [ 'dynamic', tag, 'test' ];
@@ -23,7 +23,7 @@ describe( 'dynamic directive', () => {
   } );
 
   test( 'components', () => {
-    const [ component, setComponent ] = useState( Button );
+    const [ component, setComponent ] = state( Button );
 
     function Button( props, children ) {
       return [ 'button', { type: 'button', ...props }, ...children ];
@@ -50,7 +50,7 @@ describe( 'dynamic directive', () => {
   } );
 
   test( 'create component', () => {
-    const [ component, setComponent ] = useState( Button );
+    const [ component, setComponent ] = state( Button );
 
     function Button( props, children ) {
       return [ 'button', { type: 'button', ...props }, ...children ];
@@ -81,7 +81,7 @@ describe( 'dynamic directive', () => {
   } );
 
   test( 'destroy component', () => {
-    const [ component, setComponent ] = useState( Button );
+    const [ component, setComponent ] = state( Button );
 
     const callback = vi.fn();
 
@@ -112,8 +112,8 @@ describe( 'dynamic directive', () => {
   } );
 
   test( 'dynamic inside if (true -> false)', () => {
-    const [ condition, setCondition ] = useState( true );
-    const [ tag, setTag ] = useState( 'p' );
+    const [ condition, setCondition ] = state( true );
+    const [ tag, setTag ] = state( 'p' );
 
     function App() {
       return [ 'if', condition, [ 'dynamic', tag, 'test' ] ];
@@ -132,8 +132,8 @@ describe( 'dynamic directive', () => {
   } );
 
   test( 'dynamic inside if (false -> true)', () => {
-    const [ condition, setCondition ] = useState( false );
-    const [ tag, setTag ] = useState( 'p' );
+    const [ condition, setCondition ] = state( false );
+    const [ tag, setTag ] = state( 'p' );
 
     function App() {
       return [ 'if', condition, [ 'dynamic', tag, 'test' ] ];

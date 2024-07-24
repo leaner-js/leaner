@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'if', () => {
   test( 'simple true -> false', () => {
-    const [ condition, setCondition ] = useState( true );
+    const [ condition, setCondition ] = state( true );
 
     function App() {
       return [ 'if', condition, [ 'p', 'test' ] ];
@@ -23,7 +23,7 @@ describe( 'if', () => {
   } );
 
   test( 'simple false -> true', () => {
-    const [ condition, setCondition ] = useState( false );
+    const [ condition, setCondition ] = state( false );
 
     function App() {
       return [ 'if', condition, [ 'p', 'test' ] ];
@@ -41,7 +41,7 @@ describe( 'if', () => {
   } );
 
   test( 'if/else', () => {
-    const [ condition, setCondition ] = useState( true );
+    const [ condition, setCondition ] = state( true );
 
     function App() {
       return [ 'if', condition, [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ];
@@ -59,7 +59,7 @@ describe( 'if', () => {
   } );
 
   test( 'fragment', () => {
-    const [ condition, setCondition ] = useState( true );
+    const [ condition, setCondition ] = state( true );
 
     function App() {
       return [ 'if', condition, [[ [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ]] ];
@@ -77,7 +77,7 @@ describe( 'if', () => {
   } );
 
   test( 'multiple conditions', () => {
-    const [ value, setValue ] = useState( 1 );
+    const [ value, setValue ] = state( 1 );
 
     function App() {
       return [ 'if',
@@ -104,8 +104,8 @@ describe( 'if', () => {
   } );
 
   test( 'nested', () => {
-    const [ condition, setCondition ] = useState( true );
-    const [ value, setValue ] = useState( 1 );
+    const [ condition, setCondition ] = state( true );
+    const [ value, setValue ] = state( 1 );
 
     function App() {
       return [ 'if', condition,
@@ -140,7 +140,7 @@ describe( 'if', () => {
   } );
 
   test( 'create component', () => {
-    const [ condition, setCondition ] = useState( false );
+    const [ condition, setCondition ] = state( false );
 
     const callback = vi.fn();
 
@@ -170,7 +170,7 @@ describe( 'if', () => {
   } );
 
   test( 'destroy component', () => {
-    const [ condition, setCondition ] = useState( true );
+    const [ condition, setCondition ] = state( true );
 
     const callback = vi.fn();
 

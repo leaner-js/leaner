@@ -1,4 +1,4 @@
-import { destroyScope, useConstant, useReactiveWatch, withScope } from 'leaner';
+import { constant, destroyScope, reactive, withScope } from 'leaner';
 import { isPlainObjectOrArray } from '../shared/utils.js';
 import { createChildContext, createContext, destroyContext, mountContext, withContext } from './components.js';
 import { make } from './make.js';
@@ -21,7 +21,7 @@ export function createForDirective( template ) {
 
   withScope( context.scope, () => {
     // initially only watch the length of the items array
-    useReactiveWatch( itemsGetter.length, updateLength );
+    reactive( itemsGetter.length, updateLength );
   } );
 
   return result;
@@ -91,7 +91,7 @@ export function createForDirective( template ) {
           newItemContexts = [];
         newItemContexts.push( itemContext );
 
-        const item = isMatchedByValue ? useConstant( value ) : itemsGetter[ index ];
+        const item = isMatchedByValue ? constant( value ) : itemsGetter[ index ];
 
         const itemTemplate = template[ 2 ]( item, index );
 
@@ -131,7 +131,7 @@ export function createForDirective( template ) {
       context.scope = [];
       withScope( context.scope, () => {
         // clone the array to watch all elements
-        useReactiveWatch( () => [ ...itemsGetter() ], updateContent );
+        reactive( () => [ ...itemsGetter() ], updateContent );
       } );
       watchingContent = true;
     }

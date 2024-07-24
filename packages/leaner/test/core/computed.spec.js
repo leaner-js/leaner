@@ -1,84 +1,84 @@
 import { describe, expect, test, vi } from 'vitest';
-import { destroyScope, mutate, useComputed, useConstant, useState, withScope } from 'leaner';
+import { computed, constant, destroyScope, mutate, state, withScope } from 'leaner';
 
-describe( 'useComputed()', () => {
+describe( 'computed()', () => {
   test( 'simple value', () => {
-    const [ getValue, setValue ] = useState( 4 );
+    const [ getValue, setValue ] = state( 4 );
 
-    const computed = useComputed( () => getValue() + 3 );
+    const getComputed = computed( () => getValue() + 3 );
 
-    expect( computed ).toBeTypeOf( 'function' );
+    expect( getComputed ).toBeTypeOf( 'function' );
 
-    expect( computed() ).toBe( 7 );
+    expect( getComputed() ).toBe( 7 );
 
     setValue( 10 );
 
-    expect( computed() ).toBe( 13 );
+    expect( getComputed() ).toBe( 13 );
   } );
 
   test( 'array.filter()', () => {
-    const [ getValue, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     const initialValue = getValue()[ 1 ];
 
-    const computed = useComputed( () => getValue().filter( i => i.count > 5 ) );
+    const getComputed = computed( () => getValue().filter( i => i.count > 5 ) );
 
-    const value = computed();
+    const value = getComputed();
 
     expect( value ).toHaveLength( 1 );
     expect( value[ 0 ] ).toBe( initialValue );
   } );
 
   test( 'array.filter() updated', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    const computed = useComputed( () => getValue().filter( i => i.count > 5 ) );
+    const getComputed = computed( () => getValue().filter( i => i.count > 5 ) );
 
-    expect( computed() ).toEqual( [ { name: 'oranges', count: 7 } ] );
+    expect( getComputed() ).toEqual( [ { name: 'oranges', count: 7 } ] );
 
     setValue( mutate( state => state[ 0 ].count = 10 ) );
 
-    expect( computed() ).toEqual( [ { name: 'apples', count: 10 }, { name: 'oranges', count: 7 } ] );
+    expect( getComputed() ).toEqual( [ { name: 'apples', count: 10 }, { name: 'oranges', count: 7 } ] );
   } );
 
   test( 'calculated on demand', () => {
-    const [ getValue, ] = useState( 4 );
+    const [ getValue, ] = state( 4 );
 
     const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
-    const computed = useComputed( callback );
+    const getComputed = computed( callback );
 
     expect( callback ).not.toHaveBeenCalled();
 
-    computed();
+    getComputed();
 
     expect( callback ).toHaveBeenCalledOnce();
   } );
 
   test( 'calculated only once', () => {
-    const [ getValue, ] = useState( 4 );
+    const [ getValue, ] = state( 4 );
 
     const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
-    const computed = useComputed( callback );
+    const getComputed = computed( callback );
 
-    computed();
+    getComputed();
 
     expect( callback ).toHaveBeenCalledOnce();
 
-    computed();
+    getComputed();
 
     expect( callback ).toHaveBeenCalledOnce();
   } );
 
   test( 'recalculated on demand', () => {
-    const [ getValue, setValue ] = useState( 4 );
+    const [ getValue, setValue ] = state( 4 );
 
     const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
-    const computed = useComputed( callback );
+    const getComputed = computed( callback );
 
-    computed();
+    getComputed();
 
     callback.mockClear();
 
@@ -86,17 +86,17 @@ describe( 'useComputed()', () => {
 
     expect( callback ).not.toHaveBeenCalled();
 
-    computed();
+    getComputed();
 
     expect( callback ).toHaveBeenCalledOnce();
   } );
 
   test( 'value is readonly', () => {
-    const [ getValue, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    const computed = useComputed( () => getValue().filter( i => i.count > 5 ) );
+    const getComputed = computed( () => getValue().filter( i => i.count > 5 ) );
 
-    const value = computed();
+    const value = getComputed();
 
     expect( () => {
       value[ 0 ].name = 'peaches';
@@ -104,11 +104,11 @@ describe( 'useComputed()', () => {
   } );
 
   test( 'getter chaining', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    const computed = useComputed( () => getValue().filter( i => i.count > 5 ) );
+    const getComputed = computed( () => getValue().filter( i => i.count > 5 ) );
 
-    const name = computed[ 0 ].name;
+    const name = getComputed[ 0 ].name;
 
     expect( name() ).toBe( 'oranges' );
 
@@ -118,45 +118,45 @@ describe( 'useComputed()', () => {
   } );
 
   test( 'throws error when scope destroyed', () => {
-    const [ getValue, ] = useState( 4 );
+    const [ getValue, ] = state( 4 );
 
     const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
     const scope = [];
 
-    const computed = withScope( scope, () => {
-      return useComputed( callback );
+    const getComputed = withScope( scope, () => {
+      return computed( callback );
     } );
 
-    computed();
+    getComputed();
 
     expect( callback ).toHaveBeenCalledOnce();
 
     destroyScope( scope );
 
-    expect( computed ).toThrowError( 'destroyed' );
+    expect( getComputed ).toThrowError( 'destroyed' );
   } );
 } );
 
-describe( 'useConstant()', () => {
+describe( 'constant()', () => {
   test( 'simple value', () => {
-    const constant = useConstant( 4 );
+    const getConstant = constant( 4 );
 
-    expect( constant ).toBeTypeOf( 'function' );
+    expect( getConstant ).toBeTypeOf( 'function' );
 
-    expect( constant() ).toBe( 4 );
+    expect( getConstant() ).toBe( 4 );
   } );
 
   test( 'object', () => {
-    const constant = useConstant( { name: 'apples', count: 4 } );
+    const getConstant = constant( { name: 'apples', count: 4 } );
 
-    expect( constant() ).toEqual( { name: 'apples', count: 4 } );
+    expect( getConstant() ).toEqual( { name: 'apples', count: 4 } );
   } );
 
   test( 'value is readonly', () => {
-    const constant = useConstant( { name: 'apples', count: 4 } );
+    const getConstant = constant( { name: 'apples', count: 4 } );
 
-    const value = constant();
+    const value = getConstant();
 
     expect( () => {
       value.name = 'peaches';
@@ -164,9 +164,9 @@ describe( 'useConstant()', () => {
   } );
 
   test( 'getter chaining', () => {
-    const constant = useConstant( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const getConstant = constant( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
-    const name = constant[ 0 ].name;
+    const name = getConstant[ 0 ].name;
 
     expect( name() ).toBe( 'apples' );
   } );

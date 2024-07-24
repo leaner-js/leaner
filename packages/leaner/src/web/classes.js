@@ -1,9 +1,9 @@
-import { useReactiveWatch } from 'leaner';
+import { reactive } from 'leaner';
 import { isPlainObject } from '../shared/utils.js';
 
 export function setClasses( element, classes ) {
   if ( typeof classes == 'function' ) {
-    useReactiveWatch( classes, value => {
+    reactive( classes, value => {
       if ( Array.isArray( value ) ) {
         element.className = '';
         element.classList.add( ...value );
@@ -23,7 +23,7 @@ export function setClasses( element, classes ) {
 function setClassesObject( element, classes ) {
   for ( const [ key, value ] of Object.entries( classes ) ) {
     if ( typeof value == 'function' ) {
-      useReactiveWatch( value, ( newValue, value ) => {
+      reactive( value, ( newValue, value ) => {
         if ( newValue ) {
           if ( !value )
             element.classList.add( key );
@@ -41,7 +41,7 @@ function setClassesObject( element, classes ) {
 function setClassesArray( element, classes ) {
   for ( const item of classes ) {
     if ( typeof item == 'function' ) {
-      useReactiveWatch( item, ( newValue, value ) => {
+      reactive( item, ( newValue, value ) => {
         if ( newValue ) {
           if ( value )
             element.classList.replace( value, newValue );

@@ -1,9 +1,9 @@
-import { useReactiveWatch } from 'leaner';
+import { reactive } from 'leaner';
 import { isPlainObject } from '../shared/utils.js';
 
 export function setStyles( element, styles ) {
   if ( typeof styles == 'function' ) {
-    useReactiveWatch( styles, value => {
+    reactive( styles, value => {
       if ( isPlainObject( value ) ) {
         element.style = '';
         for ( const [ key, value ] of Object.entries( value ) )
@@ -22,7 +22,7 @@ export function setStyles( element, styles ) {
 function setStylesObject( element, styles ) {
   for ( const [ key, value ] of Object.entries( styles ) ) {
     if ( typeof value == 'function' )
-      useReactiveWatch( value, value => element.style[ key ] = value );
+      reactive( value, value => element.style[ key ] = value );
     else
       setStyleProperty( element, key, value );
   }

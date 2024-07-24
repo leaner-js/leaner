@@ -1,4 +1,4 @@
-import { mutate, useComputed, useState } from 'leaner';
+import { computed, mutate, state } from 'leaner';
 import { onMount } from 'leaner/web';
 
 import TodoFooter from './TodoFooter.js';
@@ -8,16 +8,16 @@ import TodoItem from './TodoItem.js';
 export function App() {
   let nextId = 1;
 
-  const [ todos, setTodos ] = useState( [] );
+  const [ todos, setTodos ] = state( [] );
 
-  const activeTodos = useComputed( () => todos().filter( t => !t.completed ) );
-  const completedTodos = useComputed( () => todos().filter( t => t.completed ) );
+  const activeTodos = computed( () => todos().filter( t => !t.completed ) );
+  const completedTodos = computed( () => todos().filter( t => t.completed ) );
 
-  const [ hash, setHash ] = useState( document.location.hash );
+  const [ hash, setHash ] = state( document.location.hash );
 
-  const page = useComputed( () => hash().split( '/' )[ 1 ] || 'all' );
+  const page = computed( () => hash().split( '/' )[ 1 ] || 'all' );
 
-  const fileredTodos = useComputed( () => {
+  const fileredTodos = computed( () => {
     switch ( page() ) {
       case 'active':
         return activeTodos();
@@ -28,7 +28,7 @@ export function App() {
     }
   } );
 
-  const allCompleted = useComputed( () => activeTodos().length == 0 );
+  const allCompleted = computed( () => activeTodos().length == 0 );
 
   onMount( () => {
     window.addEventListener( 'hashchange', () => setHash( document.location.hash ) );

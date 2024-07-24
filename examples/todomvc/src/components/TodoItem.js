@@ -1,9 +1,9 @@
-import { schedule, useState } from 'leaner';
+import { schedule, state } from 'leaner';
 
 export default function TodoItem( { todo, toggleTodo, editTodo, deleteTodo } ) {
-  const [ editing, setEditing ] = useState( false );
-  const [ input, setInput ] = useState( null );
-  const [ text, setText ] = useState( '' );
+  const [ editing, setEditing ] = state( false );
+  const [ input, setInput ] = state( null );
+  const [ text, setText ] = state( '' );
 
   function startEdit() {
     setEditing( true );

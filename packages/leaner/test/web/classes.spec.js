@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { make } from 'leaner/web/make.js';
 import { runSchedule } from 'leaner/schedule.js';
 
@@ -17,7 +17,7 @@ describe( 'classes', () => {
   } );
 
   test( 'dynamic value', () => {
-    const [ value, setValue ] = useState( 'btn-primary' );
+    const [ value, setValue ] = state( 'btn-primary' );
 
     const element = make( [ 'button', { type: 'button', class: value } ] );
 
@@ -31,7 +31,7 @@ describe( 'classes', () => {
   } );
 
   test( 'dynamic array', () => {
-    const [ value, setValue ] = useState( 'btn-primary' );
+    const [ value, setValue ] = state( 'btn-primary' );
 
     const element = make( [ 'button', { type: 'button', class: [ value, 'is-large' ] } ] );
 
@@ -45,7 +45,7 @@ describe( 'classes', () => {
   } );
 
   test( 'dynamic object', () => {
-    const [ value, setValue ] = useState( false );
+    const [ value, setValue ] = state( false );
 
     const element = make( [ 'button', { type: 'button', class: { 'is-large': value } } ] );
 
@@ -59,8 +59,8 @@ describe( 'classes', () => {
   } );
 
   test( 'dynamic array and object', () => {
-    const [ value, setValue ] = useState( 'btn-primary' );
-    const [ large, setLarge ] = useState( false );
+    const [ value, setValue ] = state( 'btn-primary' );
+    const [ large, setLarge ] = state( false );
 
     const element = make( [ 'button', { type: 'button', class: [ value, { 'is-large': large } ] } ] );
 

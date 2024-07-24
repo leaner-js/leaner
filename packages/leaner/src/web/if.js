@@ -1,4 +1,4 @@
-import { useReactiveWatch } from 'leaner';
+import { reactive } from 'leaner';
 import { createChildContext } from './components.js';
 import { DynamicNode } from './nodes.js';
 import { updateDynamicNode } from './update.js';
@@ -23,7 +23,7 @@ export function createIfDirective( template ) {
 
   const context = createChildContext();
 
-  useReactiveWatch( watchState, update );
+  reactive( watchState, update );
 
   return result;
 

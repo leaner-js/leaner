@@ -1,7 +1,7 @@
-import { useComputed } from 'leaner';
+import { computed } from 'leaner';
 
 export default function TodoFooter( { todos, page, deleteCompleted } ) {
-  const remaining = useComputed( () => todos().filter( todo => !todo.completed ).length );
+  const remaining = computed( () => todos().filter( todo => !todo.completed ).length );
 
   return [ 'footer', { class: 'footer' },
     [ 'span', { class: 'todo-count' }, [ 'strong', remaining ], [ 'if', () => remaining() == 1, ' item left', ' items left' ] ],

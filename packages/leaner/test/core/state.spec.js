@@ -1,9 +1,9 @@
 import { describe, expect, test } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 
-describe( 'useState()', () => {
+describe( 'state()', () => {
   test( 'get simple value', () => {
-    const [ getValue, ] = useState( 'apple' );
+    const [ getValue, ] = state( 'apple' );
 
     expect( getValue ).toBeTypeOf( 'function' );
 
@@ -13,7 +13,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'set simple value', () => {
-    const [ getValue, setValue ] = useState( 'apple' );
+    const [ getValue, setValue ] = state( 'apple' );
 
     expect( setValue ).toBeTypeOf( 'function' );
 
@@ -25,7 +25,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'get an object', () => {
-    const [ getValue, ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, ] = state( { name: 'apples', count: 4 } );
 
     const value = getValue();
 
@@ -33,7 +33,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'set an object', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     setValue( { name: 'oranges', count: 7 } );
 
@@ -43,7 +43,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'state is readonly', () => {
-    const [ getValue, ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, ] = state( { name: 'apples', count: 4 } );
 
     const value = getValue();
 
@@ -53,7 +53,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'increment simple value', () => {
-    const [ getValue, setValue ] = useState( 4 );
+    const [ getValue, setValue ] = state( 4 );
 
     setValue( value => value + 3 );
 
@@ -63,7 +63,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'concatenate array', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 } ] );
 
     const initialValue = getValue()[ 0 ];
 
@@ -77,7 +77,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'array.filter()', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     const initialValue = getValue()[ 1 ];
 
@@ -90,7 +90,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'value in setter is readonly', () => {
-    const [ , setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ , setValue ] = state( { name: 'apples', count: 4 } );
 
     expect( () => {
       setValue( value => {
@@ -100,7 +100,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'getter chaining with object', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     const name = getValue.name;
     const count = getValue.count;
@@ -118,7 +118,7 @@ describe( 'useState()', () => {
   } );
 
   test( 'getter chaining with array', () => {
-    const [ getValue, setValue ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ getValue, setValue ] = state( [ { name: 'apples', count: 4 } ] );
 
     const name = getValue[ 0 ].name;
     const count = getValue[ 0 ].count;
@@ -136,8 +136,8 @@ describe( 'useState()', () => {
   } );
 
   test( 'getter chaining with get()', () => {
-    const [ getValue, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
-    const [ getIndex, setIndex ] = useState( 0 );
+    const [ getValue, ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getIndex, setIndex ] = state( 0 );
 
     const name = getValue.get( getIndex ).name;
     const count = getValue.get( getIndex ).count;
@@ -155,8 +155,8 @@ describe( 'useState()', () => {
   } );
 
   test( 'getter cannot be used as index', () => {
-    const [ getValue, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
-    const [ getIndex, ] = useState( 0 );
+    const [ getValue, ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ getIndex, ] = state( 0 );
 
     expect( () => getValue[ getIndex ].name ).toThrowError( 'not allowed' );
   } );

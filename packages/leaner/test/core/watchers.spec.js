@@ -1,38 +1,64 @@
 import { describe, expect, test, vi } from 'vitest';
-import { destroyScope, mutate, useEffect, useReactive, useReactiveWatch, useState, useWatch, useWatchEffect, withScope } from 'leaner';
+import { destroyScope, effect, mutate, reactive, state, watch, withScope } from 'leaner';
 import { runSchedule } from 'leaner/schedule.js';
 
-describe( 'useWatchEffect()', () => {
-  test( 'called immediately', () => {
+describe( 'watch()', () => {
+  test( 'callback not called immediately', () => {
+    const getter = vi.fn();
     const callback = vi.fn();
 
-    useWatchEffect( callback );
+    watch( getter, callback );
 
-    expect( callback ).toHaveBeenCalledOnce();
+    expect( getter ).toHaveBeenCalledOnce();
+    expect( callback ).not.toHaveBeenCalled();
   } );
 
   test( 'called synchronously after change', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
+    const [ getValue, setValue ] = state( 'apples' );
 
-    const callback = vi.fn().mockImplementation( getValue );
+    const callback = vi.fn();
 
-    useWatchEffect( callback );
-
-    callback.mockClear();
+    watch( getValue, callback );
 
     setValue( 'oranges' );
 
-    expect( callback ).toHaveBeenCalledOnce();
+    expect( callback ).toHaveBeenCalledWith( 'oranges', 'apples' );
   } );
 
-  test( 'called when parent dependency changes', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+  test( 'only called when explicit dependency changes', () => {
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     const callback = vi.fn().mockImplementation( getValue.name );
 
-    useWatchEffect( callback );
+    watch( getValue.count, callback );
 
-    callback.mockClear();
+    setValue( mutate( state => state.name = 'oranges' ) );
+
+    expect( callback ).not.toHaveBeenCalled();
+
+    setValue( mutate( state => state.count = 7 ) );
+
+    expect( callback ).toHaveBeenCalledWith( 7, 4 );
+  } );
+
+  test( 'not called if value is the same', () => {
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
+
+    const callback = vi.fn();
+
+    watch( getValue.name, callback );
+
+    setValue( { name: 'apples', count: 7 } );
+
+    expect( callback ).not.toHaveBeenCalled();
+  } );
+
+  test( 'called when parent dependency changes', () => {
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
+
+    const callback = vi.fn();
+
+    watch( getValue.name, callback );
 
     setValue( { name: 'oranges', count: 7 } );
 
@@ -40,13 +66,11 @@ describe( 'useWatchEffect()', () => {
   } );
 
   test( 'not called when child dependency changes', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
-    const callback = vi.fn().mockImplementation( getValue );
+    const callback = vi.fn();
 
-    useWatchEffect( callback );
-
-    callback.mockClear();
+    watch( getValue, callback );
 
     setValue( mutate( state => state.name = 'oranges' ) );
 
@@ -54,14 +78,14 @@ describe( 'useWatchEffect()', () => {
   } );
 
   test( 'not called when scope destroyed', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
+    const [ getValue, setValue ] = state( 'apples' );
 
-    const callback = vi.fn().mockImplementation( getValue );
+    const callback = vi.fn();
 
     const scope = [];
 
     withScope( scope, () => {
-      useWatchEffect( callback );
+      watch( getValue, callback );
     } );
 
     callback.mockClear();
@@ -74,63 +98,11 @@ describe( 'useWatchEffect()', () => {
   } );
 } );
 
-describe( 'useWatch()', () => {
-  test( 'callback not called immediately', () => {
-    const getter = vi.fn();
-    const callback = vi.fn();
-
-    useWatch( getter, callback );
-
-    expect( getter ).toHaveBeenCalledOnce();
-    expect( callback ).not.toHaveBeenCalled();
-  } );
-
-  test( 'called synchronously after change', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
-
-    const callback = vi.fn();
-
-    useWatch( getValue, callback );
-
-    setValue( 'oranges' );
-
-    expect( callback ).toHaveBeenCalledWith( 'oranges', 'apples' );
-  } );
-
-  test( 'only called when explicit dependency changes', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
-
-    const callback = vi.fn().mockImplementation( getValue.name );
-
-    useWatch( getValue.count, callback );
-
-    setValue( mutate( state => state.name = 'oranges' ) );
-
-    expect( callback ).not.toHaveBeenCalled();
-
-    setValue( mutate( state => state.count = 7 ) );
-
-    expect( callback ).toHaveBeenCalledWith( 7, 4 );
-  } );
-
-  test( 'not called if value is the same', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
-
-    const callback = vi.fn();
-
-    useWatch( getValue.name, callback );
-
-    setValue( { name: 'apples', count: 7 } );
-
-    expect( callback ).not.toHaveBeenCalled();
-  } );
-} );
-
-describe( 'useEffect()', () => {
+describe( 'effect()', () => {
   test( 'called asynchronously', () => {
     const callback = vi.fn();
 
-    useEffect( callback );
+    effect( callback );
 
     expect( callback ).not.toHaveBeenCalled();
 
@@ -140,11 +112,11 @@ describe( 'useEffect()', () => {
   } );
 
   test( 'called asynchronously after change', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
+    const [ getValue, setValue ] = state( 'apples' );
 
     const callback = vi.fn().mockImplementation( getValue );
 
-    useEffect( callback );
+    effect( callback );
 
     runSchedule();
 
@@ -160,11 +132,11 @@ describe( 'useEffect()', () => {
   } );
 
   test( 'called only once after multiple changes', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     const callback = vi.fn().mockImplementation( getValue.name );
 
-    useEffect( callback );
+    effect( callback );
 
     runSchedule();
 
@@ -181,64 +153,12 @@ describe( 'useEffect()', () => {
   } );
 } );
 
-describe( 'useReactive()', () => {
-  test( 'called immediately', () => {
-    const callback = vi.fn();
-
-    useReactive( callback );
-
-    expect( callback ).toHaveBeenCalledOnce();
-  } );
-
-  test( 'called asynchronously after change', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
-
-    const callback = vi.fn().mockImplementation( getValue );
-
-    useReactive( callback );
-
-    callback.mockClear();
-
-    setValue( 'oranges' );
-
-    expect( callback ).not.toHaveBeenCalled();
-
-    runSchedule();
-
-    expect( callback ).toHaveBeenCalledOnce();
-  } );
-
-  test( 'not called when scope destroyed', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
-
-    const callback = vi.fn().mockImplementation( getValue );
-
-    const scope = [];
-
-    withScope( scope, () => {
-      useReactive( callback );
-    } );
-
-    callback.mockClear();
-
-    setValue( 'oranges' );
-
-    expect( callback ).not.toHaveBeenCalled();
-
-    destroyScope( scope );
-
-    runSchedule();
-
-    expect( callback ).not.toHaveBeenCalledOnce();
-  } );
-} );
-
-describe( 'useReactiveWatch()', () => {
+describe( 'reactive()', () => {
   test( 'callback called immediately', () => {
     const getter = vi.fn().mockReturnValue( 'apples' );
     const callback = vi.fn();
 
-    useReactiveWatch( getter, callback );
+    reactive( getter, callback );
 
     expect( getter ).toHaveBeenCalledOnce();
     expect( callback ).toHaveBeenCalledOnce();
@@ -246,11 +166,11 @@ describe( 'useReactiveWatch()', () => {
   } );
 
   test( 'called asynchronously after change', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
+    const [ getValue, setValue ] = state( 'apples' );
 
     const callback = vi.fn();
 
-    useReactiveWatch( getValue, callback );
+    reactive( getValue, callback );
 
     callback.mockClear();
 
@@ -264,11 +184,11 @@ describe( 'useReactiveWatch()', () => {
   } );
 
   test( 'only called when explicit dependency changes', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     const callback = vi.fn().mockImplementation( getValue.name );
 
-    useReactiveWatch( getValue.count, callback );
+    reactive( getValue.count, callback );
 
     callback.mockClear();
 
@@ -286,11 +206,11 @@ describe( 'useReactiveWatch()', () => {
   } );
 
   test( 'not called if value is the same', () => {
-    const [ getValue, setValue ] = useState( { name: 'apples', count: 4 } );
+    const [ getValue, setValue ] = state( { name: 'apples', count: 4 } );
 
     const callback = vi.fn();
 
-    useReactiveWatch( getValue.name, callback );
+    reactive( getValue.name, callback );
 
     callback.mockClear();
 

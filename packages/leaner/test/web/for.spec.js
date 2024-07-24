@@ -1,11 +1,11 @@
 import { describe, expect, test, vi } from 'vitest';
-import { mutate, useState } from 'leaner';
+import { mutate, state } from 'leaner';
 import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
 describe( 'for directive', () => {
   test( 'simple values', () => {
-    const [ items, ] = useState( [ 'one', 'two', 'three' ] );
+    const [ items, ] = state( [ 'one', 'two', 'three' ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item ] ];
@@ -17,7 +17,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'push value', () => {
-    const [ items, setItems ] = useState( [ 'one', 'two' ] );
+    const [ items, setItems ] = state( [ 'one', 'two' ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item ] ];
@@ -33,7 +33,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'pop value', () => {
-    const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
+    const [ items, setItems ] = state( [ 'one', 'two', 'three' ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item ] ];
@@ -49,7 +49,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'replace value', () => {
-    const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
+    const [ items, setItems ] = state( [ 'one', 'two', 'three' ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item ] ];
@@ -65,7 +65,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'empty array', () => {
-    const [ items, setItems ] = useState( [] );
+    const [ items, setItems ] = state( [] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item ] ];
@@ -83,7 +83,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'objects', () => {
-    const [ items, ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -95,7 +95,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'push object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -111,7 +111,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'pop object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -127,7 +127,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'replace object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -143,7 +143,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'insert object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -159,7 +159,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'remove object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -175,7 +175,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'remove and update object', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -195,7 +195,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'create component', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 } ] );
 
     const callback = vi.fn();
 
@@ -227,7 +227,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'destroy component', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 
     const callback = vi.fn();
 
@@ -257,7 +257,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'swap adjacent nodes', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -273,7 +273,7 @@ describe( 'for directive', () => {
   } );
 
   test( 'reorder nodes', () => {
-    const [ items, setItems ] = useState( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 }, { name: 'cherries', count: 15 } ] );
 
     function App() {
       return [ 'for', items, item => [ 'div', item.name ] ];
@@ -289,8 +289,8 @@ describe( 'for directive', () => {
   } );
 
   test( 'for inside if (true -> false)', () => {
-    const [ condition, setCondition ] = useState( true );
-    const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
+    const [ condition, setCondition ] = state( true );
+    const [ items, setItems ] = state( [ 'one', 'two', 'three' ] );
 
     function App() {
       return [ 'if', condition, [ 'for', items, item => [ 'div', item ] ] ];
@@ -309,8 +309,8 @@ describe( 'for directive', () => {
   } );
 
   test( 'for inside if (false -> true)', () => {
-    const [ condition, setCondition ] = useState( false );
-    const [ items, setItems ] = useState( [ 'one', 'two', 'three' ] );
+    const [ condition, setCondition ] = state( false );
+    const [ items, setItems ] = state( [ 'one', 'two', 'three' ] );
 
     function App() {
       return [ 'if', condition, [ 'for', items, item => [ 'div', item ] ] ];

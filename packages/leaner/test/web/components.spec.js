@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { useReactive, useState } from 'leaner';
+import { state, reactive } from 'leaner';
 import { createApp, inject, onDestroy, onMount, provide } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
@@ -21,8 +21,8 @@ describe( 'components', () => {
   } );
 
   test( 'dynamic component', () => {
-    const [ id, setId ] = useState( 'test' );
-    const [ text, setText ] = useState( 'hello' );
+    const [ id, setId ] = state( 'test' );
+    const [ text, setText ] = state( 'hello' );
 
     const Button = vi.fn( ( props, children ) => {
       return [ 'button', { type: 'button', ...props }, ...children ];
@@ -111,12 +111,12 @@ describe( 'components', () => {
   } );
 
   test( 'stop watching when destroyed', () => {
-    const [ getValue, setValue ] = useState( 'apples' );
+    const [ getValue, setValue ] = state( 'apples' );
 
-    const callback = vi.fn().mockImplementation( getValue );
+    const callback = vi.fn();
 
     function Button( props, children ) {
-      useReactive( callback );
+      reactive( getValue, callback );
 
       return [ 'button', { type: 'button', ...props }, ...children ];
     }

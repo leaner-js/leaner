@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { createApp, inject, onDestroy, onMount, provide } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
@@ -15,8 +15,8 @@ describe( 'createApp()', ()=> {
   } );
 
   test( 'dynamic App', () => {
-    const [ id, setId ] = useState( 'test' );
-    const [ counter, setCounter ] = useState( 4 );
+    const [ id, setId ] = state( 'test' );
+    const [ counter, setCounter ] = state( 4 );
 
     function App() {
       return [[

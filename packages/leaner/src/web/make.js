@@ -1,4 +1,4 @@
-import { useReactiveWatch } from 'leaner';
+import { reactive } from 'leaner';
 import { appendToArray, isPlainObject } from '../shared/utils.js';
 import { setClasses } from './classes.js';
 import { createComponent, withChildContext } from './components.js';
@@ -63,7 +63,7 @@ export function make( template ) {
 
   if ( typeof template == 'function' ) {
     const textNode = document.createTextNode( '' );
-    useReactiveWatch( template, value => textNode.textContent = value );
+    reactive( template, value => textNode.textContent = value );
     return textNode;
   }
 
@@ -97,12 +97,12 @@ function setElementProperty( element, key, value ) {
     element.addEventListener( key.substring( 2 ), value );
   } else if ( Properties.has( key ) ) {
     if ( typeof value == 'function' )
-      useReactiveWatch( value, value => element[ key ] = value );
+      reactive( value, value => element[ key ] = value );
     else
       element[ key ] = value;
   } else {
     if ( typeof value == 'function' )
-      useReactiveWatch( value, value => setElementAttribute( element, key, value ) );
+      reactive( value, value => setElementAttribute( element, key, value ) );
     else
       setElementAttribute( element, key, value );
   }

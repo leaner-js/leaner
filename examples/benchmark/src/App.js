@@ -1,5 +1,4 @@
-import { mutate, useState } from 'leaner';
-import { onMount } from 'leaner/web';
+import { mutate, state } from 'leaner';
 
 const random = ( max ) => Math.round( Math.random() * 1000 ) % max;
 
@@ -32,8 +31,8 @@ function Button( props, children ) {
 }
 
 export function App() {
-  const [ data, setData ] = useState( [] );
-  const [ selected, setSelected ] = useState( 0 );
+  const [ data, setData ] = state( [] );
+  const [ selected, setSelected ] = state( 0 );
 
   function run() {
     setData( buildData( 1000 ) );

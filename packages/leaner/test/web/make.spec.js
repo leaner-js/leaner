@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { make } from 'leaner/web/make.js';
 import { runSchedule } from 'leaner/schedule.js';
 
@@ -33,7 +33,7 @@ describe( 'make()', () => {
   } );
 
   test( 'dynamic value', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'input', { value } ] );
 
@@ -48,7 +48,7 @@ describe( 'make()', () => {
   } );
 
   test( 'dynamic content', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'p', value ] );
 
@@ -63,7 +63,7 @@ describe( 'make()', () => {
   } );
 
   test( 'dynamic attribute', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'label', { for: value }, 'hello' ] );
 
@@ -78,7 +78,7 @@ describe( 'make()', () => {
   } );
 
   test( 'remove attribute', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'label', { for: value }, 'hello' ] );
 
@@ -93,7 +93,7 @@ describe( 'make()', () => {
   } );
 
   test( 'boolean attribute', () => {
-    const [ value, setValue ] = useState( true );
+    const [ value, setValue ] = state( true );
 
     const element = make( [ 'input', { type: 'text', readonly: value } ] );
 
@@ -108,7 +108,7 @@ describe( 'make()', () => {
   } );
 
   test( 'enumerated attribute', () => {
-    const [ value, setValue ] = useState( true );
+    const [ value, setValue ] = state( true );
 
     const element = make( [ 'div', { 'aria-hidden': value }, 'hello' ] );
 
@@ -123,7 +123,7 @@ describe( 'make()', () => {
   } );
 
   test( 'multiple text nodes', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'p', 'This is a ', value, '.' ] );
 
@@ -138,7 +138,7 @@ describe( 'make()', () => {
   } );
 
   test( 'null text node', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'p', 'This is a ', value, '.' ] );
 
@@ -153,7 +153,7 @@ describe( 'make()', () => {
   } );
 
   test( 'child fragment', () => {
-    const [ value, setValue ] = useState( 'test' );
+    const [ value, setValue ] = state( 'test' );
 
     const element = make( [ 'p', [[ 'This is a ', value, '.' ]] ] );
 
@@ -180,7 +180,7 @@ describe( 'make()', () => {
   } );
 
   test( 'ref property', () => {
-    const [ value, setValue ] = useState();
+    const [ value, setValue ] = state();
 
     const element = make( [ 'input', { name: 'test', ref: setValue } ] );
 

@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { useState } from 'leaner';
+import { state } from 'leaner';
 import { make } from 'leaner/web/make.js';
 import { runSchedule } from 'leaner/schedule.js';
 
@@ -17,7 +17,7 @@ describe( 'styles', () => {
   } );
 
   test( 'dynamic value', () => {
-    const [ value, setValue ] = useState( 'display: none;' );
+    const [ value, setValue ] = state( 'display: none;' );
 
     const element = make( [ 'button', { type: 'button', style: value } ] );
 
@@ -31,7 +31,7 @@ describe( 'styles', () => {
   } );
 
   test( 'dynamic object', () => {
-    const [ value, setValue ] = useState( 'none' );
+    const [ value, setValue ] = state( 'none' );
 
     const element = make( [ 'button', { type: 'button', style: { display: value } } ] );
 

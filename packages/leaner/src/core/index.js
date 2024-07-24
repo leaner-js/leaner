@@ -5,7 +5,7 @@ import { Mutator, applyMutator, mutate } from './mutate.js';
 import { schedule, scheduleWatcher } from './schedule.js';
 import { createRootStateGetterProxy, stateGetterApply, unwrapStateReaderProxy } from './state.js';
 
-export function useState( initial ) {
+export function state( initial ) {
   let current = initial;
 
   const record = new Set();
@@ -46,19 +46,7 @@ export function useState( initial ) {
   }
 }
 
-export function useWatchEffect( callback ) {
-  const watcher = createWatcher( null, update, false );
-
-  update();
-
-  function update() {
-    const [ _, deps ] = withDeps( callback );
-
-    updateWatcher( watcher, deps );
-  }
-}
-
-export function useWatch( getter, callback ) {
+export function watch( getter, callback ) {
   let [ value, deps ] = withDeps( getter );
 
   const watcher = createWatcher( deps, update, false );
@@ -77,7 +65,7 @@ export function useWatch( getter, callback ) {
   }
 }
 
-export function useEffect( callback ) {
+export function effect( callback ) {
   const watcher = createWatcher( null, update, true );
 
   scheduleWatcher( watcher );
@@ -89,19 +77,7 @@ export function useEffect( callback ) {
   }
 }
 
-export function useReactive( callback ) {
-  const watcher = createWatcher( null, update, true );
-
-  update();
-
-  function update() {
-    const [ _, deps ] = withDeps( callback );
-
-    updateWatcher( watcher, deps );
-  }
-}
-
-export function useReactiveWatch( getter, callback ) {
+export function reactive( getter, callback ) {
   let value;
 
   const watcher = createWatcher( null, update, true );
@@ -120,7 +96,7 @@ export function useReactiveWatch( getter, callback ) {
   }
 }
 
-export function useComputed( callback ) {
+export function computed( callback ) {
   let value, valid = false;
 
   const watcher = createWatcher( null, invalidate, false );
@@ -151,12 +127,19 @@ export function useComputed( callback ) {
   }
 }
 
-export function useConstant( value ) {
+export function constant( value ) {
   return createRootComputedProxy( getter );
 
   function getter() {
     return value;
   }
+}
+
+export function transform( value, callback ) {
+  if ( typeof value == 'function' )
+    return computed( () => callback( value() ) );
+  else
+    return callback( value );
 }
 
 export { destroyScope, mutate, schedule, withScope };
