@@ -4,11 +4,18 @@
   "description": "A reactive wrapper for HTML DOM API",
   "type": "module",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "exports": {
-    ".": "./dist/core.js",
-    "./web": "./dist/web.js",
+    ".": {
+      "types": "./types/core.d.ts",
+      "default": "./dist/core.js"
+    },
+    "./web": {
+      "types": "./types/web.d.ts",
+      "default": "./dist/web.js"
+    },
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
   },

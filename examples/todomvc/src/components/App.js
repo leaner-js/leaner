@@ -5,10 +5,12 @@ import TodoFooter from './TodoFooter.js';
 import TodoHeader from './TodoHeader.js';
 import TodoItem from './TodoItem.js';
 
+/** @typedef {{ id: number, title: string, completed: boolean }} Todo */
+
 export function App() {
   let nextId = 1;
 
-  const [ todos, setTodos ] = state( [] );
+  const [ todos, setTodos ] = state( /** @type {Todo[]} */( [] ) );
 
   const activeTodos = computed( () => todos().filter( t => !t.completed ) );
   const completedTodos = computed( () => todos().filter( t => t.completed ) );
