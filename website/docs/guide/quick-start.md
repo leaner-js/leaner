@@ -57,4 +57,4 @@ function App() {
 createApp( App ).mount( document.body );
 ```
 
-You can use any modern bundler which supports ES6 modules, for example Rollup or Vite. No additional plugins are necessary. Applications written using Leaner are pure JavaScript code and don't need any special compilers or transpilers.
+You can use any modern bundler which supports ES6 modules, for example [Rollup](https://rollupjs.org/) or [Vite](https://vitejs.dev/). No additional plugins are necessary. Applications written using Leaner are pure JavaScript code and don't need any special compilers or transpilers.

@@ -154,7 +154,7 @@ return [ 'input', {
 
 ## References
 
-The special `ref` property can be used to save a reference to the HTML element created by the template:
+The special `ref` property can be used to save a reference to the DOM element created by the template:
 
 ```js
 const [ element, setElement ] = state( null );

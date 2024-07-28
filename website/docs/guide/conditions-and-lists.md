@@ -164,7 +164,7 @@ The `'for'` directive can contain child [components](./components); their lifecy
 
 ## Dynamic Elements
 
-In some cases a single template can be used to render different HTML elements. Instead of using multiple conditions, you can use the `'dynamic'` directive. It behaves like a regular HTML element, but instead of specifying the HTML tag directly in the template, you can use a function which returs a string representing the HTML tag. For example:
+In some cases a single template can be used to render different HTML elements. Instead of using multiple conditions, you can use the `'dynamic'` directive. It behaves like a regular HTML element, but instead of specifying the HTML tag directly in the template, you can use a function which returns a string representing the HTML tag. For example:
 
 ```js
 const [ tag, setTag ] = state( 'p' );
@@ -174,7 +174,7 @@ return [ 'dynamic', tag, { class: 'dynamic-element' }, 'This tag is dynamic.' ];
 
 This example renders a `<p>` element, but when the state changes, a different element will be created instead.
 
-The `'dynamic'` directive can also be used to render different [components](./component). This is useful for example if you want to implement simple routing.
+The `'dynamic'` directive can also be used to render different [components](./components). This is useful for example if you want to implement simple routing.
 
 ```js
 const [ page, setPage ] = state( HomePage );

@@ -26,6 +26,8 @@ function App() {
     [ 'p', 'This is my first Leaner application.' ],
   ];
 }
+
+createApp( App ).mount( document.body );
 ```
 
 This simple template syntax makes any compilation unnecessary, either at build-time or at runtime. The Leaner templates are translated directly to DOM elements and attributes, without any virtual DOM or other intermediate steps.

@@ -15,8 +15,6 @@ export default {
         { text: 'Conditions and Lists', link: '/guide/conditions-and-lists.html' },
         { text: 'Components', link: '/guide/components.html' },
         { text: 'Advanced Reactivity', link: '/guide/advanced-reactivity.html' },
-        { text: 'Watchers', link: '/guide/watchers.html' },
-        { text: 'Dependency Injection', link: '/guide/dependency-injection.html' },
       ],
     },
     'reference': {

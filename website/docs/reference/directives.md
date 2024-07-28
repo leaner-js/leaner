@@ -1,0 +1,67 @@
+---
+sidebar: reference
+---
+
+# Directives
+
+## if
+
+Conditionally creates or destroys child HTML elements or components.
+
+```js
+[ 'if', condition, child ]
+[ 'if', condition, child, elseChild ]
+[ 'if', condition, child, condition2, child2 ]
+[ 'if', condition, child, condition2, child2, elseChild ]
+...
+```
+
+The conditions are reactive functions returning a boolean value. The children can be HTML elements, components or fragments. For example:
+
+```js
+const [ visible, setVisible ] = state( true );
+
+return [ 'if', visible, [ 'p', 'This is rendered conditionally.' ] ];
+```
+
+See [Conditional Rendering](../guide/conditions-and-lists#conditional-rendering) for more information.
+
+
+## for
+
+Creates multiple child HTML elements or components.
+
+```js
+[ 'for', items, ( item, index ) => child ]
+```
+
+The first argument is a reactive function returning an array. The second argument is a function which returns the template for the given item.
+
+```js
+const [ items, setItems ] = state( [ 'apple', 'orange', 'peach' ] );
+
+return [ 'ul',
+  [ 'for', items, item => [ 'li', item ] ],
+];
+```
+
+See [List Rendering](../guide/conditions-and-lists#list-rendering) for more information.
+
+
+## dynamic
+
+Creates a child HTML element or component of a dynamic type.
+
+```js
+[ 'dynamic', tagOrComponent, props, children... ]
+```
+
+The first arguments is a reactive function returning a string representing the HTML tag or a function representing a component. The following arguments are optional properties and children passed to the element or component. For example:
+
+```js
+const [ tag, setTag ] = state( 'p' );
+
+return [ 'dynamic', tag, { class: 'dynamic-element' }, 'This tag is dynamic.' ];
+```
+
+See [Dynamic Elements](../guide/conditions-and-lists#dynamic-elements) for more information.
