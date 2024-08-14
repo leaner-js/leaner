@@ -1,5 +1,28 @@
 # Leaner.js
 
-**Leaner.js** is a thin wrapper over the HTML DOM API. Although it contains many features of modern JavaScript frameworks (reactive state, components, etc.), it doesn’t require any special compilers or build tools, and it doesn’t use a virtual DOM so it's very lightweight and efficient.
+Leaner.js is a thin, reactive wrapper for DOM. It lets you create modern client-side JavaScript applications without compilers or build tools.
 
-**Note:** the current version is a proof of concept.
+
+## Getting Started
+
+Documentation: https://leanerjs.org/
+
+
+## Development
+
+To build the package:
+
+```bash
+npm run build
+```
+
+To run tests:
+
+```bash
+npm test
+```
+
+
+## License
+
+Leaner.js is open-source software released under the MIT License. &copy; 2024 Michał Męciński.

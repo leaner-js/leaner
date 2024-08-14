@@ -1,7 +1,7 @@
 {
   "name": "leaner",
   "version": "0.0.1",
-  "description": "A reactive wrapper for HTML DOM API",
+  "description": "Thin, reactive wrapper for DOM",
   "type": "module",
   "files": [
     "dist",
@@ -26,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mimecorg/leaner.git"
+    "url": "git+https://github.com/leaner-js/leaner.git"
   },
   "keywords": [
     "leaner",
@@ -36,9 +36,9 @@
   "author": "Michał Męciński",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mimecorg/leaner/issues"
+    "url": "https://github.com/leaner-js/leaner/issues"
   },
-  "homepage": "https://github.com/mimecorg/leaner",
+  "homepage": "https://leanerjs.org/",
   "devDependencies": {
     "jsdom": "^24.0.0",
     "rollup": "^4.17.2",

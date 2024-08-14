@@ -4,7 +4,7 @@
   "description": "Leaner.js benchmark for js-framework-benchmark",
   "js-framework-benchmark": {
     "frameworkVersionFromPackage": "leaner",
-    "frameworkHomeURL": "https://github.com/mimecorg/leaner",
+    "frameworkHomeURL": "https://github.com/leaner-js/leaner",
     "customURL": "/dist"
   },
   "type": "module",
