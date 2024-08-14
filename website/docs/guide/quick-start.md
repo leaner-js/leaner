@@ -12,7 +12,7 @@ The easiest way to use Leaner is to load it directly from a CDN which can handle
 <html>
 <body>
 <script type="module">
-import { createApp } from 'https://esm.sh/leaner@0.0.1/web';
+import { createApp } from 'https://esm.sh/leaner@$VERSION$/web';
 
 function App() {
   return [ 'div', { class: 'hello' },

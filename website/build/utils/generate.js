@@ -4,8 +4,10 @@ import { join } from 'path/posix';
 
 import { escapeHtml, renderMarkdown } from './markdown.js';
 
-export async function generateFile( file, rootDir, template, config, files ) {
-  const source = await readFile( resolve( rootDir, 'docs', file ), 'utf-8' );
+export async function generateFile( file, rootDir, template, config, version, files ) {
+  let source = await readFile( resolve( rootDir, 'docs', file ), 'utf-8' );
+
+  source = source.replaceAll( '$VERSION$', version );
 
   const env = { base: dirname( file ) };
   const content = renderMarkdown( source, env );

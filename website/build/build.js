@@ -38,6 +38,8 @@ let queued = new Set();
 
 const plugins = [ inlineScript() ];
 
+const version = await getVersion();
+
 if ( watchMode ) {
   await runInWatchMode();
 } else {
@@ -54,7 +56,7 @@ async function generateAllFiles( server ) {
     files = await glob( '**/*.md', { cwd: resolve( rootDir, 'docs' ), posix: true } );
 
     for ( const file of files )
-      await generateFile( file, rootDir, template, config, files );
+      await generateFile( file, rootDir, template, config, version, files );
 
     await generate404( '404.md', rootDir, template, config );
 
@@ -127,7 +129,7 @@ async function handleFileChange( file, server ) {
       const inputFile = file.replaceAll( '\\', '/' );
       const outputFile = inputFile.replace( /.md$/, '.html' );
       console.log( join( 'dist', outputFile ) );
-      await generateFile( inputFile, rootDir, template, config, files );
+      await generateFile( inputFile, rootDir, template, config, version, files );
       queued.delete( file );
       server.reload( outputFile );
     }
@@ -147,4 +149,16 @@ function help() {
   console.log( 'Usage: node build.js [--watch]' );
 
   process.exit( 1 );
+}
+
+async function getVersion() {
+  const path = resolve( __dirname, '../../packages/leaner/package.json' );
+  const body = await readFile( path, 'utf-8' );
+  const { version } = JSON.parse( body );
+
+  const parts = version.split( '.' );
+
+  const firstNonZero = parts.findIndex( p => p != '0' );
+
+  return parts.slice( 0, firstNonZero + 1 ).join( '.' );
 }
