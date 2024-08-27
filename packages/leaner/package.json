@@ -1,6 +1,6 @@
 {
   "name": "leaner",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Thin, reactive wrapper for DOM",
   "type": "module",
   "files": [
