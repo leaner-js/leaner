@@ -7,14 +7,23 @@
     "dist",
     "types"
   ],
+  "module": "./dist/core.js",
+  "types": "./types/core.d.ts",
+  "typesVersions": {
+    "*": {
+      "web": [
+        "./types/web.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
-      "types": "./types/core.d.ts",
-      "default": "./dist/core.js"
+      "import": "./dist/core.js",
+      "types": "./types/core.d.ts"
     },
     "./web": {
-      "types": "./types/web.d.ts",
-      "default": "./dist/web.js"
+      "import": "./dist/web.js",
+      "types": "./types/web.d.ts"
     },
     "./dist/*": "./dist/*",
     "./package.json": "./package.json"
