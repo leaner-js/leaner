@@ -111,12 +111,12 @@ describe( 'components', () => {
   } );
 
   test( 'stop watching when destroyed', () => {
-    const [ getValue, setValue ] = state( 'apples' );
+    const [ value, setValue ] = state( 'apples' );
 
     const callback = vi.fn();
 
     function Button( props, children ) {
-      reactive( getValue, callback );
+      reactive( value, callback );
 
       return [ 'button', { type: 'button', ...props }, ...children ];
     }
@@ -139,6 +139,29 @@ describe( 'components', () => {
     runSchedule();
 
     expect( callback ).not.toHaveBeenCalled();
+  } );
+
+  test( 'ref property', () => {
+    const callback = vi.fn();
+
+    function Input() {
+      return [ 'input', { name: 'test', ref: callback } ];
+    }
+
+    function App() {
+      return [ Input ];
+    }
+
+    const app = createApp( App );
+    app.mount( document.body );
+
+    expect( callback ).toHaveBeenCalledWith( expect.any( HTMLInputElement ) );
+
+    callback.mockClear();
+
+    app.destroy();
+
+    expect( callback ).toHaveBeenCalledWith( null );
   } );
 
   test( 'provide/inject', () => {

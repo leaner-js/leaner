@@ -1,7 +1,7 @@
 import { reactive } from 'leaner';
 import { appendToArray, isPlainObject } from '../shared/utils.js';
 import { setClasses } from './classes.js';
-import { createComponent, withChildContext } from './components.js';
+import { createComponent, createRef, withChildContext } from './components.js';
 import { createDynamicDirective } from './dynamic.js';
 import { createForDirective } from './for.js';
 import { createIfDirective } from './if.js';
@@ -83,7 +83,7 @@ function setElementProperties( element, properties ) {
         setStyles( element, value );
         break;
       case 'ref':
-        value( element );
+        createRef( value, element );
         break;
       default:
         setElementProperty( element, key, value );

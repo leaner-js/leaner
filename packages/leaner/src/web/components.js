@@ -24,6 +24,7 @@ export function createContext( parent ) {
     scope: [],
     mount: null,
     destroy: null,
+    refs: null,
     services: null,
   };
 }
@@ -75,10 +76,25 @@ export function onDestroy( callback ) {
   current.destroy.push( callback );
 }
 
+export function createRef( callback, element ) {
+  if ( current != null ) {
+    if ( current.refs == null )
+      current.refs = [];
+    current.refs.push( { callback, element } );
+  } else {
+    callback( element );
+  }
+}
+
 export function mountContext( context ) {
   if ( context.children != null ) {
     for ( const child of context.children )
       mountContext( child );
+  }
+
+  if ( context.refs != null ) {
+    for ( const ref of context.refs )
+      ref.callback( ref.element );
   }
 
   if ( context.mount != null ) {
@@ -95,6 +111,12 @@ export function destroyContext( context ) {
   }
 
   context.mounted = null;
+
+  if ( context.refs != null ) {
+    for ( const ref of context.refs )
+      ref.callback( null );
+    context.refs = null;
+  }
 
   if ( context.scope.length > 0 ) {
     destroyScope( context.scope );
