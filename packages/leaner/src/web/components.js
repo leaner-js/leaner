@@ -110,7 +110,7 @@ export function destroyContext( context ) {
     context.destroy = null;
   }
 
-  context.mounted = null;
+  context.mount = null;
 
   if ( context.refs != null ) {
     for ( const ref of context.refs )
@@ -128,6 +128,8 @@ export function destroyContext( context ) {
       destroyContext( child );
     context.children = null;
   }
+
+  context.services = null;
 }
 
 export function provide( key, value ) {
