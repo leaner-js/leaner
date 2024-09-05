@@ -97,9 +97,9 @@ function setElementProperty( element, key, value ) {
     element.addEventListener( key.substring( 2 ), value );
   } else if ( Properties.has( key ) ) {
     if ( typeof value == 'function' )
-      reactive( value, value => element[ key ] = value );
+      reactive( value, value => element[ key ] = value != null ? value : '' );
     else
-      element[ key ] = value;
+      element[ key ] = value != null ? value : '';
   } else {
     if ( typeof value == 'function' )
       reactive( value, value => setElementAttribute( element, key, value ) );

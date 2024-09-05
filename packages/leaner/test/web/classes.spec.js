@@ -10,8 +10,20 @@ describe( 'classes', () => {
     expect( element.className ).toBe( 'btn-primary is-large' );
   } );
 
+  test( 'undefined', () => {
+    const element = make( [ 'button', { type: 'button', class: undefined } ] );
+
+    expect( element.outerHTML ).toBe( '<button type="button"></button>' );
+  } );
+
   test( 'static array', () => {
     const element = make( [ 'button', { type: 'button', class: [ 'btn-primary', 'is-large' ] } ] );
+
+    expect( element.className ).toBe( 'btn-primary is-large' );
+  } );
+
+  test( 'static array with undefined', () => {
+    const element = make( [ 'button', { type: 'button', class: [ 'btn-primary', 'is-large', undefined ] } ] );
 
     expect( element.className ).toBe( 'btn-primary is-large' );
   } );

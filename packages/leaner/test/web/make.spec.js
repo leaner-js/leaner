@@ -47,6 +47,13 @@ describe( 'make()', () => {
     expect( element.value ).toBe( 'hello' );
   } );
 
+  test( 'undefined value', () => {
+    const element = make( [ 'input', { value: undefined } ] );
+
+    expect( element ).toBeInstanceOf( HTMLInputElement );
+    expect( element.value ).toBe( '' );
+  } );
+
   test( 'dynamic content', () => {
     const [ value, setValue ] = state( 'test' );
 
@@ -62,6 +69,13 @@ describe( 'make()', () => {
     expect( element.textContent ).toBe( 'hello' );
   } );
 
+  test( 'undefined content', () => {
+    const element = make( [ 'p', undefined ] );
+
+    expect( element ).toBeInstanceOf( HTMLElement );
+    expect( element.textContent ).toBe( '' );
+  } );
+
   test( 'dynamic attribute', () => {
     const [ value, setValue ] = state( 'test' );
 
@@ -75,6 +89,13 @@ describe( 'make()', () => {
     runSchedule();
 
     expect( element.outerHTML ).toBe( '<label for="world">hello</label>' );
+  } );
+
+  test( 'undefined attribute', () => {
+    const element = make( [ 'label', { for: undefined }, 'hello' ] );
+
+    expect( element ).toBeInstanceOf( HTMLLabelElement );
+    expect( element.outerHTML ).toBe( '<label>hello</label>' );
   } );
 
   test( 'remove attribute', () => {

@@ -7,15 +7,17 @@ export function setClasses( element, classes ) {
       if ( Array.isArray( value ) ) {
         element.className = '';
         element.classList.add( ...value );
-      } else {
+      } else if ( value != null ) {
         element.className = value;
+      } else {
+        element.removeAttribute( 'class' );
       }
     } );
   } else if ( isPlainObject( classes ) ) {
     setClassesObject( element, classes );
   } else if ( Array.isArray( classes ) ) {
     setClassesArray( element, classes );
-  } else {
+  } else if ( classes != null ) {
     element.className = classes;
   }
 }
@@ -54,7 +56,7 @@ function setClassesArray( element, classes ) {
       } );
     } else if ( isPlainObject( item ) ) {
       setClassesObject( element, item );
-    } else {
+    } else if ( item != null ) {
       element.classList.add( item );
     }
   }

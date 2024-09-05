@@ -8,13 +8,15 @@ export function setStyles( element, styles ) {
         element.style = '';
         for ( const [ key, value ] of Object.entries( value ) )
           setStyleProperty( element, key, value );
-      } else {
+      } else if ( value != null ) {
         element.style = value;
+      } else {
+        element.removeAttribute( 'style' );
       }
     } );
   } else if ( isPlainObject( styles ) ) {
     setStylesObject( element, styles );
-  } else {
+  } else if ( styles != null ) {
     element.style = styles;
   }
 }
@@ -22,13 +24,15 @@ export function setStyles( element, styles ) {
 function setStylesObject( element, styles ) {
   for ( const [ key, value ] of Object.entries( styles ) ) {
     if ( typeof value == 'function' )
-      reactive( value, value => element.style[ key ] = value );
+      reactive( value, value => setStyleProperty( element, key, value ) );
     else
       setStyleProperty( element, key, value );
   }
 }
 
 function setStyleProperty( element, key, value ) {
+  if ( value == null )
+    value = '';
   if ( key.startsWith( '--' ) )
     element.style.setProperty( key, value );
   else

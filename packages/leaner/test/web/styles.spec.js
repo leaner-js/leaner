@@ -10,6 +10,12 @@ describe( 'styles', () => {
     expect( element.style.display ).toBe( 'none' );
   } );
 
+  test( 'undefined', () => {
+    const element = make( [ 'button', { type: 'button', style: undefined } ] );
+
+    expect( element.outerHTML ).toBe( '<button type="button"></button>' );
+  } );
+
   test( 'static object', () => {
     const element = make( [ 'button', { type: 'button', style: { display: 'none' } } ] );
 
@@ -42,6 +48,20 @@ describe( 'styles', () => {
     runSchedule();
 
     expect( element.style.display ).toBe( 'inline' );
+  } );
+
+  test( 'dynamic object with undefined', () => {
+    const [ value, setValue ] = state( 'none' );
+
+    const element = make( [ 'button', { type: 'button', style: { display: value } } ] );
+
+    expect( element.style.display ).toBe( 'none' );
+
+    setValue( undefined );
+
+    runSchedule();
+
+    expect( element.style.display ).toBe( '' );
   } );
 
   // NOTE: custom properties cannot be tested because of https://github.com/jsdom/jsdom/issues/1895
