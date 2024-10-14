@@ -207,4 +207,13 @@ describe( 'make()', () => {
 
     expect( value() ).toBe( element );
   } );
+
+  test( 'select with value', () => {
+    const element = make( [ 'select', { value: '2' },
+      [ 'option', { value: '1' }, 'One' ],
+      [ 'option', { value: '2' }, 'Two' ],
+    ] );
+
+    expect( element.value ).toBe( '2' );
+  } );
 } );

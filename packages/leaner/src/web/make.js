@@ -45,12 +45,19 @@ export function make( template ) {
 
       const element = document.createElement( tag );
 
+      let properties = null;
+
       let i = 1;
-      if ( i < template.length && isPlainObject( template[ i ] ) )
-        setElementProperties( element, template[ i++ ] );
+      if ( i < template.length && isPlainObject( template[ i ] ) ) {
+        properties = template[ i++ ];
+        setElementProperties( element, properties );
+      }
 
       for ( ; i < template.length; i++ )
         appendNode( make( template[ i ] ), element );
+
+      if ( properties != null && 'value' in properties )
+        setElementProperty( element, 'value', properties.value );
 
       return element;
     }
@@ -84,6 +91,9 @@ function setElementProperties( element, properties ) {
         break;
       case 'ref':
         createRef( value, element );
+        break;
+      case 'value':
+        // this property must be set after other properties are set and children are appended
         break;
       default:
         setElementProperty( element, key, value );
