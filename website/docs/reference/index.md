@@ -9,6 +9,8 @@ sidebar: reference
  - [state()](./core#state)
  - [computed()](./core#computed)
  - [transform()](./core#transform)
+ - [get()](./core#get)
+ - [getter()](./core#getter)
  - [mutate()](./core#mutate)
  - [watch()](./core#watch)
  - [effect()](./core#effect)

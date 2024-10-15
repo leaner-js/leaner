@@ -101,6 +101,22 @@ function Icon( { name } ) {
 
 When `name` is a function, `transform()` will create a [computed](./advanced-reactivity#computed-state) function, which is also reactive. Otherwise, it will just call the second function and return its result as a simple value.
 
+To handle more complex scenarios, two other helpers functions are available: `get()` will return the current value of a parameter, regardless of whether its a reactive function or a plain value, and `getter()` will always return a function, whether a function or a plain value is passed.
+
+In the following example, `get()` is used to check if the value of the `options` parameter is not null, and `getter()` is used to pass it to the [for](./conditions-and-lists.md#list-rendering) directive, which always expects a reactive function as a parameter.
+
+```js
+import { get, getter } from 'leaner';
+
+function Select( { options } ) {
+  return [ 'select',
+    [ 'if', () => get( options ) != null,
+      [ 'for', getter( options ), option => [ 'option', option ] ],
+    ],
+  ];
+}
+```
+
 You can also combine both approaches and destructure some properties, while passing the remaining properties directly to the HTML element. For example:
 
 ```js
