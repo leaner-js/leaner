@@ -142,4 +142,16 @@ export function transform( value, callback ) {
     return callback( value );
 }
 
+export function get( value ) {
+  if ( typeof value == 'function' )
+    return value();
+  return value;
+}
+
+export function getter( value ) {
+  if ( typeof value == 'function' )
+    return value;
+  return constant( value );
+}
+
 export { destroyScope, mutate, schedule, withScope };
