@@ -275,12 +275,16 @@ header {
     z-index: 9;
     opacity: 0;
     transition: opacity 200ms ease-in-out;
+  }
 
-    .sidebar-open & {
+  .sidebar-open & {
+    @include media-breakpoint-max( lg ) {
       display: block;
     }
+  }
 
-    .sidebar-fade & {
+  .sidebar-fade & {
+    @include media-breakpoint-max( lg ) {
       opacity: 1;
     }
   }
@@ -301,8 +305,10 @@ header {
       z-index: 10;
       transform: translate( -$sidebar-width, 0 );
       transition: transform 200ms ease-in-out;
+    }
 
-      .sidebar-fade & {
+    .sidebar-fade & {
+      @include media-breakpoint-max( lg ) {
         transform: none;
       }
     }
