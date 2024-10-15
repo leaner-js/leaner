@@ -22,8 +22,8 @@ function computedGetterGet( target, prop ) {
     };
   }
 
-  if ( prop == Symbol.toPrimitive )
-    throw new Error( 'Cannot use a computed getter as array index; use the get() method instead' );
+  if ( prop === Symbol.toPrimitive )
+    throw new TypeError( 'Using a computed getter as a primitive value is not allowed' );
 
   return createChildComputedProxy( target, prop );
 }

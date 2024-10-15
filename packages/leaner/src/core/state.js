@@ -25,7 +25,7 @@ function stateGetterGet( target, prop ) {
   }
 
   if ( prop === Symbol.toPrimitive )
-    throw new Error( 'Using a state getter as a primitive value is not allowed' );
+    throw new TypeError( 'Using a state getter as a primitive value is not allowed' );
 
   return createChildStateGetterProxy( target, prop );
 }
