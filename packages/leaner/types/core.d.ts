@@ -38,6 +38,10 @@ export declare function constant<T>( value: T ): Getter<T>;
 
 export declare function transform<T, U>( value: T | ( () => T ), callback: ( value: T ) => U ): U | ( () => U );
 
+export declare function get<T>( value: T | ( () => T ) ): T;
+
+export declare function getter<T>( value: T | ( () => T ) ): () => T;
+
 export declare function mutate<T>( callback: ( value: T ) => void ): Mutator<T>;
 
 export declare function schedule( callback: () => void ): void;
