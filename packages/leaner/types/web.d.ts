@@ -1,4 +1,4 @@
-interface App {
+export interface App {
   mount( target: HTMLElement ): void;
   destroy(): void;
   provide( key: string | symbol, value: any ): void;

@@ -20,9 +20,9 @@ declare class Mutator<T> {
   private callback: ( value: T ) => void;
 }
 
-type Getter<T> = ( () => DeepReadonly<T> ) & ( T extends Array<infer U> ? ArrayGetter<U> : T extends object ? ObjectGetter<T> : {} );
+export type Getter<T> = ( () => DeepReadonly<T> ) & ( T extends Array<infer U> ? ArrayGetter<U> : T extends object ? ObjectGetter<T> : {} );
 
-type Setter<T> = ( value: ( T extends Function ? never : T ) | ( ( value: DeepReadonly<T> ) => T ) | Mutator<T> ) => void;
+export type Setter<T> = ( value: ( T extends Function ? never : T ) | ( ( value: DeepReadonly<T> ) => T ) | Mutator<T> ) => void;
 
 export declare function state<T>( initial: T ): [ Getter<T>, Setter<T> ];
 
