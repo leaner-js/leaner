@@ -16,7 +16,7 @@ type ArrayGetter<T> = {
   length(): number;
 }
 
-class Mutator<T> {
+declare class Mutator<T> {
   private callback: ( value: T ) => void;
 }
 
