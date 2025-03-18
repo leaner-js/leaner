@@ -4,20 +4,8 @@ import { DynamicNode } from './nodes.js';
 import { updateDynamicNode } from './update.js';
 
 export function createIfDirective( template ) {
-  let numberOfConditions = 0;
-  let hasElse = false;
-
-  for ( let i = 1; i < template.length; i += 2 ) {
-    if ( i == template.length - 1 )
-      hasElse = true;
-    else if ( typeof template[ i ] == 'function' )
-      numberOfConditions++;
-    else
-      throw new TypeError( 'Invalid if template' );
-  }
-
-  if ( numberOfConditions == 0 )
-      throw new TypeError( 'Invalid if template' );
+  if ( template.length < 2 || typeof template[ 1 ] != 'function' )
+    throw new TypeError( 'Invalid if template' );
 
   const result = new DynamicNode( null );
 
@@ -28,22 +16,17 @@ export function createIfDirective( template ) {
   return result;
 
   function watchState() {
-    let state = null;
-
-    for ( let i = 0; i < numberOfConditions; i++ ) {
-      if ( template[ 2 * i + 1 ]() ) {
-        state = 2 * i + 2;
-        break;
-      }
-    }
-
-    if ( state == null && hasElse )
-      state = template.length - 1;
-
-    return state;
+    return template[ 1 ]();
   }
 
   function update( state ) {
-    updateDynamicNode( result, context, state != null ? template[ state ] : null );
+    let childTemplate = null;
+    if ( state ) {
+      if ( template.length == 3 )
+        childTemplate = template[ 2 ];
+      else
+        childTemplate = [ template.slice( 2 ) ];
+    }
+    updateDynamicNode( result, context, childTemplate );
   }
 }

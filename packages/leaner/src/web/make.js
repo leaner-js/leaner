@@ -7,11 +7,14 @@ import { createForDirective } from './for.js';
 import { createIfDirective } from './if.js';
 import { DynamicNode, appendNode } from './nodes.js';
 import { setStyles } from './styles.js';
+import { createSwitchDirective } from './switch.js';
 
 const Directives = {
-  if: createIfDirective,
-  for: createForDirective,
   dynamic: createDynamicDirective,
+  else: unexpectedDirective,
+  for: createForDirective,
+  if: createIfDirective,
+  switch: createSwitchDirective,
 };
 
 const Properties = new Set( [ 'value', 'checked', 'textContent', 'innerHTML' ] );
@@ -130,4 +133,8 @@ function setElementAttribute( element, name, value ) {
     else
       element.removeAttribute( name );
   }
+}
+
+function unexpectedDirective( template ) {
+  throw new TypeError( `Unexpected ${template[ 0 ]} directive` );
 }

@@ -3,7 +3,7 @@ import { state } from 'leaner';
 import { createApp, onDestroy, onMount } from 'leaner/web';
 import { runSchedule } from 'leaner/schedule.js';
 
-describe( 'if', () => {
+describe( 'if / switch', () => {
   test( 'simple true -> false', () => {
     const [ condition, setCondition ] = state( true );
 
@@ -44,7 +44,10 @@ describe( 'if', () => {
     const [ condition, setCondition ] = state( true );
 
     function App() {
-      return [ 'if', condition, [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ];
+      return [ 'switch',
+        [ 'if', condition, [ 'p', 'test' ] ],
+        [ 'else', [ 'button', { type: 'button' }, 'test' ] ],
+      ];
     }
 
     createApp( App ).mount( document.body );
@@ -58,11 +61,11 @@ describe( 'if', () => {
     expect( document.body.innerHTML ).toBe( '<button type="button">test</button>' );
   } );
 
-  test( 'fragment', () => {
+  test( 'multiple children', () => {
     const [ condition, setCondition ] = state( true );
 
     function App() {
-      return [ 'if', condition, [[ [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ]] ];
+      return [ 'if', condition, [ 'p', 'test' ], [ 'button', { type: 'button' }, 'test' ] ];
     }
 
     createApp( App ).mount( document.body );
@@ -76,13 +79,34 @@ describe( 'if', () => {
     expect( document.body.innerHTML ).toBe( '<!---->' );
   } );
 
+  test( 'if/else with multiple children', () => {
+    const [ condition, setCondition ] = state( true );
+
+    function App() {
+      return [ 'switch',
+        [ 'if', condition, [ 'p', 'test' ], [ 'button', { type: 'button' }, 'ok' ] ],
+        [ 'else', [ 'h1', 'else' ], [ 'button', { type: 'button' }, 'cancel' ] ],
+      ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<p>test</p><button type="button">ok</button>' );
+
+    setCondition( false );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<h1>else</h1><button type="button">cancel</button>' );
+  } );
+
   test( 'multiple conditions', () => {
     const [ value, setValue ] = state( 1 );
 
     function App() {
-      return [ 'if',
-        () => value() == 1, [ 'p', 'test' ],
-        () => value() == 2, [ 'button', { type: 'button' }, 'test' ]
+      return [ 'switch',
+        [ 'if', () => value() == 1, [ 'p', 'test' ] ],
+        [ 'if', () => value() == 2, [ 'button', { type: 'button' }, 'test' ] ],
       ];
     }
 
@@ -109,9 +133,9 @@ describe( 'if', () => {
 
     function App() {
       return [ 'if', condition,
-        [ 'if',
-          () => value() == 1, [ 'p', 'test' ],
-          () => value() == 2, [ 'button', { type: 'button' }, 'test' ]
+        [ 'switch',
+          [ 'if', () => value() == 1, [ 'p', 'test' ] ],
+          [ 'if', () => value() == 2, [ 'button', { type: 'button' }, 'test' ] ],
         ],
       ];
     }
@@ -197,5 +221,15 @@ describe( 'if', () => {
     expect( document.body.innerHTML ).toBe( '<!---->' );
 
     expect( callback ).toHaveBeenCalledOnce();
+  } );
+
+  test( 'unexpected else', () => {
+    function App() {
+      return [ 'else', [ 'p', 'test' ] ];
+    }
+
+    expect( () => {
+      createApp( App ).mount( document.body );
+    } ).toThrowError( 'Unexpected else directive' );
   } );
 } );
