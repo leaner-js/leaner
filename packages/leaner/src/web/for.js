@@ -9,6 +9,8 @@ export function createForDirective( template ) {
     throw new TypeError( 'Invalid for template' );
 
   const itemsGetter = template[ 1 ];
+  const callback = template[ 2 ];
+  const useIndexes = callback.length > 1;
 
   let length = 0;
   let items = null;
@@ -88,7 +90,7 @@ export function createForDirective( template ) {
         if ( oldItemContexts != null )
           oldItemContexts.delete( itemContext );
 
-        if ( isMatchedByValue ) {
+        if ( useIndexes && isMatchedByValue ) {
           // update the index passed to the child if it's reordered
           const indexState = indexStates.get( oldIndex );
           if ( oldIndex != index )
@@ -107,20 +109,26 @@ export function createForDirective( template ) {
 
         const item = isMatchedByValue ? constant( value ) : itemsGetter[ index ];
 
-        let indexGetter;
+        let itemTemplate;
 
-        if ( isMatchedByValue ) {
-          // index can change in the future - use reactive state
-          const indexState = state( index );
-          if ( newIndexStates == null )
-            newIndexStates = new Map();
-          newIndexStates.set( index, indexState );
-          indexGetter = indexState[ 0 ];
+        if ( useIndexes ) {
+          let indexGetter;
+
+          if ( isMatchedByValue ) {
+            // index can change in the future - use reactive state
+            const indexState = state( index );
+            if ( newIndexStates == null )
+              newIndexStates = new Map();
+            newIndexStates.set( index, indexState );
+            indexGetter = indexState[ 0 ];
+          } else {
+            indexGetter = constant( index );
+          }
+
+          itemTemplate = callback( item, indexGetter );
         } else {
-          indexGetter = constant( index );
+          itemTemplate = callback( item );
         }
-
-        const itemTemplate = template[ 2 ]( item, indexGetter );
 
         const node = withContext( itemContext, () => make( itemTemplate ) );
 
