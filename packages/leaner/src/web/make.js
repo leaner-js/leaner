@@ -6,6 +6,7 @@ import { createDynamicDirective } from './dynamic.js';
 import { createForDirective } from './for.js';
 import { createIfDirective } from './if.js';
 import { DynamicNode, appendNode } from './nodes.js';
+import { createRepeatDirective } from './repeat.js';
 import { setStyles } from './styles.js';
 import { createSwitchDirective } from './switch.js';
 
@@ -14,6 +15,7 @@ const Directives = {
   else: unexpectedDirective,
   for: createForDirective,
   if: createIfDirective,
+  repeat: createRepeatDirective,
   switch: createSwitchDirective,
 };
 
