@@ -327,4 +327,68 @@ describe( 'for directive', () => {
 
     expect( document.body.innerHTML ).toBe( '<div>one</div><div>two</div>' );
   } );
+
+  test( 'for with index', () => {
+    const [ items, setItems ] = state( [ 'apples', 'oranges', 'peaches' ] );
+
+    function App() {
+      return [ 'for', items, ( item, index ) => [ 'div', index, ': ', item ] ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<div>0: apples</div><div>1: oranges</div><div>2: peaches</div>' );
+
+    setItems( mutate ( items => items.shift() ) );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<div>0: oranges</div><div>1: peaches</div>' );
+  } );
+
+  test( 'for with objects and index', () => {
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 }, { name: 'peaches', count: 10 } ] );
+
+    function App() {
+      return [ 'for', items, ( item, index ) => [ 'div', index, ': ', item.name ] ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<div>0: apples</div><div>1: oranges</div><div>2: peaches</div>' );
+
+    setItems( mutate ( items => items.shift() ) );
+
+    // the first run updates the for directive; the second run updates the indexes
+    runSchedule();
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<div>0: oranges</div><div>1: peaches</div>' );
+  } );
+
+  test( 'for with fragment', () => {
+    const [ items, setItems ] = state( [
+      { name: 'apple', description: 'a fruit' },
+      { name: 'dog', description: 'an animal' },
+    ] );
+
+    function App() {
+      return [ 'dl',
+        [ 'for', items, item => [[
+          [ 'dt', item.name ],
+          [ 'dd', item.description ],
+        ]] ],
+      ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<dl><dt>apple</dt><dd>a fruit</dd><dt>dog</dt><dd>an animal</dd></dl>' );
+
+    setItems( mutate ( items => items.shift() ) );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<dl><dt>dog</dt><dd>an animal</dd></dl>' );
+  } );
 } );

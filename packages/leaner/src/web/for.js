@@ -1,4 +1,4 @@
-import { constant, destroyScope, reactive, withScope } from 'leaner';
+import { constant, destroyScope, reactive, state, withScope } from 'leaner';
 import { isPlainObjectOrArray } from '../shared/utils.js';
 import { createChildContext, createContext, destroyContext, mountContext, withContext } from './components.js';
 import { make } from './make.js';
@@ -14,6 +14,8 @@ export function createForDirective( template ) {
   let items = null;
 
   let watchingContent = false;
+
+  let indexStates = null;
 
   const result = new DynamicNode( null );
 
@@ -54,6 +56,8 @@ export function createForDirective( template ) {
         oldIndexMap.set( items[ i ], i );
     }
 
+    let newIndexStates = null;
+
     for ( let index = 0; index < newItems.length; index++ ) {
       const value = newItems[ index ];
 
@@ -83,6 +87,16 @@ export function createForDirective( template ) {
 
         if ( oldItemContexts != null )
           oldItemContexts.delete( itemContext );
+
+        if ( isMatchedByValue ) {
+          // update the index passed to the child if it's reordered
+          const indexState = indexStates.get( oldIndex );
+          if ( oldIndex != index )
+            indexState[ 1 ]( index );
+          if ( newIndexStates == null )
+            newIndexStates = new Map();
+          newIndexStates.set( index, indexState );
+        }
       } else {
         const itemContext = createContext( context );
         itemContexts.push( itemContext );
@@ -93,7 +107,20 @@ export function createForDirective( template ) {
 
         const item = isMatchedByValue ? constant( value ) : itemsGetter[ index ];
 
-        const itemTemplate = template[ 2 ]( item, index );
+        let indexGetter;
+
+        if ( isMatchedByValue ) {
+          // index can change in the future - use reactive state
+          const indexState = state( index );
+          if ( newIndexStates == null )
+            newIndexStates = new Map();
+          newIndexStates.set( index, indexState );
+          indexGetter = indexState[ 0 ];
+        } else {
+          indexGetter = constant( index );
+        }
+
+        const itemTemplate = template[ 2 ]( item, indexGetter );
 
         const node = withContext( itemContext, () => make( itemTemplate ) );
 
@@ -125,6 +152,8 @@ export function createForDirective( template ) {
       context.children = itemContexts;
     else
       context.children = null;
+
+    indexStates = newIndexStates;
 
     if ( containsMatchedByValue && !watchingContent ) {
       destroyScope( context.scope );
