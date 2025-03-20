@@ -143,6 +143,9 @@ export function provide( key, value ) {
 }
 
 export function inject( key ) {
+  if ( current == null )
+    throw new Error( 'inject() cannot be called outside of a component' );
+
   for ( let context = current; context != null; context = context.parent ) {
     if ( context.services != null && context.services.has( key ) )
       return context.services.get( key );
