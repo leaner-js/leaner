@@ -4,7 +4,7 @@ export default function TodoFooter( { todos, page, deleteCompleted } ) {
   const remaining = computed( () => todos().filter( todo => !todo.completed ).length );
 
   return [ 'footer', { class: 'footer' },
-    [ 'span', { class: 'todo-count' }, [ 'strong', remaining ], [ 'if', () => remaining() == 1, ' item left', ' items left' ] ],
+    [ 'span', { class: 'todo-count' }, [ 'strong', remaining ], () => remaining() == 1 ? ' item left' : ' items left' ],
     [ 'ul', { class: 'filters' },
       [ 'li', [ 'a', { class: { selected: () => page() == 'all' }, href: '#/' }, 'All' ] ],
       [ 'li', [ 'a', { class: { selected: () => page() == 'active' }, href: '#/active' }, 'Active' ] ],

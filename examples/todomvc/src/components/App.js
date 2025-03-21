@@ -62,7 +62,7 @@ export function App() {
 
   return [[
     [ TodoHeader, { addTodo } ],
-    [ 'if', () => todos().length > 0, [[
+    [ 'if', () => todos().length > 0,
       [ 'main', { class: 'main' },
         [ 'input', { id: 'toggle-all', class: 'toggle-all', type: 'checkbox', checked: allCompleted, onchange: e => toggleAll( e.target.checked ),
           disabled: () => fileredTodos().length == 0 } ],
@@ -72,6 +72,6 @@ export function App() {
         ],
       ],
       [ TodoFooter, { todos, page, deleteCompleted } ],
-    ]] ],
+    ],
   ]];
 }
