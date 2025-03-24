@@ -391,4 +391,29 @@ describe( 'for directive', () => {
 
     expect( document.body.innerHTML ).toBe( '<dl><dt>dog</dt><dd>an animal</dd></dl>' );
   } );
+
+  test( 'replace select options', () => {
+    const [ items, setItems ] = state( [ { id: 1, name: 'apples' }, { id: 2, name: 'oranges' } ] );
+    const [ value ] = state( 2 );
+
+    function App() {
+      return [ 'select', { value },
+        [ 'for', items, item => [ 'option', { value: item.id }, item.name ] ],
+      ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<select><option value="1">apples</option><option value="2">oranges</option></select>' );
+
+    const select = document.querySelector( 'select' );
+
+    expect( select.value ).toBe( '2' );
+
+    setItems( [ { id: 1, name: 'apples' }, { id: 2, name: 'oranges' } ] );
+
+    runSchedule();
+
+    expect( select.value ).toBe( '2' );
+  } );
 } );

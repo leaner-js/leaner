@@ -64,12 +64,18 @@ export function removeNode( node ) {
 }
 
 export function replaceNode( newNode, node ) {
+  // this is safe because the parent of a DynamicNode is always a true DOM node
+  const parent = Array.isArray( node ) ? node[ 0 ].parentNode : node.parentNode;
+
+  // remember the value of a <select> element so that it can be restored later
+  const currentValue = parent instanceof HTMLSelectElement ? parent.value : null;
+
   if ( newNode instanceof Node && node instanceof Node ) {
-    node.parentNode.replaceChild( newNode, node );
+    parent.replaceChild( newNode, node );
   } else if ( Array.isArray( newNode ) && Array.isArray( node ) ) {
     let newStart = 0, start = 0;
     let newEnd = newNode.length, end = node.length;
-    let parent = null, before = null;
+    let before;
 
     while ( newStart < newEnd || start < end ) {
       // skip equal nodes at the start
@@ -93,13 +99,11 @@ export function replaceNode( newNode, node ) {
             before = node[ start ];
             if ( before instanceof DynamicNode )
               before = findFirstChild( before.content );
-            parent = before.parentNode;
           } else {
             let after = newNode[ newStart - 1 ];
             if ( after instanceof DynamicNode )
               after = findLastChild( after.content );
             before = after.nextSibling;
-            parent = after.parentNode;
           }
         }
         insertBefore( newNode[ newStart ], parent, before );
@@ -121,7 +125,6 @@ export function replaceNode( newNode, node ) {
           before = node[ start ];
           if ( before instanceof DynamicNode )
             before = findFirstChild( before.content );
-          parent = before.parentNode;
         }
         insertBefore( node[ end - 1 ], parent, before );
 
@@ -144,10 +147,12 @@ export function replaceNode( newNode, node ) {
   } else {
     const after = findLastChild( node );
     const before = after.nextSibling;
-    const parent = after.parentNode;
     removeNode( node );
     insertBefore( newNode, parent, before );
   }
+
+  if ( currentValue != null )
+    parent.value = currentValue;
 }
 
 function findFirstChild( node ) {
