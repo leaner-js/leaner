@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from 'vitest';
-import { computed, constant, destroyScope, mutate, state, withScope } from 'leaner';
+import { computed, constant, destroyScope, mutate, state, watch, withScope } from 'leaner';
 
 describe( 'computed()', () => {
   test( 'simple value', () => {
@@ -135,6 +135,22 @@ describe( 'computed()', () => {
     destroyScope( scope );
 
     expect( getComputed ).toThrowError( 'destroyed' );
+  } );
+
+  test( 'watch a computed value', () => {
+    const [ getValue, setValue ] = state( 4 );
+
+    const getComputed = computed( () => getValue() + 3 );
+
+    const callback = vi.fn();
+
+    watch( getComputed, callback );
+
+    expect( callback ).not.toHaveBeenCalled();
+
+    setValue( 10 );
+
+    expect( callback ).toHaveBeenCalledOnce();
   } );
 } );
 
