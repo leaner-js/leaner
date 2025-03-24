@@ -164,6 +164,48 @@ describe( 'components', () => {
     expect( callback ).toHaveBeenCalledWith( null );
   } );
 
+  test( 'watcher inside ref/onMount()', () => {
+    const [ value, setValue ] = state( 'apples' );
+
+    const callback = vi.fn();
+    const callback2 = vi.fn();
+
+    function Button( props, children ) {
+      function setElement( element ) {
+        if ( element != null )
+          reactive( value, callback );
+      }
+
+      onMount( () => {
+        reactive( value, callback2 );
+      } );
+
+      return [ 'button', { ref: setElement, type: 'button', ...props }, ...children ];
+    }
+
+    function App() {
+      return [ Button, { id: 'test' }, 'hello' ];
+    }
+
+    const app = createApp( App );
+    app.mount( document.body );
+
+    expect( callback ).toHaveBeenCalledOnce();
+    expect( callback2 ).toHaveBeenCalledOnce();
+
+    app.destroy();
+
+    callback.mockClear();
+    callback2.mockClear();
+
+    setValue( 'oranges' );
+
+    runSchedule();
+
+    expect( callback ).not.toHaveBeenCalled();
+    expect( callback2 ).not.toHaveBeenCalled();
+  } );
+
   test( 'provide/inject', () => {
     function Child( props ) {
       const text = inject( 'text' );

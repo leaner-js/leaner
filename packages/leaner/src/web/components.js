@@ -92,31 +92,35 @@ export function mountContext( context ) {
       mountContext( child );
   }
 
-  if ( context.refs != null ) {
-    for ( const ref of context.refs )
-      ref.callback( ref.element );
-  }
+  withContext( context, () => {
+    if ( context.refs != null ) {
+      for ( const ref of context.refs )
+        ref.callback( ref.element );
+    }
 
-  if ( context.mount != null ) {
-    for ( const callback of context.mount )
-      callback();
-  }
+    if ( context.mount != null ) {
+      for ( const callback of context.mount )
+        callback();
+    }
+  } );
 }
 
 export function destroyContext( context ) {
-  if ( context.destroy != null ) {
-    for ( const callback of context.destroy )
-      callback();
-    context.destroy = null;
-  }
+  withContext( context, () => {
+    if ( context.destroy != null ) {
+      for ( const callback of context.destroy )
+        callback();
+      context.destroy = null;
+    }
+
+    if ( context.refs != null ) {
+      for ( const ref of context.refs )
+        ref.callback( null );
+      context.refs = null;
+    }
+  } );
 
   context.mount = null;
-
-  if ( context.refs != null ) {
-    for ( const ref of context.refs )
-      ref.callback( null );
-    context.refs = null;
-  }
 
   if ( context.scope.length > 0 ) {
     destroyScope( context.scope );
