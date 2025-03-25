@@ -27,50 +27,69 @@ const [ age, setAge ] = state( 18 );
 return [ 'if', () => age() >= 18, [ 'p', 'You are at least 18 years old.' ] ];
 ```
 
-In order to create multiple elements based on a single condition, you can wrap them in a [fragment](./templates#fragments):
-
-```js
-const [ visible, setVisible ] = state( true );
-
-return [ 'if', visible, [[
-  [ 'p', 'This is rendered conditionally.' ],
-  [ 'p', 'And so is this.' ],
-]] ];
-```
-
-The `'if'` directive can contain a second child element which is rendered when the condition is `false`:
+You can create multiple elements based on a single condition:
 
 ```js
 const [ visible, setVisible ] = state( true );
 
 return [ 'if', visible,
-  [ 'p', 'This is rendered when condition is true.' ],
-  [ 'p', 'This is rendered otherwise.' ],
+  [ 'p', 'This is rendered conditionally.' ],
+  [ 'p', 'And so is this.' ],
 ];
 ```
 
-The `'if'` directive can contain any number of conditions. For example:
+To display different elements when the condition is `false`, you can use the `switch` directive:
+
+```js
+const [ visible, setVisible ] = state( true );
+
+return [ 'switch',
+  [ 'if', visible, [ 'p', 'This is rendered when condition is true.' ] ],
+  [ 'else', [ 'p', 'This is rendered otherwise.' ] ],
+];
+```
+
+The `'switch'` directive can contain any number of conditions. For example:
 
 ```js
 const [ first, setFirst ] = state( true );
 const [ second, setSecond ] = state( true );
 
-return [ 'if',
-  first, [ 'p', 'The first condition is true.' ],
-  second, [ 'p', 'The second condition is true.' ],
+return [ 'switch',
+  [ 'if', first, [ 'p', 'The first condition is true.' ] ],
+  [ 'if', second, [ 'p', 'The second condition is true.' ] ],
 ];
 ```
 
-In that case, only the element matching the first condition which evaluates to `true` is rendered. In addition, it's also possible to specified an element which is rendered when none of the conditions is `true`:
+In that case, only the element matching the first condition which evaluates to `true` is rendered.
+
+You can also combine multiple `'if'` directives and an `'else'` directive in a single `'switch'`:
 
 ```js
 const [ first, setFirst ] = state( true );
 const [ second, setSecond ] = state( true );
 
-return [ 'if',
-  first, [ 'p', 'The first condition is true.' ],
-  second, [ 'p', 'The second condition is true.' ],
-  [ 'p', 'None of the conditions is true.' ],
+return [ 'switch',
+  [ 'if', first, [ 'p', 'The first condition is true.' ] ],
+  [ 'if', second, [ 'p', 'The second condition is true.' ] ],
+  [ 'else', [ 'p', 'None of the conditions is true.' ] ],
+];
+```
+
+The `'if'` and `'else'` directives nested inside a `'switch'` can also contain multiple child elements:
+
+```js
+const [ visible, setVisible ] = state( true );
+
+return [ 'switch',
+  [ 'if', visible,
+    [ 'p', 'This is rendered conditionally.' ],
+    [ 'p', 'And so is this.' ],
+  ],
+  [ 'else',
+    [ 'p', 'This is rendered otherwise.' ],
+    [ 'p', 'And also this.' ],
+  ],
 ];
 ```
 
@@ -103,9 +122,9 @@ Instead of plain values, the array can also contain complex values, for example 
 
 ```js
 const [ items, setItems ] = state( [
-  { name: 'apple', count: 10 },
-  { name: 'orange', count: 20 },
-  { name: 'peach', count: 30 },
+  { name: 'apples', count: 10 },
+  { name: 'oranges', count: 20 },
+  { name: 'peaches', count: 30 },
 ] );
 
 return [ 'ul',
@@ -119,9 +138,9 @@ The above template renders the following HTML elements:
 
 ```html
 <ul>
-  <li>apple: 10</li>
-  <li>orange: 20</li>
-  <li>peach: 30</li>
+  <li>apples: 10</li>
+  <li>oranges: 20</li>
+  <li>peaches: 30</li>
 </ul>
 ```
 
@@ -133,13 +152,13 @@ On the other hand, when the array contains objects or nested arrays, the element
 
 This mechanism is designed in such way that it just works correctly in most situations without having to take into account any manual optimizations. However, there are a few things to be aware of:
 
- - The objects and nested arrays must be unique, which means that a single object or nested array cannot be inserted multiple times into the same array of items. On the other hand, plain values don't have to be unique; the array can contain mupliple strings or numbers with the same value.
+ - The objects and nested arrays must be unique, which means that a single object or nested array cannot be inserted multiple times into the same array of items. On the other hand, plain values don't have to be unique; the array can contain multiple strings or numbers with the same value.
 
  - The array of items shouldn't mix plain values with objects or nested arrays.
 
  - When you replace the content of the array which contains objects or nested arrays with new values, all existing HTML elements are destroyed and created again. In some cases that may be the desired behavior, but when you update an array from an API, you may want to merge existing values with new values in order to reduce the number of required DOM operations.
 
-The function which creates elements of a loop receives the index of the item as the second argument:
+The callback function which creates elements of a loop can receive the index of the item as the second argument:
 
 ```js
 const [ items, setItems ] = state( [ 'apple', 'orange', 'peach' ] );
@@ -159,7 +178,81 @@ The above template renders the following HTML elements:
 </ul>
 ```
 
+Note that both the `item` and `index` parameters passed to the callback function are reactive, i.e. they are getter functions, not direct values. When the array contains objects or nested arrays, the indexes are updated when the order of items is changed; when the array contains plain values, the items are updated when the array is modified.
+
+The callback function can return a [fragment](./templates#fragments) containing multiple elements:
+
+```js
+const [ items, setItems ] = state( [
+  { name: 'apple', description: 'a fruit' },
+  { name: 'dog', description: 'an animal' },
+] );
+
+return [ 'dl',
+  [ 'for', items, item => [[
+    [ 'dt', item.name ],
+    [ 'dd', item.description ],
+  ]] ],
+];
+```
+
+The above template renders the following HTML elements:
+
+```html
+<dl>
+  <dt>apple</dt>
+  <dd>a fruit</dd>
+  <dt>dog</dt>
+  <dd>an animal</dd>
+</dl>
+```
+
 The `'for'` directive can contain child [components](./components); their lifecycle hooks are called when the array of items changes and the components are created and destroyed.
+
+It is also possible to repeat a part of the template a specific number of times, without creating an intermediate array. The `'repeat'` directive can be used to do that. Its first argument is the number of copies, and the second argument is a function which returns the child template. For example:
+
+```js
+[ 'select', [ 'repeat', 3, index => [ 'option', index ] ] ]
+```
+
+This template renders to the following HTML elements:
+
+```html
+<select>
+  <option>0</option>
+  <option>1</option>
+  <option>2</option>
+</select>
+```
+
+A reactive value can also be passed to the `'repeat'` directive instead of a constant number:
+
+```js
+const [ count, setCount ] = state( 3 );
+
+return [ 'select',
+  [ 'repeat', count, index => [ 'option', index ] ],
+];
+```
+
+The result is identical, but when the `count` state is modified, options are automatically created or destroyed.
+
+The `'repeat'` directive can also be used to iterate over a fixed array:
+
+```js
+const options = [ 'apple', 'orange', 'peach' ];
+
+return [ 'select',
+  [ 'repeat', options.length, index => [ 'option', options[ index ] ] ],
+];
+```
+
+Do not use `'repeat'` to iterate over a reactive array; the `'for'` directive should be used instead, as shown in the examples above.
+
+Note that unlike the `'for'` directive, the `index` parameter passed to the callback function is not reactive, i.e. it's a plain number.
+
+The callback function can return a [fragment](./templates#fragments) containing multiple elements. The `'repeat'` directive can also contain child [components](./components); their lifecycle hooks are called when the number of items changes and components are created and destroyed.
+
 
 
 ## Dynamic Elements

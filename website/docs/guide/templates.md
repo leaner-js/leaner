@@ -186,4 +186,4 @@ This template produces the following HTML:
 <p>This is my first Leaner application.</p>
 ```
 
-Fragments are mostly useful within conditional statements, loops and components, as described in the following chapters.
+Fragments are mostly useful in combination with components and loops, as described in the following chapters.

@@ -64,7 +64,7 @@ function Icon( { name } ) {
 }
 ```
 
-See [Properties](../guide/components#properties) for more information.
+See [Reactive Properties](../guide/components#reactive-properties) for more information.
 
 
 ## get()
@@ -75,7 +75,7 @@ const value = get( valueOrFunction );
 
 When the argument is a function, `get()` will call it and return its result; otherwise, it will just return the argument.
 
-See [Properties](../guide/components#properties) for more information.
+See [Reactive Properties](../guide/components#reactive-properties) for more information.
 
 
 ## getter()
@@ -86,7 +86,7 @@ const callback = getter( valueOrFunction );
 
 When the argument is a function, `getter()` will return it; otherwise, it will return a function which returns the argument.
 
-See [Properties](../guide/components#properties) for more information.
+See [Reactive Properties](../guide/components#reactive-properties) for more information.
 
 
 ## mutate()

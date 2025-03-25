@@ -32,5 +32,7 @@ sidebar: reference
 ## Directives
 
  - [if](./directives#if)
+ - [switch](./directives#switch)
  - [for](./directives#for)
+ - [repeat](./directives#repeat)
  - [dynamic](./directives#dynamic)

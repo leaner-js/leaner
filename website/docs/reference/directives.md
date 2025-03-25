@@ -9,14 +9,11 @@ sidebar: reference
 Conditionally creates or destroys child HTML elements or components.
 
 ```js
-[ 'if', condition, child ]
-[ 'if', condition, child, elseChild ]
-[ 'if', condition, child, condition2, child2 ]
-[ 'if', condition, child, condition2, child2, elseChild ]
+[ 'if', condition, children... ]
 ...
 ```
 
-The conditions are reactive functions returning a boolean value. The children can be HTML elements, components or fragments. For example:
+The condition is a reactive function returning a boolean value. The children can be HTML elements, components or fragments. For example:
 
 ```js
 const [ visible, setVisible ] = state( true );
@@ -27,9 +24,37 @@ return [ 'if', visible, [ 'p', 'This is rendered conditionally.' ] ];
 See [Conditional Rendering](../guide/conditions-and-lists#conditional-rendering) for more information.
 
 
+## switch
+
+Creates or destroys child HTML elements or components based on multiple conditions.
+
+```js
+[ 'switch',
+  [ 'if', condition, children... ],
+  ...
+  [ 'else', children... ],
+]
+```
+
+The `'switch'` directive can contain multiple `'if'` child directives. Only the first condition which evaluates to `true` is rendered. The `'else'` child directive is optional and is rendered when no conditions evaluate to `true`.
+
+The conditions are reactive functions returning a boolean value. The children can be HTML elements, components or fragments. For example:
+
+```js
+const [ visible, setVisible ] = state( true );
+
+return [ 'switch',
+  [ 'if', visible, [ 'p', 'This is rendered when condition is true.' ] ],
+  [ 'else', [ 'p', 'This is rendered otherwise.' ] ],
+];
+```
+
+See [Conditional Rendering](../guide/conditions-and-lists#conditional-rendering) for more information.
+
+
 ## for
 
-Creates multiple child HTML elements or components.
+Creates multiple child HTML elements or components based on a reactive array.
 
 ```js
 [ 'for', items, ( item, index ) => child ]
@@ -46,6 +71,28 @@ return [ 'ul',
 ```
 
 See [List Rendering](../guide/conditions-and-lists#list-rendering) for more information.
+
+
+## repeat
+
+Creates the specified number of child HTML elements or components.
+
+```js
+[ 'repeat', count, index => child ]
+```
+
+The first argument is a plain number or a reactive function returning a number. The second argument is a function which returns the template for the given item.
+
+```js
+const [ count, setCount ] = state( 3 );
+
+return [ 'select',
+  [ 'repeat', count, index => [ 'option', index ] ],
+];
+```
+
+See [List Rendering](../guide/conditions-and-lists#list-rendering) for more information.
+
 
 
 ## dynamic

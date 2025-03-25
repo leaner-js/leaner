@@ -42,10 +42,21 @@ function App() {
 
 Of course you can place all components in a single file, but usually it's more convenient to put each component in a separate file and import it to the parent component which uses it, as shown above.
 
+The component can also destructure the properties in order to pass them to different elements or to manipulate them in some way, as shown in the [Reactive Properties](#reactive-properties) section below.
 
-## Properties
+You can create a component which consists of multiple root elements (or child components) by returning a [fragment](./templates#fragments):
 
-The component can also destructure the properties in order to pass them to different elements or to manipulate them in some way.
+```js
+function App() {
+  return [[
+    [ 'h1', 'Hello, world!' ],
+    [ 'p', 'This is my first Leaner application.' ],
+  ]];
+}
+```
+
+
+## Reactive Properties
 
 Let's assume that you want to create an `Icon` component which renders an icon with the following markup:
 
@@ -67,7 +78,7 @@ You can use it like this:
 [ Icon, { name: 'user' } ]
 ```
 
-This will produce the markup presented above. However, if `name` is a reactive state, the component won't work.
+This will produce the markup presented above. However, if `name` is a reactive state, the component won't work, because it's not possible to concatenate a constant string with a function.
 
 You could create another version which expects `name` to be a function:
 
@@ -216,7 +227,7 @@ createApp( App ).mount( document.querySelector( '#app' ) );
 When a component is mounted, existing children of the parent element are not removed. The elements created by the component are appended to existing children.
 :::
 
-You can create as many top-level components as you want, using the same component or different components.
+You can create as many top-level component instances as you want, using the same component or different components.
 
 To destroy the component, save the root application context and use the `destroy()` method:
 
