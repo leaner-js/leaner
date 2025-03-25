@@ -158,6 +158,22 @@ describe( 'for directive', () => {
     expect( document.body.innerHTML ).toBe( '<div>apples</div><div>peaches</div><div>oranges</div>' );
   } );
 
+  test( 'insert object at start', () => {
+    const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
+
+    function App() {
+      return [ 'for', items, item => [ 'div', item.name ] ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    setItems( mutate ( items => items.unshift( { name: 'peaches', count: 10 } ) ) );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<div>peaches</div><div>apples</div><div>oranges</div>' );
+  } );
+
   test( 'remove object', () => {
     const [ items, setItems ] = state( [ { name: 'apples', count: 4 }, { name: 'oranges', count: 7 } ] );
 

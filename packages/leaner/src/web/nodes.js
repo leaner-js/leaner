@@ -99,11 +99,15 @@ export function replaceNode( newNode, node ) {
             before = node[ start ];
             if ( before instanceof DynamicNode )
               before = findFirstChild( before.content );
-          } else {
+          } else if ( newStart > 0 ) {
             let after = newNode[ newStart - 1 ];
             if ( after instanceof DynamicNode )
               after = findLastChild( after.content );
             before = after.nextSibling;
+          } else {
+            before = newNode[ newEnd ];
+            if ( before instanceof DynamicNode )
+              before = findFirstChild( before.content );
           }
         }
         insertBefore( newNode[ newStart ], parent, before );
