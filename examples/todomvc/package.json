@@ -8,7 +8,7 @@
     "build": "vite build"
   },
   "dependencies": {
-    "leaner": "^0.1.4",
+    "leaner": "^0.2.0",
     "todomvc-app-css": "^2.4.3"
   },
   "devDependencies": {
