@@ -96,6 +96,29 @@ describe( 'watch()', () => {
 
     expect( callback ).not.toHaveBeenCalled();
   } );
+
+  test( 'mutate value in callback', () => {
+    const [ getValue, setValue ] = state( 1 );
+
+    const callback = vi.fn().mockImplementation( updateValue );
+
+    function updateValue( value ) {
+      if ( value == 2 )
+        setValue( 3 );
+    }
+
+    watch( getValue, callback );
+
+    setValue( 2 );
+
+    expect( callback ).toHaveBeenCalled();
+    expect( getValue() ).toBe( 3 );
+
+    setValue( 2 );
+
+    expect( callback ).toHaveBeenCalled();
+    expect( getValue() ).toBe( 3 );
+  } );
 } );
 
 describe( 'effect()', () => {

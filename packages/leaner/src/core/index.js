@@ -59,8 +59,9 @@ export function watch( getter, callback ) {
     updateWatcher( watcher, newDeps );
 
     if ( newValue !== value ) {
-      callback( newValue, value );
+      const oldValue = value;
       value = newValue;
+      callback( newValue, oldValue );
     }
   }
 }
