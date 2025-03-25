@@ -14,7 +14,7 @@ type ArrayGetter<T> = {
   readonly [ index: number ]: Getter<T>;
   get( index: number | ( () => number ) ): Getter<T>;
   length(): number;
-}
+};
 
 declare class Mutator<T> {
   private callback: ( value: T ) => void;
