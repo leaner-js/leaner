@@ -36,3 +36,4 @@ sidebar: reference
  - [for](./directives#for)
  - [repeat](./directives#repeat)
  - [dynamic](./directives#dynamic)
+ - [try](./directives#try)

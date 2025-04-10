@@ -15,6 +15,7 @@ export default {
         { text: 'Conditions and Lists', link: '/guide/conditions-and-lists.html' },
         { text: 'Components', link: '/guide/components.html' },
         { text: 'Advanced Reactivity', link: '/guide/advanced-reactivity.html' },
+        { text: 'Error Handling', link: '/guide/error-handling.html' },
       ],
     },
     'reference': {

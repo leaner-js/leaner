@@ -112,3 +112,26 @@ return [ 'dynamic', tag, { class: 'dynamic-element' }, 'This tag is dynamic.' ];
 ```
 
 See [Dynamic Elements](../guide/conditions-and-lists#dynamic-elements) for more information.
+
+
+## try
+
+Displays the child template, and replaces it with a fallback template when an error occurs.
+
+```js
+[ 'try', child, error => fallbackChild ]
+```
+
+The first argument is an element, component or fragment. The second argument is a function which receives the error object and returns the fallback template. For example:
+
+```js
+[ 'try',
+  [ SomeComponent ],
+  err => {
+    console.error( err );
+    return [ 'p', 'Unexpected error' ];
+  },
+]
+```
+
+See [Error Handling](../guide/error-handling) for more information.
