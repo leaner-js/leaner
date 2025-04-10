@@ -18,15 +18,21 @@ export function createComponent( template ) {
 }
 
 export function createContext( parent ) {
-  return {
+  const context = {
     parent,
     children: null,
-    scope: [],
+    scope: {
+      watchers: [],
+      errorHandler: err => handleError( context, err ),
+    },
     mount: null,
     destroy: null,
     refs: null,
     services: null,
+    errorHandler: null,
   };
+
+  return context;
 }
 
 export function createChildContext() {
@@ -122,14 +128,33 @@ export function destroyContext( context ) {
 
   context.mount = null;
 
-  if ( context.scope.length > 0 ) {
+  if ( context.scope.watchers.length > 0 ) {
     destroyScope( context.scope );
-    context.scope = [];
+    context.scope.watchers = [];
   }
 
   if ( context.children != null ) {
     for ( const child of context.children )
       destroyContext( child );
+    context.children = null;
+  }
+
+  context.services = null;
+}
+
+export function cleanUpContext( context ) {
+  context.destroy = null;
+  context.refs = null;
+  context.mount = null;
+
+  if ( context.scope.watchers.length > 0 ) {
+    destroyScope( context.scope );
+    context.scope.watchers = [];
+  }
+
+  if ( context.children != null ) {
+    for ( const child of context.children )
+      cleanUpContext( child );
     context.children = null;
   }
 
@@ -154,4 +179,33 @@ export function inject( key ) {
     if ( context.services != null && context.services.has( key ) )
       return context.services.get( key );
   }
+}
+
+export function handleError( context, err ) {
+  while ( context != null) {
+    if ( context.errorHandler != null ) {
+      context.errorHandler( err );
+      return;
+    }
+    context = context.parent;
+  }
+  throw err;
+}
+
+export function createSafeHandler( callback ) {
+  if ( current != null ) {
+    const context = current;
+
+    return safeHandler;
+
+    function safeHandler( e ) {
+      try {
+        callback( e );
+      } catch ( err ) {
+        handleError( context, err );
+      }
+    }
+  }
+
+  return callback;
 }

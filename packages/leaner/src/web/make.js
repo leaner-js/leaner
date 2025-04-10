@@ -1,7 +1,7 @@
 import { reactive } from 'leaner';
 import { appendToArray, isPlainObject } from '../shared/utils.js';
 import { setClasses } from './classes.js';
-import { createComponent, createRef, withChildContext } from './components.js';
+import { createComponent, createRef, createSafeHandler, withChildContext } from './components.js';
 import { createDynamicDirective } from './dynamic.js';
 import { createForDirective } from './for.js';
 import { createIfDirective } from './if.js';
@@ -9,6 +9,7 @@ import { DynamicNode, appendNode } from './nodes.js';
 import { createRepeatDirective } from './repeat.js';
 import { setStyles } from './styles.js';
 import { createSwitchDirective } from './switch.js';
+import { createTryDirective } from './try.js';
 
 const Directives = {
   dynamic: createDynamicDirective,
@@ -17,6 +18,7 @@ const Directives = {
   if: createIfDirective,
   repeat: createRepeatDirective,
   switch: createSwitchDirective,
+  try: createTryDirective,
 };
 
 const Properties = new Set( [ 'value', 'checked', 'textContent', 'innerHTML' ] );
@@ -109,7 +111,7 @@ function setElementProperties( element, properties ) {
 
 function setElementProperty( element, key, value ) {
   if ( key.startsWith( 'on' ) ) {
-    element.addEventListener( key.substring( 2 ), value );
+    element.addEventListener( key.substring( 2 ), createSafeHandler( value ) );
   } else if ( Properties.has( key ) ) {
     if ( typeof value == 'function' )
       reactive( value, value => element[ key ] = value != null ? value : '' );

@@ -53,6 +53,9 @@ export function withScope( scope, callback ) {
 }
 
 export function createWatcher( deps, callback, async ) {
+  if ( async )
+    callback = createSafeCallback( callback );
+
   const watcher = {
     deps,
     callback,
@@ -60,7 +63,7 @@ export function createWatcher( deps, callback, async ) {
   };
 
   if ( current != null )
-    current.push( watcher );
+    current.watchers.push( watcher );
 
   if ( deps != null ) {
     for ( const dep of deps ) {
@@ -69,6 +72,24 @@ export function createWatcher( deps, callback, async ) {
   }
 
   return watcher;
+}
+
+function createSafeCallback( callback ) {
+  if ( current != null && current.errorHandler != null ) {
+    const handler = current.errorHandler;
+
+    return safeCallback;
+
+    function safeCallback() {
+      try {
+        callback();
+      } catch ( err ) {
+        handler( err );
+      }
+    }
+  }
+
+  return callback;
 }
 
 export function updateWatcher( watcher, deps ) {
@@ -87,7 +108,7 @@ export function updateWatcher( watcher, deps ) {
 }
 
 export function destroyScope( scope ) {
-  for ( const watcher of scope ) {
+  for ( const watcher of scope.watchers ) {
     watcher.callback = null;
 
     if ( watcher.deps != null ) {

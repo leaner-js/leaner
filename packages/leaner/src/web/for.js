@@ -165,7 +165,7 @@ export function createForDirective( template ) {
 
     if ( containsMatchedByValue && !watchingContent ) {
       destroyScope( context.scope );
-      context.scope = [];
+      context.scope.watchers = [];
       withScope( context.scope, () => {
         // clone the array to watch all elements
         reactive( () => [ ...itemsGetter() ], updateContent );

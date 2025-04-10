@@ -122,7 +122,7 @@ describe( 'computed()', () => {
 
     const callback = vi.fn().mockImplementation( () => getValue() + 3 );
 
-    const scope = [];
+    const scope = { watchers: [] };
 
     const getComputed = withScope( scope, () => {
       return computed( callback );

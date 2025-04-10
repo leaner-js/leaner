@@ -82,7 +82,7 @@ describe( 'watch()', () => {
 
     const callback = vi.fn();
 
-    const scope = [];
+    const scope = { watchers: [] };
 
     withScope( scope, () => {
       watch( getValue, callback );
