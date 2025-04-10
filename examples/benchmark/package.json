@@ -14,7 +14,7 @@
     "build-prod": "vite build"
   },
   "dependencies": {
-    "leaner": "^0.2.0"
+    "leaner": "^0.3.0"
   },
   "devDependencies": {
     "vite": "^5.2.11"
