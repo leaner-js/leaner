@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 
 import { glob } from 'glob';
 import Handlebars from 'handlebars';
-import { build } from 'vite';
+import { build, defineConfig } from 'vite';
 
 import { generate404, generateFile } from './utils/generate.js';
 import { createDevServer } from './utils/server.js';
@@ -16,13 +16,13 @@ import config from '../config.js';
 const __dirname = dirname( fileURLToPath( import.meta.url ) );
 const rootDir = dirname( __dirname );
 
-let watchMode = false;
+let watch = false;
 
 for ( let i = 2; i < process.argv.length; i++ ) {
   const arg = process.argv[ i ];
   switch ( arg ) {
     case '--watch':
-      watchMode = true;
+      watch = true;
       break;
     default:
       help();
@@ -36,14 +36,28 @@ let files = null;
 let pending = Promise.resolve();
 let queued = new Set();
 
-const plugins = [ inlineScript() ];
+const viteConfig = defineConfig( {
+  build: {
+    watch,
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        silenceDeprecations: [ 'color-functions', 'global-builtin', 'import' ],
+      },
+    },
+  },
+  plugins: [
+    inlineScript(),
+  ],
+} );
 
 const version = await getVersion();
 
-if ( watchMode ) {
+if ( watch ) {
   await runInWatchMode();
 } else {
-  await build( { plugins } );
+  await build( viteConfig );
   await generateAllFiles();
 }
 
@@ -79,10 +93,7 @@ async function runInWatchMode() {
   console.log( `Listening on ${server.baseUrl}\n` );
   console.log( 'Press q to exit\n' );
 
-  const bundle = await build( {
-    build: { watch: true },
-    plugins,
-  } );
+  const bundle = await build( viteConfig );
 
   bundle.on( 'event', event => {
     if ( event.code == 'END' ) {

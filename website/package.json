@@ -8,17 +8,17 @@
     "dev": "node build/build.js --watch"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.5.2",
-    "bc-css-framework": "^1.0.4"
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "bc-css-framework": "^2.0.0"
   },
   "devDependencies": {
-    "@shikijs/markdown-it": "^1.10.1",
-    "glob": "^10.4.2",
+    "@shikijs/markdown-it": "^3.3.0",
+    "glob": "^11.0.2",
     "handlebars": "^4.7.8",
     "js-yaml": "^4.1.0",
     "markdown-it": "^14.1.0",
-    "mrmime": "^2.0.0",
-    "sass": "^1.77.6",
-    "vite": "^5.2.11"
+    "mrmime": "^2.0.1",
+    "sass": "^1.87.0",
+    "vite": "^6.3.5"
   }
 }
