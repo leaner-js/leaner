@@ -8,8 +8,8 @@
     "dev": "node build/build.js --watch"
   },
   "dependencies": {
-    "@fortawesome/fontawesome-free": "^6.7.2",
-    "bc-css-framework": "^2.0.0"
+    "bc-css-framework": "^2.0.0",
+    "lucide-static": "^0.503.0"
   },
   "devDependencies": {
     "leaner-doc-utils": "^1.0.0",

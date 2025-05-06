@@ -1,8 +1,3 @@
-$icons: (
-  solid: arrow-right bars link moon sun text-height xmark,
-  brands: github,
-);
-
 .i {
   display: inline-block;
   width: 1em;
@@ -13,10 +8,8 @@ $icons: (
   mask-image: var( --icon-mask, url( "data:image/svg+xml,%3csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%20512%20512'%3e%3c/svg%3e" ) );
 }
 
-@each $type, $names in $icons {
-  @each $name in $names {
-    .i-#{ $name } {
-      --icon-mask: url( '@fortawesome/fontawesome-free/svgs/#{ $type }/#{ $name }.svg' );
-    }
+@each $name in ( arrow-right github link menu moon sun x zoom-in zoom-out ) {
+  .i-#{ $name } {
+    --icon-mask: url( 'lucide-static/icons/#{ $name }.svg' );
   }
 }

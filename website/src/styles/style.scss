@@ -190,7 +190,7 @@ header {
     margin-left: $sp-2;
   }
 
-  .i-sun {
+  .i-sun, .i-zoom-out {
     display: none;
   }
 
@@ -199,6 +199,15 @@ header {
       display: none;
     }
     .i-sun {
+      display: block;
+    }
+  }
+
+  .font-size-lg & {
+    .i-zoom-in {
+      display: none;
+    }
+    .i-zoom-out {
       display: block;
     }
   }
