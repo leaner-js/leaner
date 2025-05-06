@@ -1,5 +1,5 @@
 ---
-title: Leaner.js - Thin reactive wrapper for DOM
+title: Leaner.js - Thin, reactive wrapper for DOM
 meta:
   description: Create modern client-side JavaScript applications without compilers or build tools.
 ---
