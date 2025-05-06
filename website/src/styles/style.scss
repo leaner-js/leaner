@@ -52,6 +52,8 @@ code, kbd, samp, pre {
   --link-color: #{ color( blue, 300 ) };
   --link-color-active: #{ color( blue, 400 ) };
   --border-color: #{ color( gray, 700 ) };
+
+  @include focus-ring-color( color( yellow, 300 ) );
 }
 
 @each $name, $multiplier in $font-sizes {
