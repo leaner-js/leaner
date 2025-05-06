@@ -12,8 +12,6 @@ let blurTimeout = null;
 let focusVisibleClassName = null;
 
 let trappedContainer = null;
-let trappedFirst = null;
-let trappedLast = null;
 
 export function handleFocusVisible( className = 'focus-visible' ) {
   focusVisibleClassName = className;
@@ -26,24 +24,11 @@ export function handleFocusVisible( className = 'focus-visible' ) {
 
 export function trapFocus( container ) {
   trappedContainer = container;
-  trappedFirst = null;
-  trappedLast = null;
-
-  const focusableElements = container.querySelectorAll( 'a[href], button, input, textarea, select' );
-
-  for ( let i = 0; i < focusableElements.length; i++ ) {
-    if ( elementIsFocusable( focusableElements[ i ] ) ) {
-      if ( trappedFirst == null )
-        trappedFirst = focusableElements[ i ];
-      trappedLast = focusableElements[ i ];
-    }
-  }
 }
 
-export function untrapFocus() {
-  trappedContainer = null;
-  trappedFirst = null;
-  trappedLast = null;
+export function untrapFocus( container ) {
+  if ( trappedContainer == container )
+    trappedContainer = null;
 }
 
 function onKeyDown( e ) {
@@ -58,6 +43,18 @@ function onKeyDown( e ) {
   keyboardEventTimeout = setTimeout( () => { hadKeyboardEvent = false; }, 100 );
 
   if ( e.keyCode == 9 && trappedContainer != null ) {
+    let trappedFirst = null, trappedLast = null;
+
+    const focusableElements = trappedContainer.querySelectorAll( 'a[href], button, input, textarea, select' );
+
+    for ( const element of focusableElements ) {
+      if ( elementIsFocusable( element ) ) {
+        if ( trappedFirst == null )
+          trappedFirst = element;
+        trappedLast = element;
+      }
+    }
+
     if ( e.shiftKey ) {
       if ( document.activeElement == trappedFirst || !trappedContainer.contains( document.activeElement ) ) {
         trappedLast.focus();
@@ -134,8 +131,11 @@ function elementHasFocusVisible( element ) {
 }
 
 function elementIsFocusable( element ) {
-  if ( element.tagName === 'INPUT' && InputTypes[ element.type ] && !element.disabled )
-    return true;
+  if ( element.disabled || element.tabIndex < 0 )
+    return false;
 
-  return !element.disabled;
+  if ( element.tagName === 'INPUT' )
+    return element.type != 'hidden';
+
+  return true;
 }
