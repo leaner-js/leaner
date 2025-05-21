@@ -35,7 +35,7 @@ This simple template syntax makes any compilation unnecessary, either at build-t
 
 ## Reactive State
 
-Leaner has a fine-grained reactivity mechanism in which everything is a function &mdash; not only top-level state values, but also nested properties. For example:
+Leaner has a fine-grained reactivity mechanism in which everything is a function --- not only top-level state values, but also nested properties. For example:
 
 ```js
 const [ user, setUser ] = state( { name: 'John', age: 35 } );
