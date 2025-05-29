@@ -552,6 +552,17 @@ main {
     }
   }
 
+  a[target=_blank]:after {
+    content: "";
+    padding: 0 sp( 1.75 );
+    margin-left: sp( 0.5 );
+    background: currentColor;
+    mask-size: contain;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-image: url( 'lucide-static/icons/external-link.svg' );
+  }
+
   .anchor {
     text-decoration: none;
     opacity: 0;
