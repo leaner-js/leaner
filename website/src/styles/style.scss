@@ -155,15 +155,15 @@ header {
     position: relative;
     display: flex;
     align-items: center;
-    padding: $sp-2;
+    padding: sp( 1.5 );
     color: $text-color-muted;
     border: 1px solid $border-color;
     border-radius: $sp-2;
     @include has-tooltip;
 
     > i {
-      width: $sp-5;
-      height: $sp-5;
+      width: $sp-6;
+      height: $sp-6;
     }
 
     &:hover, &:active {
@@ -252,6 +252,8 @@ header {
     }
 
     > .i {
+      width: $sp-5;
+      height: $sp-5;
       margin-right: $sp-2;
     }
   }
@@ -340,6 +342,8 @@ header {
       }
 
       > .i {
+        width: $sp-5;
+        height: $sp-5;
         margin-right: $sp-2;
       }
     }
@@ -492,6 +496,8 @@ main {
       background: color( gray, 200 );
 
       > .i {
+        width: $sp-5;
+        height: $sp-5;
         margin-left: $sp-2;
       }
 
@@ -552,10 +558,9 @@ main {
     transition: opacity 100ms ease-in-out;
 
     > .i {
-      position: relative;
-      top: $sp-1;
+      width: $sp-5;
+      height: $sp-5;
     }
-
   }
 
   :hover .anchor, .anchor:focus {
