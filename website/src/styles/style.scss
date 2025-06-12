@@ -379,6 +379,10 @@ header {
   .is-active > a {
     color: $link-color-active;
   }
+
+  nav > ul > .is-active > a {
+    font-weight: 500;
+  }
 }
 
 .sidebar-open {
