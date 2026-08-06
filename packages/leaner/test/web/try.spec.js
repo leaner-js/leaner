@@ -9,7 +9,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'if', 'invalidCondition', [ 'p', 'hello' ] ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -22,7 +22,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ ThrowError ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -39,7 +39,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ ThrowError ],
-        () => {},
+        [ 'catch', () => {} ],
       ];
     }
 
@@ -58,7 +58,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'p', fruit.name ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -73,13 +73,36 @@ describe( 'try', () => {
     expect( document.body.innerHTML ).toBe( '<p>Something went wrong</p>' );
   } );
 
+  test( 'multiple children', () => {
+    const [ fruit, setFruit ] = state( { name: 'apple' } );
+
+    function App() {
+      return [ 'try',
+        [ 'p', 'first' ],
+        [ 'p', fruit.name ],
+        [ 'p', 'last' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
+      ];
+    }
+
+    createApp( App ).mount( document.body );
+
+    expect( document.body.innerHTML ).toBe( '<p>first</p><p>apple</p><p>last</p>' );
+
+    setFruit( null );
+
+    runSchedule();
+
+    expect( document.body.innerHTML ).toBe( '<p>Something went wrong</p>' );
+  } );
+
   test( 'reactive in component', () => {
     const [ fruit, setFruit ] = state( { name: 'apple' } );
 
     function App() {
       return [ 'try',
         [ Component ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -106,7 +129,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'if', condition, [ ThrowError ] ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -131,7 +154,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'if', condition, [ ThrowError ] ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -153,7 +176,7 @@ describe( 'try', () => {
           [ 'if', condition, [ ThrowError ] ],
           [ 'else', [ 'p', 'OK' ] ],
         ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -181,7 +204,7 @@ describe( 'try', () => {
           [ 'if', condition, [ ThrowError ] ],
           [ 'else', [ 'p', 'OK' ] ],
         ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -200,7 +223,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'dynamic', component ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -229,7 +252,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'dynamic', component ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -248,7 +271,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'for', items, item => [ 'div', item.fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -269,7 +292,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'for', items, item => [ 'div', item.fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -286,7 +309,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'repeat', count, index => [ 'div', items[ index ].name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -307,7 +330,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'repeat', count.value, index => [ 'div', index ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -328,7 +351,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'repeat', count.value, index => [ 'div', index ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -343,7 +366,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -364,7 +387,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -382,7 +405,7 @@ describe( 'try', () => {
           [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
           [ 'else', [ 'p', 'not apple' ] ],
         ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -406,7 +429,7 @@ describe( 'try', () => {
           [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
           [ 'else', [ 'p', 'not apple' ] ],
         ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -421,7 +444,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'for', items, item => [ 'div', item.fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -442,7 +465,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'for', items, item => [ 'div', item.fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -463,7 +486,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'for', items, item => [ 'div', item.fruit.name ] ],
-        () => [ 'p', 'Something went wrong' ],
+        [ 'catch', () => [ 'p', 'Something went wrong' ] ],
       ];
     }
 
@@ -481,11 +504,9 @@ describe( 'try', () => {
 
     function App() {
       return [ 'try',
-        [[
-          [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
-          [ 'if', () => fruit.name() == 'orange', [ 'div', fruit.name ] ],
-        ]],
-        callback,
+        [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
+        [ 'if', () => fruit.name() == 'orange', [ 'div', fruit.name ] ],
+        [ 'catch', callback ],
       ];
     }
 
@@ -506,7 +527,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ ThrowError ],
-        ThrowError,
+        [ 'catch', ThrowError ],
       ];
     }
 
@@ -523,7 +544,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ ThrowError ],
-        () => [ ThrowError ],
+        [ 'catch', () => [ ThrowError ] ],
       ];
     }
 
@@ -542,7 +563,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'dynamic', component ],
-        () => [ 'p', 'outer handler' ],
+        [ 'catch', () => [ 'p', 'outer handler' ] ],
       ];
     }
 
@@ -553,7 +574,7 @@ describe( 'try', () => {
     function BadComponent() {
       return [ 'try',
         [ ThrowError ],
-        () => [ 'p', 'inner handler' ],
+        [ 'catch', () => [ 'p', 'inner handler' ] ],
       ];
     }
 
@@ -580,9 +601,9 @@ describe( 'try', () => {
       return [ 'try',
         [ 'try',
           [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
-          ThrowError,
+          [ 'catch', ThrowError ],
         ],
-        () => [ 'p', 'parent handler' ],
+        [ 'catch', () => [ 'p', 'parent handler' ] ],
       ];
     }
 
@@ -608,9 +629,9 @@ describe( 'try', () => {
       return [ 'try',
         [ 'try',
           [ ThrowError ],
-          () => [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
+          [ 'catch', () => [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ] ],
         ],
-        () => [ 'p', 'parent handler' ],
+        [ 'catch', () => [ 'p', 'parent handler' ] ],
       ];
     }
 
@@ -636,9 +657,9 @@ describe( 'try', () => {
       return [ 'try',
         [ 'try',
           [ 'if', () => fruit.name() == 'apple', [ 'div', fruit.name ] ],
-          () => [ ThrowError ],
+          [ 'catch', () => [ ThrowError ] ],
         ],
-        () => [ 'p', 'parent handler' ],
+        [ 'catch', () => [ 'p', 'parent handler' ] ],
       ];
     }
 
@@ -662,9 +683,9 @@ describe( 'try', () => {
       return [ 'try',
         [ 'try',
           [ ThrowError ],
-          ThrowError,
+          [ 'catch', ThrowError ],
         ],
-        () => [ 'p', 'parent handler' ],
+        [ 'catch', () => [ 'p', 'parent handler' ] ],
       ];
     }
 
@@ -682,9 +703,9 @@ describe( 'try', () => {
       return [ 'try',
         [ 'try',
           [ ThrowError ],
-          () => [ ThrowError ],
+          [ 'catch', () => [ ThrowError ] ],
         ],
-        () => [ 'p', 'parent handler' ],
+        [ 'catch', () => [ 'p', 'parent handler' ] ],
       ];
     }
 
@@ -706,7 +727,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ Component ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -744,7 +765,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ Component ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -773,7 +794,7 @@ describe( 'try', () => {
     function App() {
       return [ 'try',
         [ 'button', { ref: setButton, type: 'button', onclick: throwError } ],
-        err => [ 'p', err.message ],
+        [ 'catch', err => [ 'p', err.message ] ],
       ];
     }
 
@@ -790,5 +811,27 @@ describe( 'try', () => {
     button().dispatchEvent( event );
 
     expect( document.body.innerHTML ).toBe( '<p>Something went wrong</p>' );
+  } );
+
+  test( 'missing catch', () => {
+    function App() {
+      return [ 'try',
+        [ 'p', 'test' ],
+      ];
+    }
+
+    expect( () => {
+      createApp( App ).mount( document.body );
+    } ).toThrowError( 'Invalid try template' );
+  } );
+
+  test( 'unexpected catch', () => {
+    function App() {
+      return [ 'catch', err => [ 'p', err.message ] ];
+    }
+
+    expect( () => {
+      createApp( App ).mount( document.body );
+    } ).toThrowError( 'Unexpected catch directive' );
   } );
 } );

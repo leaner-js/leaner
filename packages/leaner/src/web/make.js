@@ -12,6 +12,7 @@ import { createSwitchDirective } from './switch.js';
 import { createTryDirective } from './try.js';
 
 const Directives = {
+  catch: unexpectedDirective,
   dynamic: createDynamicDirective,
   else: unexpectedDirective,
   for: createForDirective,

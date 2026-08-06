@@ -3,15 +3,23 @@ import { DynamicNode } from './nodes';
 import { updateDynamicNode } from './update';
 
 export function createTryDirective( template ) {
-  if ( template.length != 3 || typeof template[ 2 ] != 'function' )
+  const catchTemplate = template[ template.length - 1 ];
+
+  if ( !Array.isArray( catchTemplate ) || catchTemplate.length != 2 || catchTemplate[ 0 ] != 'catch' || typeof catchTemplate[ 1 ] != 'function' )
     throw new TypeError( 'Invalid try template' );
 
   const result = new DynamicNode( null );
 
   const context = createChildContext();
 
+  let childTemplate = null;
+  if ( template.length == 3 )
+    childTemplate = template[ 1 ];
+  else
+    childTemplate = [ template.slice( 1, template.length - 1 ) ];
+
   try {
-    updateDynamicNode( result, context, template[ 1 ] );
+    updateDynamicNode( result, context, childTemplate );
   } catch ( err ) {
     updateErrorState( err );
     return result;
@@ -33,6 +41,6 @@ export function createTryDirective( template ) {
     context.errorHandler = null;
     if ( result.content == null )
       cleanUpContext( context );
-    updateDynamicNode( result, context, template[ 2 ]( err ) );
+    updateDynamicNode( result, context, catchTemplate[ 1 ]( err ) );
   }
 }
