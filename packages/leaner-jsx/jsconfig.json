@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "paths": {
+      "leaner-jsx": [ "./src" ],
+      "leaner-jsx/*": [ "./src/*" ],
+    }
+  },
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
+}
