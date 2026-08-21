@@ -1,4 +1,6 @@
-type DeepReadonly<T> = T extends object ? {
+type BuiltInObject = Function | Date | Error | RegExp | Promise<any> | Map<any, any> | Set<any> | WeakMap<any, any> | WeakSet<any> | Node;
+
+type DeepReadonly<T> = T extends BuiltInObject ? T : T extends object ? {
   readonly [ K in keyof T ]: DeepReadonly<T[ K ]>;
 } : T;
 
@@ -20,7 +22,7 @@ declare class Mutator<T> {
   private callback: ( value: T ) => void;
 }
 
-export type Getter<T> = ( () => DeepReadonly<T> ) & ( T extends Array<infer U> ? ArrayGetter<U> : T extends object ? ObjectGetter<T> : {} );
+export type Getter<T> = ( () => DeepReadonly<T> ) & ( T extends BuiltInObject ? {} : T extends Array<infer U> ? ArrayGetter<U> : T extends object ? ObjectGetter<T> : {} );
 
 export type Setter<T> = ( value: ( T extends Function ? never : T ) | ( ( value: DeepReadonly<T> ) => T ) | Mutator<T> ) => void;
 
