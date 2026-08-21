@@ -1,6 +1,5 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
       "leaner": [ "./src/core" ],
       "leaner/*": [ "./src/core/*" ],

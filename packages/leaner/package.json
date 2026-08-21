@@ -21,6 +21,9 @@
       "import": "./dist/core.js",
       "types": "./types/core.d.ts"
     },
+    "./jsx-runtime": {
+      "types": "./types/jsx-runtime.d.ts"
+    },
     "./web": {
       "import": "./dist/web.js",
       "types": "./types/web.d.ts"
@@ -48,6 +51,9 @@
     "url": "https://github.com/leaner-js/leaner/issues"
   },
   "homepage": "https://leanerjs.org/",
+  "dependencies": {
+    "csstype": "^3.2.3"
+  },
   "devDependencies": {
     "jsdom": "^26.1.0",
     "rollup": "^4.40.1",
