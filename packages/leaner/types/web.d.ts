@@ -13,11 +13,15 @@ export interface App {
   use( callback: () => void ): void;
 }
 
+interface InjectionConstraint<T> {}
+
+export type InjectionKey<T> = symbol & InjectionConstraint<T>;
+
 export declare function createApp( component: Component ): App;
 
-export declare function inject( key: string | symbol ): any;
+export declare function inject<T>( key: string | InjectionKey<T> ): T | undefined;
 
-export declare function provide( key: string | symbol, value: any ): void;
+export declare function provide<T, K = string | InjectionKey<T>>( key: K, value: K extends InjectionKey<infer V> ? V : T ): void;
 
 export declare function onMount( callback: () => void ): void;
 
