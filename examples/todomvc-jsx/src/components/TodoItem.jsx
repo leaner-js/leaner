@@ -33,14 +33,16 @@ export function TodoItem( { todo, toggleTodo, editTodo, deleteTodo } ) {
       cancelEdit();
   }
 
-  return [ 'li', { class: { completed: todo.completed, editing } },
-    [ 'div', { class: 'view' },
-      [ 'input', { class: 'toggle', type: 'checkbox', checked: todo.completed, onchange: e => toggleTodo( todo.id(), e.target.checked ) } ],
-      [ 'label', { ondblclick: startEdit }, todo.title ],
-      [ 'button', { class: 'destroy', type: 'button', onclick: () => deleteTodo( todo.id() ) } ],
-    ],
-    [ 'if', editing,
-      [ 'input', { ref: setInput, type: 'text', class: 'edit', value: text, onchange: e => setText( e.target.value ), onkeyup, onblur: cancelEdit } ],
-    ],
-  ];
+  return (
+    <li class={{ completed: todo.completed, editing }}>
+      <div class="view">
+        <input class="toggle" type="checkbox" checked={todo.completed} onchange={e => toggleTodo( todo.id(), e.target.checked )}/>
+        <label ondblclick={startEdit}>{todo.title}</label>
+        <button class="destroy" type="button" onclick={() => deleteTodo( todo.id() )}/>
+      </div>
+      <if match={editing}>
+        <input ref={setInput} type="text" class="edit" value={text} onchange={e => setText( e.target.value )} onkeyup={onkeyup} onblur={cancelEdit}/>
+      </if>
+    </li>
+  );
 }

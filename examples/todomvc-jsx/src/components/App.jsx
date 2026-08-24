@@ -60,18 +60,20 @@ export function App() {
     setTodos( todos => todos.filter( t => !t.completed ) );
   }
 
-  return [[
-    [ TodoHeader, { addTodo } ],
-    [ 'if', () => todos().length > 0,
-      [ 'main', { class: 'main' },
-        [ 'input', { id: 'toggle-all', class: 'toggle-all', type: 'checkbox', checked: allCompleted, onchange: e => toggleAll( e.target.checked ),
-          disabled: () => fileredTodos().length == 0 } ],
-        [ 'label', { for: 'toggle-all' }, 'Mark all as complete' ],
-        [ 'ul', { class: 'todo-list' },
-          [ 'for', fileredTodos, todo => [ TodoItem, { todo, toggleTodo, editTodo, deleteTodo } ] ],
-        ],
-      ],
-      [ TodoFooter, { todos, page, deleteCompleted } ],
-    ],
-  ]];
+  return (
+    <>
+      <TodoHeader addTodo={addTodo}/>
+      <if match={() => todos().length > 0}>
+        <main class="main">
+          <input id="toggle-all" class="toggle-all" type="checkbox" checked={allCompleted} onchange={e => toggleAll( e.target.checked )}
+            disabled={() => fileredTodos().length == 0}/>
+          <label for="toggle-all">Mark all as complete</label>
+          <ul class="todo-list">
+            <for items={fileredTodos}>{todo => <TodoItem todo={todo} toggleTodo={toggleTodo} editTodo={editTodo} deleteTodo={deleteTodo}/>}</for>
+          </ul>
+        </main>
+        <TodoFooter todos={todos} page={page} deleteCompleted={deleteCompleted}/>
+      </if>
+    </>
+  );
 }

@@ -1,6 +1,6 @@
 import { computed } from 'leaner';
 
-export default function TodoFooter( { todos, page, deleteCompleted } ) {
+export function TodoFooter( { todos, page, deleteCompleted } ) {
   const remaining = computed( () => todos().filter( todo => !todo.completed ).length );
 
   return [ 'footer', { class: 'footer' },

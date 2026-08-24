@@ -8,10 +8,12 @@
     "packages/leaner-jsx",
     "examples/benchmark",
     "examples/todomvc",
+    "examples/todomvc-jsx",
+    "examples/todomvc-typescript",
     "website"
   ],
   "scripts": {
-    "build": "npm run -w packages/leaner -w packages/leaner-jsx -w examples/benchmark -w examples/todomvc -w website build",
-    "test": "npm run -w packages/leaner -w packages/leaner-jsx test"
+    "build": "npm run -w packages -w examples -w website build",
+    "test": "npm run -w packages test"
   }
 }
