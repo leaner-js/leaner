@@ -25,4 +25,4 @@ npm run bench -- --framework keyed/leaner
 
 ## License
 
-Leaner.js is open-source software released under the MIT License. &copy; 2024 Michał Męciński.
+Leaner.js is open-source software released under the MIT License. &copy; 2026 Michał Męciński.
