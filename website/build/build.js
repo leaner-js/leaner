@@ -26,7 +26,7 @@ const viteConfig = defineConfig( {
   css: {
     preprocessorOptions: {
       scss: {
-        silenceDeprecations: [ 'color-functions', 'global-builtin', 'import' ],
+        silenceDeprecations: [ 'color-functions', 'global-builtin', 'if-function', 'import' ],
       },
     },
   },

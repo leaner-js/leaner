@@ -1,4 +1,6 @@
-export default [
+import { defineConfig } from 'rollup';
+
+export default defineConfig( [
   {
     input: 'src/core/index.js',
     output: {
@@ -14,7 +16,7 @@ export default [
     external: [ 'leaner' ],
     onwarn,
   },
-];
+] );
 
 function onwarn( msg, warn ) {
   if ( msg.code != 'CIRCULAR_DEPENDENCY' )

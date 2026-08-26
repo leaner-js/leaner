@@ -40,11 +40,11 @@
   },
   "homepage": "https://leanerjs.org/",
   "dependencies": {
-    "oxc-parser": "^0.143.0",
+    "oxc-parser": "^0.147.0",
     "rolldown-string": "^0.3.1"
   },
   "devDependencies": {
-    "rollup": "^4.40.1",
-    "vitest": "^3.1.2"
+    "rollup": "^4.63.0",
+    "vitest": "^4.1.11"
   }
 }

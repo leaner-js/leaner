@@ -12,6 +12,6 @@
     "todomvc-app-css": "^2.4.3"
   },
   "devDependencies": {
-    "vite": "^6.3.5"
+    "vite": "^8.2.2"
   }
 }

@@ -55,8 +55,8 @@
     "csstype": "^3.2.3"
   },
   "devDependencies": {
-    "jsdom": "^26.1.0",
-    "rollup": "^4.40.1",
-    "vitest": "^3.1.2"
+    "jsdom": "^29.1.1",
+    "rollup": "^4.63.0",
+    "vitest": "^4.1.11"
   }
 }
