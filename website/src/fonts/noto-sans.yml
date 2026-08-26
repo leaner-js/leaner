@@ -1,0 +1,12 @@
+unicodeRanges:
+ - 0020-007F
+ - 00A0-00FF
+ - 0100-017F
+
+fonts:
+  noto-sans-400: NotoSans-Regular
+  noto-sans-400-italic: NotoSans-Italic
+  noto-sans-500: NotoSans-Medium
+  noto-sans-500-italic: NotoSans-MediumItalic
+  noto-sans-700: NotoSans-Bold
+  noto-sans-700-italic: NotoSans-BoldItalic
