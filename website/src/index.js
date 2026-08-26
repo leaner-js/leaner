@@ -13,6 +13,8 @@ window.addEventListener( 'DOMContentLoaded', () => {
 function handleOptions() {
   const toggleTheme = document.getElementById( 'toggle-theme' );
   if ( toggleTheme != null ) {
+    const darkColorScheme = matchMedia( '(prefers-color-scheme: dark)' );
+
     const tooltip = toggleTheme.querySelector( 'span' );
 
     if ( document.documentElement.classList.contains( 'dark' ) )
@@ -24,7 +26,21 @@ function handleOptions() {
         tooltip.textContent = 'Light mode';
       else
         tooltip.textContent = 'Dark mode';
-      localStorage.setItem( 'theme', theme );
+      const systemTheme = darkColorScheme.matches ? 'dark' : 'light';
+      localStorage.setItem( 'theme', theme == systemTheme ? 'auto' : theme );
+    } );
+
+    darkColorScheme.addEventListener( 'change', e => {
+      const theme = localStorage.getItem( 'theme' ) || 'auto';
+      if ( theme == 'auto' ) {
+        if ( e.matches ) {
+          document.documentElement.classList.add( 'dark' );
+          tooltip.textContent = 'Light mode';
+        } else {
+          document.documentElement.classList.remove( 'dark' );
+          tooltip.textContent = 'Dark mode';
+        }
+      }
     } );
   }
 

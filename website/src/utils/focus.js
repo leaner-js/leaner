@@ -31,6 +31,10 @@ export function untrapFocus( container ) {
     trappedContainer = null;
 }
 
+export function getTrappedFocus() {
+  return trappedContainer;
+}
+
 function onKeyDown( e ) {
   if ( e.metaKey || e.altKey || e.ctrlKey )
     return;
@@ -43,6 +47,11 @@ function onKeyDown( e ) {
   keyboardEventTimeout = setTimeout( () => { hadKeyboardEvent = false; }, 100 );
 
   if ( e.keyCode == 9 && trappedContainer != null ) {
+    if ( !document.body.contains( trappedContainer ) ) {
+      trappedContainer = null;
+      return;
+    }
+
     let trappedFirst = null, trappedLast = null;
 
     const focusableElements = trappedContainer.querySelectorAll( 'a[href], button, input, textarea, select' );
