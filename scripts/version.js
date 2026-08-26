@@ -2,16 +2,16 @@ import { readFile, writeFile } from 'fs/promises';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 
-if ( process.argv.length != 3 ) {
-  console.error( 'Usage: node scripts/version.js VERSION' );
+if ( process.argv.length != 4 ) {
+  console.error( 'Usage: node scripts/version.js PACKAGE_NAME VERSION' );
   process.exit( 1 );
 }
 
 const __dirname = dirname( fileURLToPath( import.meta.url ) );
 const rootDir = dirname( __dirname );
 
-const packageName = 'leaner';
-const version = process.argv[ 2 ];
+const packageName = process.argv[ 2 ];
+const version = process.argv[ 3 ];
 
 const rootPackage = await readJson( 'package.json' );
 

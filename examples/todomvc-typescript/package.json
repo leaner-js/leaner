@@ -8,7 +8,7 @@
     "build": "tsc -b && vite build"
   },
   "dependencies": {
-    "leaner": "^0.3.0",
+    "leaner": "^0.4.0",
     "leaner-jsx": "^0.1.0",
     "todomvc-app-css": "^2.4.3"
   },
