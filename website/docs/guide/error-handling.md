@@ -4,21 +4,19 @@ sidebar: guide
 
 # Error Handling
 
-You can use the `'try'` directive to handle errors in Leaner. It must contain a single child element and a callback function which is executed in case of an error. For example:
+You can use the `'try'` and `'catch'` directives to handle errors in Leaner. The `'try'` directive can contain one or more child elements followed by a `'catch'` directive. The `'catch'` directive should contain a callback function which is executed in case of an error. For example:
 
 ```js
 [ 'try',
   [ SomeComponent ],
-  err => {
+  [ 'catch', err => {
     console.error( err );
     return [ 'p', 'Unexpected error' ];
-  },
+  } ],
 ]
 ```
 
 If an error occurs in the component, the callback function is called. It receives the error as an argument, and it should return the template which will be displayed instead.
-
-You can use a [fragment](./templates#fragments) in order to wrap multiple elements inside a `'try'` directive.
 
 The `'try'` directive can handle errors from the following sources:
 
@@ -43,7 +41,7 @@ function App() {
 
   return [ 'try',
     [ 'button', { type: 'button', onclick: handleClick }, user.name ],
-    () => [ 'p', 'Unexpected error' ],
+    [ 'catch', () => [ 'p', 'Unexpected error' ] ],
   ];
 }
 ```

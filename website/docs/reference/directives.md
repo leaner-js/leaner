@@ -116,21 +116,21 @@ See [Dynamic Elements](../guide/conditions-and-lists#dynamic-elements) for more 
 
 ## try
 
-Displays the child template, and replaces it with a fallback template when an error occurs.
+Displays the child templates, and replaces them with a fallback template when an error occurs.
 
 ```js
-[ 'try', child, error => fallbackChild ]
+[ 'try', children..., [ 'catch', error => fallbackChild ] ]
 ```
 
-The first argument is an element, component or fragment. The second argument is a function which receives the error object and returns the fallback template. For example:
+The argument of the `'catch'` directive is a function which receives the error object and returns the fallback template. For example:
 
 ```js
 [ 'try',
   [ SomeComponent ],
-  err => {
+  [ 'catch', err => {
     console.error( err );
     return [ 'p', 'Unexpected error' ];
-  },
+  } ],
 ]
 ```
 

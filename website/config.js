@@ -16,6 +16,8 @@ export default {
         { text: 'Components', link: '/guide/components.html' },
         { text: 'Advanced Reactivity', link: '/guide/advanced-reactivity.html' },
         { text: 'Error Handling', link: '/guide/error-handling.html' },
+        { text: 'JSX Templates', link: '/guide/jsx-templates.html' },
+        { text: 'TypeScript Support', link: '/guide/typescript-support.html' },
       ],
     },
     'reference': {

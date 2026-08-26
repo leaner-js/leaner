@@ -32,6 +32,8 @@ createApp( App ).mount( document.body );
 
 This simple template syntax makes any compilation unnecessary, either at build-time or at runtime. The Leaner templates are translated directly to DOM elements and attributes, without any virtual DOM or other intermediate steps.
 
+If you prefer writing JSX templates, Leaner supports them as well, with no impact on runtime performance.
+
 
 ## Reactive State
 
@@ -56,7 +58,7 @@ Now the element's text is automatically updated every time the user's name chang
 
 ## Small and Efficient
 
-A simple [TodoMVC](https://todomvc.com/) application created in Leaner is only 15 kilobytes of code (minified, uncompressed). That's over nine times smaller than the equivalent application using React and five times smaller than Vue.
+A simple [TodoMVC](https://todomvc.com/) application created in Leaner is only 18 kilobytes of code (minified, uncompressed). That's eight times smaller than the equivalent application using React and over four times smaller than Vue.
 
 In the [js-framework-benchmark](https://github.com/krausest/js-framework-benchmark), Leaner is 20% faster than React and 5% faster than Vue in the DOM manipulation performance tests.
 

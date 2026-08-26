@@ -114,7 +114,6 @@ When the value of a boolean attribute, for example `disabled` or `readonly`, is 
 
 The `class` and `style` attributes can use special syntax; see [Classes and Styles](./classes-and-styles) for more information.
 
-
 ## Event Handlers
 
 Event handlers can be passed to an HTML element in the same way as attributes, by prefixing the event name with `on`, for example:
