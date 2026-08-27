@@ -147,11 +147,11 @@ You can also use the `'switch'` directive in JSX templates:
 <switch>
   <if match={first}><p>The first condition is true.</p></if>
   <if match={second}><p>The second condition is true.</p></if>
-  <else><p>None of the conditions is true.</p></if>
+  <else><p>None of the conditions is true.</p></else>
 </switch>
 ```
 
-The `'if'` directive has the `items` property and a child function expression:
+The `'for'` directive has the `items` property and a child function expression:
 
 ```js
 <ul>
@@ -181,6 +181,6 @@ You can also use the `'try'` and `'catch'` directives in JSX templates:
   <catch>{err => {
     console.error( err );
     return [ 'p', 'Unexpected error' ];
-  }</catch>
+  }}</catch>
 </try>
 ```
