@@ -180,7 +180,7 @@ You can also use the `'try'` and `'catch'` directives in JSX templates:
   <SomeComponent/>
   <catch>{err => {
     console.error( err );
-    return [ 'p', 'Unexpected error' ];
+    return <p>Unexpected error</p>;
   }}</catch>
 </try>
 ```
