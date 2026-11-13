@@ -40,7 +40,13 @@ export default defineConfig( {
 ::: tip NOTE
 Make sure to change the `oxc.jsx` option to `'preserve'` so that JSX elements can be processed by the Leaner plugin. Otherwise, Vite will apply React transformations first.
 
-If you are using Vite version 7 or older, use the `esbuild.jsx` option instead.
+If you are using Vite version 7 or older, use the `esbuild.jsx` option instead. You must also install `oxc-parser` in order for the plugin to work:
+
+```shell
+npm install --save-dev oxc-parser
+```
+
+Alternatively, migrate to Vite 8+ which supports JSX natively.
 :::
 
 The plugin is also compatible with Rollup and Rolldown. To enable it, just add it to your `rollup.config.js` or `rolldown.config.js` file. For example:
@@ -57,6 +63,16 @@ export default defineConfig( {
   plugins: [ leanerJsx() ],
 } );
 ```
+
+::: tip NOTE
+If you are using Rollup, you must install `oxc-parser` in order for the plugin to work:
+
+```shell
+npm install --save-dev oxc-parser
+```
+
+Alternatively, migrate to Rolldown which supports JSX natively.
+:::
 
 
 ## Configuring type checking
