@@ -6,16 +6,16 @@ export type LeanerNode = LeanerElement | Node | null | string | number | ( () =>
 
 export type Component = ( props: any, children: any[] ) => LeanerNode;
 
-export interface App {
-  mount( target: HTMLElement ): void;
-  destroy(): void;
-  provide( key: string | symbol, value: any ): void;
-  use( callback: () => void ): void;
-}
-
 interface InjectionConstraint<T> {}
 
 export type InjectionKey<T> = symbol & InjectionConstraint<T>;
+
+export interface App {
+  mount( target: HTMLElement ): void;
+  destroy(): void;
+  provide<T, K = string | InjectionKey<T>>( key: K, value: K extends InjectionKey<infer V> ? V : T ): void;
+  use( callback: () => void ): void;
+}
 
 export declare function createApp( component: Component ): App;
 
