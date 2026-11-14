@@ -9,10 +9,10 @@
   },
   "dependencies": {
     "leaner": "^0.4.0",
-    "leaner-jsx": "^0.1.0",
     "todomvc-app-css": "^2.4.3"
   },
   "devDependencies": {
+    "leaner-jsx": "^0.1.0",
     "vite": "^8.3.8"
   }
 }

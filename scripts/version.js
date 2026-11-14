@@ -33,6 +33,10 @@ async function processWorkspace( workspace ) {
     data.dependencies[ packageName ] = `^${ version }`;
     await writeJson( name, data );
     console.log( `${workspace}: "${ packageName }": "^${ version }"` );
+  } else if ( data.devDependencies != null && data.devDependencies[ packageName ] != null ) {
+    data.devDependencies[ packageName ] = `^${ version }`;
+    await writeJson( name, data );
+    console.log( `${workspace}: "${ packageName }": "^${ version }"` );
   }
 }
 
