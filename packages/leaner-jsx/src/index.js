@@ -41,9 +41,6 @@ export default function leanerJsx() {
 async function parse( ctx, code, id, meta ) {
   // When running with Rolldown, parse() supports JSX syntax natively
   if ( ctx.meta?.rolldownVersion != null ) {
-    if ( meta?.ast != null )
-      return meta.ast;
-
     const [ filepath ] = id.split( '?' );
     const lang = filepath.endsWith( '.tsx' ) ? 'tsx' : 'jsx';
 
